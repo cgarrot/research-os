@@ -1,8 +1,8 @@
 campaign:
-  title: "Infinité de nombres de Cullen premiers"
+  title: "Infinitude of prime Cullen numbers"
   modules: [mathematics]
   objective:
-    statement: "Open problem (Wikipedia FR, théorie des nombres): Existe-t-il une infinité de nombres de Cullen premiers C_n = n * 2^n + 1 ? Goal: OPERATIONAL progress under our epistemic rules — C_n exact via Miller-Rabin while C_n < 3.3e24 (n <= ~66): exhaustive-finite scan n in [1, 66] finding known Cullen primes (n=1, 141? beyond) → VERIFIED bounded statement; larger n via scripts (empirical); aux kills."
+    statement: "Open problem (Wikipedia FR, number theory): Do there exist infinitely many prime Cullen numbers C_n = n * 2^n + 1? Goal: OPERATIONAL progress under our epistemic rules — C_n exact via Miller-Rabin while C_n < 3.3e24 (n <= ~66): exhaustive-finite scan n in [1, 66] finding known Cullen primes (n=1, 141? beyond) → VERIFIED bounded statement; larger n via scripts (empirical); aux kills."
     questions:
       - "Exactly verified Cullen prime set for n <= 66?"
       - "Which primality-heuristic claims die?"

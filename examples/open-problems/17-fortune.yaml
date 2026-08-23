@@ -2,7 +2,7 @@ campaign:
   title: "Conjecture de Fortune"
   modules: [mathematics]
   objective:
-    statement: "Open problem (Wikipedia FR, théorie des nombres): Pour tout n >= 1, le nombre de Fortune F_n (plus petit entier > 1 tel que primorial(n) + F_n soit premier) est premier. Goal: OPERATIONAL progress under our epistemic rules — primorial(n) helper added to the verifier library: bounded VERIFIED check 'F_n is prime for all n in [1, K]' via exhaustive-finite with expression computing the Fortune number (needs next-prime-after search... prefer: workers compute F_n per n in scripts, then VERIFIED pointwise via exact-point on each primorial(n)+F_n with predicate prime — a batch of verified witnesses; plus falsify auxiliaries on F_n growth)."
+    statement: "Open problem (Wikipedia FR, number theory): Pour tout n >= 1, le nombre de Fortune F_n (plus petit entier > 1 tel que primorial(n) + F_n soit premier) est premier. Goal: OPERATIONAL progress under our epistemic rules — primorial(n) helper added to the verifier library: bounded VERIFIED check 'F_n is prime for all n in [1, K]' via exhaustive-finite with expression computing the Fortune number (needs next-prime-after search... prefer: workers compute F_n per n in scripts, then VERIFIED pointwise via exact-point on each primorial(n)+F_n with predicate prime — a batch of verified witnesses; plus falsify auxiliaries on F_n growth)."
     questions:
       - "Verified Fortune primes for n <= K?"
       - "Growth claims that die?"

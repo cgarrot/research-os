@@ -2,7 +2,7 @@ campaign:
   title: "Conjecture abc"
   modules: [mathematics]
   objective:
-    statement: "Open problem (Wikipedia FR, théorie des nombres): Conjecture abc : pour tout eps > 0 il existe K_eps tel que pour tous a,b,c premiers entre eux avec a+b=c, c < K_eps * rad(abc)^(1+eps). Goal: OPERATIONAL progress under our epistemic rules — No verifier predicate for rad — workers script exact abc-hits (rad via sympy factorization) and register artifacts; individual hit computations can be exact-point verified when expressible; falsify auxiliaries ('abc quality above X exists below Y' searches); source-backed: known abc-hit records."
+    statement: "Open problem (Wikipedia FR, number theory): Conjecture abc : pour tout eps > 0 il existe K_eps tel que pour tous a,b,c premiers entre eux avec a+b=c, c < K_eps * rad(abc)^(1+eps). Goal: OPERATIONAL progress under our epistemic rules — No verifier predicate for rad — workers script exact abc-hits (rad via sympy factorization) and register artifacts; individual hit computations can be exact-point verified when expressible; falsify auxiliaries ('abc quality above X exists below Y' searches); source-backed: known abc-hit records."
     questions:
       - "Largest-quality abc hits computable in budget?"
       - "Which qualitative claims about quality distribution die?"

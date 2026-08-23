@@ -2,7 +2,7 @@ campaign:
   title: "Taxicab(5, 2, n) pour n > 1"
   modules: [mathematics]
   objective:
-    statement: "Open problem (Wikipedia FR, théorie des nombres): Existe-t-il des entiers somme de deux puissances cinquièmes positives d'au moins deux manières différentes (taxicab(5,2,n), n > 1) ? Goal: OPERATIONAL progress under our epistemic rules — ANY collision a^5+b^5=c^5+d^5 with {a,b}≠{c,d} becomes a VERIFIED certificate: mathematics:certificate-check with witness {a,b,c,d}, your verify() script, exact cross-check expression 'a**5+b**5-(c**5+d**5)' predicate 'equals:0' and allDistinct. Absence scans below K stay empirical (numerical-evidence). Hunt for a^5 + b^5 = c^5 + d^5 with {a,b} != {c,d}: workers script exhaustive/search up to a reachable bound (hash tables over a^5+b^5); ANY found witness is exactly verifiable (exact-point, equals on"
+    statement: "Open problem (Wikipedia FR, number theory): Do there exist integers that are a sum of two positive fifth powers in at least two different ways (taxicab(5,2,n), n > 1)? Goal: OPERATIONAL progress under our epistemic rules — ANY collision a^5+b^5=c^5+d^5 with {a,b}≠{c,d} becomes a VERIFIED certificate: mathematics:certificate-check with witness {a,b,c,d}, your verify() script, exact cross-check expression 'a**5+b**5-(c**5+d**5)' predicate 'equals:0' and allDistinct. Absence scans below K stay empirical (numerical-evidence). Hunt for a^5 + b^5 = c^5 + d^5 with {a,b} != {c,d}: workers script exhaustive/search up to a reachable bound (hash tables over a^5+b^5); ANY found witness is exactly verifiable (exact-point, equals on"
     questions:
       - "Searched bound reached? Any collision found (verify it!)?"
       - "Modular obstructions worth recording?"

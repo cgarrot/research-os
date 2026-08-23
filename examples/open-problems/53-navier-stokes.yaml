@@ -1,8 +1,8 @@
 campaign:
-  title: "Régularité des solutions de Navier–Stokes"
+  title: "Regularity of Navier–Stokes solutions"
   modules: [mathematics]
   objective:
-    statement: "Open problem (Wikipedia FR, EDP / analyse): Existence et régularité globale des solutions des équations de Navier–Stokes 3D (prix du millénaire). Goal: OPERATIONAL progress under our epistemic rules — Grounding: what regularity results exist, energy estimates as source-backed; numerical simulations = exploration only (never evidence); aux kills on naive blowup claims."
+    statement: "Open problem (Wikipedia FR, EDP / analyse): Global existence and regularity of solutions of the 3D Navier–Stokes equations (Millennium Prize). Goal: OPERATIONAL progress under our epistemic rules — Grounding: what regularity results exist, energy estimates as source-backed; numerical simulations = exploration only (never evidence); aux kills on naive blowup claims."
     questions:
       - "Known partial regularity ladder (Caffarelli–Kohn–Nirenberg); which toy claims die?"
     deliverables:

@@ -2,7 +2,7 @@ campaign:
   title: "Dix est-il un nombre solitaire ?"
   modules: [mathematics]
   objective:
-    statement: "Open problem (Wikipedia FR, théorie des nombres): Un nombre est solitaire s'il a un seul 'ami' (m != n avec sigma(m)/m = sigma(n)/n). 10 est-il solitaire ? Goal: OPERATIONAL progress under our epistemic rules — Workers search friends of 10 (solve sigma(m)/m = 7/5) via scripted search with pruning; empirical support artifacts; falsify auxiliaries about abundancy classes; source-backed known results."
+    statement: "Open problem (Wikipedia FR, number theory): Un nombre est solitaire s'il a un seul 'ami' (m != n avec sigma(m)/m = sigma(n)/n). 10 est-il solitaire ? Goal: OPERATIONAL progress under our epistemic rules — Workers search friends of 10 (solve sigma(m)/m = 7/5) via scripted search with pruning; empirical support artifacts; falsify auxiliaries about abundancy classes; source-backed known results."
     questions:
       - "Search bounds for friends of 10?"
       - "Which claims about abundancy ratios die?"

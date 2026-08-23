@@ -1,8 +1,8 @@
 campaign:
-  title: "Infinité des nombres premiers de Mersenne"
+  title: "Infinitude of Mersenne primes"
   modules: [mathematics]
   objective:
-    statement: "Open problem (Wikipedia FR, théorie des nombres): Existe-t-il une infinité de nombres premiers de Mersenne M_p = 2^p - 1 ? Goal: OPERATIONAL progress under our epistemic rules — Lucas-Lehmer is exact in the verifier (is_mersenne_prime / predicate mersenne_prime): re-verify ALL known Mersenne exponents up to 607+ pointwise (VERIFIED), search for new prime exponents in ranges your budget allows (search runs full budget), empirically map exponent density; aux kills."
+    statement: "Open problem (Wikipedia FR, number theory): Do there exist infinitely many Mersenne primes M_p = 2^p - 1? Goal: OPERATIONAL progress under our epistemic rules — Lucas-Lehmer is exact in the verifier (is_mersenne_prime / predicate mersenne_prime): re-verify ALL known Mersenne exponents up to 607+ pointwise (VERIFIED), search for new prime exponents in ranges your budget allows (search runs full budget), empirically map exponent density; aux kills."
     questions:
       - "All known small exponents re-verified exactly?"
       - "Which ranges were searched clean?"

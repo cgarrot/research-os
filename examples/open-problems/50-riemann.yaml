@@ -1,8 +1,8 @@
 campaign:
-  title: "Hypothèse de Riemann"
+  title: "Riemann hypothesis"
   modules: [mathematics]
   objective:
-    statement: "Open problem (Wikipedia FR, théorie des nombres / analyse): L'hypothèse de Riemann (prix du millénaire) : tous les zéros non triviaux de zeta ont partie réelle 1/2. Goal: OPERATIONAL progress under our epistemic rules — Honest framing: literature verifications reach astronomic heights; our numeric zeta checks (mpmath, worker scripts) are EXPLORATION only — reframe value as: equivalent formulations map, explicit-formula consequences (source-backed), falsifiable auxiliaries (e.g. claims about Skewes-type bounds, small-zero-free strips scriptable numerically = support only)."
+    statement: "Open problem (Wikipedia FR, number theory / analysis): The Riemann hypothesis (Millennium Prize): all non-trivial zeros of zeta have real part 1/2. Goal: OPERATIONAL progress under our epistemic rules — Honest framing: literature verifications reach astronomic heights; our numeric zeta checks (mpmath, worker scripts) are EXPLORATION only — reframe value as: equivalent formulations map, explicit-formula consequences (source-backed), falsifiable auxiliaries (e.g. claims about Skewes-type bounds, small-zero-free strips scriptable numerically = support only)."
     questions:
       - "Formulation map; which auxiliaries die?"
     deliverables:

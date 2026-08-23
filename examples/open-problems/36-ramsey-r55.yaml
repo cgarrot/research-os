@@ -2,7 +2,7 @@ campaign:
   title: "Nombre de Ramsey R(5,5)"
   modules: [mathematics]
   objective:
-    statement: "Open problem (Wikipedia FR, théorie de Ramsey): Déterminer R(5,5) (sait seulement 43 <= R(5,5) <= 48). Goal: OPERATIONAL progress under our epistemic rules — A 2-coloring of K_42 avoiding monochromatic K_5 is a certificate: certificate-check witness {edge coloring}, verify() enumerating all C(42,5) 5-sets (feasible in budget) — certificate verified ⇒ R(5,5) >= 43 verified. Reproduce the known 42-construction first, then hunt. Certificate-centric: lower bound = a 2-coloring of K_42 with no monochromatic K_5 (finite exact check in scripts — VERIFIED-grade artifact via exhaustive clique check); workers search colorings (symme"
+    statement: "Open problem (Wikipedia FR, Ramsey theory): Determine R(5,5) (only 43 <= R(5,5) <= 48 is known). Goal: OPERATIONAL progress under our epistemic rules — A 2-coloring of K_42 avoiding monochromatic K_5 is a certificate: certificate-check witness {edge coloring}, verify() enumerating all C(42,5) 5-sets (feasible in budget) — certificate verified ⇒ R(5,5) >= 43 verified. Reproduce the known 42-construction first, then hunt. Certificate-centric: lower bound = a 2-coloring of K_42 with no monochromatic K_5 (finite exact check in scripts — VERIFIED-grade artifact via exhaustive clique check); workers search colorings (symme"
     questions:
       - "Known 42-coloring reproduced and script-verified?"
       - "Which pruned searches were exhausted clean?"

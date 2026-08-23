@@ -2,7 +2,7 @@ campaign:
   title: "Conjecture de Hodge"
   modules: [mathematics]
   objective:
-    statement: "Open problem (Wikipedia FR, géométrie algébrique): La conjecture de Hodge (prix du millénaire). Goal: OPERATIONAL progress under our epistemic rules — Grounding + formulation ladder (Hodge classes = rational (p,p)); small-dimensional cases as source-backed claims; aux kills on over-strong variants. No computation."
+    statement: "Open problem (Wikipedia FR, algebraic geometry): The Hodge conjecture (Millennium Prize). Goal: OPERATIONAL progress under our epistemic rules — Grounding + formulation ladder (Hodge classes = rational (p,p)); small-dimensional cases as source-backed claims; aux kills on over-strong variants. No computation."
     questions:
       - "Case map; which statements are even testable in principle?"
     deliverables:

@@ -2,7 +2,7 @@ campaign:
   title: "Conjecture du graphe trop plein"
   modules: [mathematics]
   objective:
-    statement: "Open problem (Wikipedia FR, théorie des graphes): La conjecture du graphe trop plein (overfull graph) sur la coloration par arêtes et l'indice chromatique. Goal: OPERATIONAL progress under our epistemic rules — Grounding + formulations (chromatic index classes); aux kills."
+    statement: "Open problem (Wikipedia FR, graph theory): The overfull graph conjecture on edge coloring and the chromatic index. Goal: OPERATIONAL progress under our epistemic rules — Grounding + formulations (chromatic index classes); aux kills."
     questions:
       - "Class 1 vs Class 2 structure; which small cases are checkable?"
     deliverables:

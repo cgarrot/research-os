@@ -1,8 +1,8 @@
 campaign:
-  title: "Seuil de percolation — formule générale"
+  title: "Percolation threshold — general formula"
   modules: [mathematics]
   objective:
-    statement: "Open problem (Wikipedia FR, théorie des graphes / probabilités): Trouver une formule générale pour le seuil de percolation d'un graphe. Goal: OPERATIONAL progress under our epistemic rules — Grounding + known thresholds table (source-backed); simulations = exploration only (random — never exact evidence); aux kills on naive formulas (workers test candidate formulas against known exact thresholds — falsification IS exact)."
+    statement: "Open problem (Wikipedia FR, graph theory / probability): Find a general formula for the percolation threshold of a graph. Goal: OPERATIONAL progress under our epistemic rules — Grounding + known thresholds table (source-backed); simulations = exploration only (random — never exact evidence); aux kills on naive formulas (workers test candidate formulas against known exact thresholds — falsification IS exact)."
     questions:
       - "Which candidate formulas die against known thresholds?"
     deliverables:

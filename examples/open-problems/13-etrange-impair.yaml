@@ -1,8 +1,8 @@
 campaign:
-  title: "Nombres étranges impairs"
+  title: "Odd weird numbers"
   modules: [mathematics]
   objective:
-    statement: "Open problem (Wikipedia FR, théorie des nombres): Existe-t-il un nombre étrange (abondant, non semi-parfait : aucune partie propre de ses diviseurs ne somme à n) IMPAIR ? Goal: OPERATIONAL progress under our epistemic rules — Known: weird numbers exist (even, e.g. 70); odd unknown. Workers script abundant+subset checks for odd n up to a reachable bound; any witness computation is exact (artifact); aux kills on density/structure; source-backed: known bounds."
+    statement: "Open problem (Wikipedia FR, number theory): Does there exist a weird number (abundant, not semiperfect: no subset of its proper divisors sums to n) that is ODD? Goal: OPERATIONAL progress under our epistemic rules — Known: weird numbers exist (even, e.g. 70); odd unknown. Workers script abundant+subset checks for odd n up to a reachable bound; any witness computation is exact (artifact); aux kills on density/structure; source-backed: known bounds."
     questions:
       - "No odd weird number below K (worker exhaustive, empirical)?"
       - "Which structural shortcuts die?"

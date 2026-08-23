@@ -2,7 +2,7 @@ campaign:
   title: "Conjecture de Birch et Swinnerton-Dyer"
   modules: [mathematics]
   objective:
-    statement: "Open problem (Wikipedia FR, géométrie arithmétique): La conjecture de Birch et Swinnerton-Dyer (prix du millénaire) : lien entre le rang d'une courbe elliptique et l'ordre d'annulation de sa fonction L. Goal: OPERATIONAL progress under our epistemic rules — COMPUTATIONALLY MEANINGFUL on specific curves: workers use sympy/sage-free elliptic point counting (or mwrank-free scripts) to compute ranks and L-series coefficients for SMALL curves (conductor < 10^5): empirical BSD checks (support only); pointwise verifiable arithmetic (e.g. 'point P has infinite order' via scripts, artifacts); falsify auxiliaries (rank heuristics, parity claims on curve families); source-backed: known rank records."
+    statement: "Open problem (Wikipedia FR, arithmetic geometry): The Birch and Swinnerton-Dyer conjecture (Millennium Prize): the link between the rank of an elliptic curve and the order of vanishing of its L-function. Goal: OPERATIONAL progress under our epistemic rules — COMPUTATIONALLY MEANINGFUL on specific curves: workers use sympy/sage-free elliptic point counting (or mwrank-free scripts) to compute ranks and L-series coefficients for SMALL curves (conductor < 10^5): empirical BSD checks (support only); pointwise verifiable arithmetic (e.g. 'point P has infinite order' via scripts, artifacts); falsify auxiliaries (rank heuristics, parity claims on curve families); source-backed: known rank records."
     questions:
       - "Which small curves checked empirically against BSD?"
       - "Heuristics that die?"

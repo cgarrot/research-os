@@ -2,7 +2,7 @@ campaign:
   title: "Valeurs des nombres de van der Waerden"
   modules: [mathematics]
   objective:
-    statement: "Open problem (Wikipedia FR, théorie de Ramsey): Déterminer les valeurs des nombres de van der Waerden W(k, r). Goal: OPERATIONAL progress under our epistemic rules — Lower-bound colorings ARE finite certificates: certificate-check with witness {coloring array}, verify() re-checking every arithmetic progression of length k in both colors (brute force inside verify) — exit 0 = coloring certified, W(k,r) > n VERIFIED for that n. Known values are hard-won (source-backed); workers script-verify small bounds (SAT/brute force for W(2,3)=9 etc. — exact artifacts: a coloring avoiding APs of length k is a FINITE checkable certificat"
+    statement: "Open problem (Wikipedia FR, Ramsey theory): Determine the values of the van der Waerden numbers W(k, r). Goal: OPERATIONAL progress under our epistemic rules — Lower-bound colorings ARE finite certificates: certificate-check with witness {coloring array}, verify() re-checking every arithmetic progression of length k in both colors (brute force inside verify) — exit 0 = coloring certified, W(k,r) > n VERIFIED for that n. Known values are hard-won (source-backed); workers script-verify small bounds (SAT/brute force for W(2,3)=9 etc. — exact artifacts: a coloring avoiding APs of length k is a FINITE checkable certificat"
     questions:
       - "Which W(k,r) bounds are script-certifiable in budget?"
       - "Which structural shortcuts die?"

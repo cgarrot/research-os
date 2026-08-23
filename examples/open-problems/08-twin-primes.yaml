@@ -2,7 +2,7 @@ campaign:
   title: "Nombres premiers jumeaux"
   modules: [mathematics]
   objective:
-    statement: "Open problem (Wikipedia FR, théorie des nombres): Conjecture des nombres premiers jumeaux : il existe une infinité de premiers p tels que p+2 soit premier. Goal: OPERATIONAL progress under our epistemic rules — Twin = Polignac k=1. (1) verify the largest twin-free interval structure via next_prime_gap (pointwise verified witnesses); (2) empirical support: twin counts up to 10^7 in worker scripts (numerical-evidence framing); (3) falsify auxiliaries about twin density/monotonicity; (4) source-backed: Zhang/Maynard bounded-gap results."
+    statement: "Open problem (Wikipedia FR, number theory): Twin prime conjecture: there exist infinitely many primes p such that p+2 is prime. Goal: OPERATIONAL progress under our epistemic rules — Twin = Polignac k=1. (1) verify the largest twin-free interval structure via next_prime_gap (pointwise verified witnesses); (2) empirical support: twin counts up to 10^7 in worker scripts (numerical-evidence framing); (3) falsify auxiliaries about twin density/monotonicity; (4) source-backed: Zhang/Maynard bounded-gap results."
     questions:
       - "Verified twin witnesses at interesting scales (10^k)?"
       - "Which density monotonicity claims die exactly?"

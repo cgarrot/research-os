@@ -2,7 +2,7 @@ campaign:
   title: "Conjecture de 1-factorisation"
   modules: [mathematics]
   objective:
-    statement: "Open problem (Wikipedia FR, théorie des graphes): Tout graphe régulier de degré impair (et quelques variantes pairs) admet une 1-factorisation (conjecture de 1-factorisation des graphes réguliers de degré impair). Goal: OPERATIONAL progress under our epistemic rules — Constructive checks for small regular graphs in scripts (exact artifacts); falsify auxiliaries on odd-degree exceptions; source-backed status."
+    statement: "Open problem (Wikipedia FR, graph theory): Every regular graph of odd degree (and some even variants) admits a 1-factorization (the 1-factorization conjecture for regular graphs of odd degree). Goal: OPERATIONAL progress under our epistemic rules — Constructive checks for small regular graphs in scripts (exact artifacts); falsify auxiliaries on odd-degree exceptions; source-backed status."
     questions:
       - "Which small orders constructed/verified?"
     deliverables:

@@ -2,7 +2,7 @@ campaign:
   title: "Groupes de Burnside B(m, n) — finitude"
   modules: [mathematics]
   objective:
-    statement: "Open problem (Wikipedia FR, algèbre): Pour quels entiers m, n > 0 le groupe de Burnside B(m, n) (m générateurs, exposant n) est-il fini ? Goal: OPERATIONAL progress under our epistemic rules — Grounding + known finiteness results table (source-backed); aux kills on small-case claims."
+    statement: "Open problem (Wikipedia FR, algebra): For which integers m, n > 0 is the Burnside group B(m, n) (m generators, exponent n) finite? Goal: OPERATIONAL progress under our epistemic rules — Grounding + known finiteness results table (source-backed); aux kills on small-case claims."
     questions:
       - "Known (m,n) finiteness map; which small questions are computable?"
     deliverables:

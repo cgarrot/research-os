@@ -2,7 +2,7 @@ campaign:
   title: "Conjecture des familles stables par unions"
   modules: [mathematics]
   objective:
-    statement: "Open problem (Wikipedia FR, théorie de Ramsey / combinatoire): Conjecture de Frankl (union-closed) : toute famille non triviale stable par union contient un élément présent dans au moins la moitié des ensembles. Goal: OPERATIONAL progress under our epistemic rules — Frankl counterexample-style witnesses (if any) and minimal-family certificates go through certificate-check with verify() checking union-closure + the <= half frequency violation; exhaustive small ground-sets stay script+empirical. Finite: exhaustive for small ground sets (n <= 12?) via workers' scripts (empirical/absence); pointwise witnesses (a family + element counts) exactly checkable; falsify auxiliaries (strengthenings wit"
+    statement: "Open problem (Wikipedia FR, Ramsey theory / combinatorics): Frankl's conjecture (union-closed): every non-trivial union-closed family contains an element present in at least half of the sets. Goal: OPERATIONAL progress under our epistemic rules — Frankl counterexample-style witnesses (if any) and minimal-family certificates go through certificate-check with verify() checking union-closure + the <= half frequency violation; exhaustive small ground-sets stay script+empirical. Finite: exhaustive for small ground sets (n <= 12?) via workers' scripts (empirical/absence); pointwise witnesses (a family + element counts) exactly checkable; falsify auxiliaries (strengthenings wit"
     questions:
       - "Exhaustive ground-set range covered?"
       - "Which strengthenings die?"

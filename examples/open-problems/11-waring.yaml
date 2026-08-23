@@ -1,8 +1,8 @@
 campaign:
-  title: "Problème de Waring — valeurs de g(k) et G(k)"
+  title: "Waring's problem — values of g(k) and G(k)"
   modules: [mathematics]
   objective:
-    statement: "Open problem (Wikipedia FR, théorie des nombres): Déterminer g(k) (tout entier est somme d'au plus g(k) puissances k-ièmes) et G(k) (tout entier ASSEZ grand). Goal: OPERATIONAL progress under our epistemic rules — Workers compute g(k) candidates by exhaustive check (scripts, sympy) for k <= 5 within budget; representability of individual numbers = script-verifiable (artifacts + empirically_supported for ranges); falsify auxiliaries on G(k) lower bounds; source-backed: known g(k) values."
+    statement: "Open problem (Wikipedia FR, number theory): Determine g(k) (every integer is a sum of at most g(k) kth powers) and G(k) (every SUFFICIENTLY LARGE integer). Goal: OPERATIONAL progress under our epistemic rules — Workers compute g(k) candidates by exhaustive check (scripts, sympy) for k <= 5 within budget; representability of individual numbers = script-verifiable (artifacts + empirically_supported for ranges); falsify auxiliaries on G(k) lower bounds; source-backed: known g(k) values."
     questions:
       - "Exact checks: every n <= N is a sum of s k-th powers for which s?"
       - "Which naive G(k) claims die?"

@@ -2,7 +2,7 @@ campaign:
   title: "Conjecture d'Erdős–Hajnal"
   modules: [mathematics]
   objective:
-    statement: "Open problem (Wikipedia FR, théorie des graphes): Pour toute famille H de graphes interdits, il existe delta > 0 tel que tout graphe H-libre contient une clique ou un stable de taille n^delta. Goal: OPERATIONAL progress under our epistemic rules — Grounding + small-case computational support (workers, empirical); aux kills."
+    statement: "Open problem (Wikipedia FR, graph theory): Pour toute famille H de graphes interdits, il existe delta > 0 tel que tout graphe H-libre contient une clique ou un stable de taille n^delta. Goal: OPERATIONAL progress under our epistemic rules — Grounding + small-case computational support (workers, empirical); aux kills."
     questions:
       - "Known delta values; which small cases are checkable?"
     deliverables:

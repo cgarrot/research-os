@@ -2,7 +2,7 @@ campaign:
   title: "Conjecture du coureur solitaire"
   modules: [mathematics]
   objective:
-    statement: "Open problem (Wikipedia FR, combinatoire): Pour k coureurs de vitesses distinctes, il existe un moment où chacun est à distance >= 1/(k+1) de l'origine (sur un circuit unité). Goal: OPERATIONAL progress under our epistemic rules — Small k exhaustive checks in worker scripts (k <= 5 within budget) = empirical support + artifacts; pointwise verification of lonely assignments is expressible (min over fractions — workers can craft exact expression or use scripts + numerical-evidence framing); falsify auxiliaries (tightness claims, which speed sets fail)."
+    statement: "Open problem (Wikipedia FR, combinatoire): For k runners with distinct speeds, there exists a moment when each is at distance >= 1/(k+1) from the origin (on a unit circular track). Goal: OPERATIONAL progress under our epistemic rules — Small k exhaustive checks in worker scripts (k <= 5 within budget) = empirical support + artifacts; pointwise verification of lonely assignments is expressible (min over fractions — workers can craft exact expression or use scripts + numerical-evidence framing); falsify auxiliaries (tightness claims, which speed sets fail)."
     questions:
       - "Which k verified (script-exhaustive) within budget?"
       - "Tightness witnesses (distance exactly 1/(k+1))?"

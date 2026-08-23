@@ -1,8 +1,8 @@
 campaign:
-  title: "Seizième problème de Hilbert (cycles limites)"
+  title: "Hilbert's sixteenth problem (limit cycles)"
   modules: [mathematics]
   objective:
-    statement: "Open problem (Wikipedia FR, analyse / algèbre): Bornes uniformes et configuration des cycles limites des équations différentielles polynomiales planes (partie 2 du 16e problème de Hilbert). Goal: OPERATIONAL progress under our epistemic rules — Grounding, formulations, small-degree computational evidence via worker scripts (numerical); aux kills on naive uniform bounds."
+    statement: "Open problem (Wikipedia FR, analysis / algebra): Uniform bounds and configuration of limit cycles of planar polynomial differential equations (part 2 of Hilbert's 16th problem). Goal: OPERATIONAL progress under our epistemic rules — Grounding, formulations, small-degree computational evidence via worker scripts (numerical); aux kills on naive uniform bounds."
     questions:
       - "What is exactly known for degree 2? Where does computation stop being exact?"
     deliverables:

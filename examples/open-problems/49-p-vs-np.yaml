@@ -2,7 +2,7 @@ campaign:
   title: "P = NP"
   modules: [mathematics]
   objective:
-    statement: "Open problem (Wikipedia FR, informatique théorique): Le problème P = NP (prix du millénaire). Goal: OPERATIONAL progress under our epistemic rules — Fully honest framing: not computationally attackable here. Grounding: formal statements, barrier theorems (relativization, natural proofs, algebrization — source-backed); aux kills on folklore claims; NO grandiose claims. Value = clean formulations + question tree."
+    statement: "Open problem (Wikipedia FR, theoretical computer science): The P = NP problem (Millennium Prize). Goal: OPERATIONAL progress under our epistemic rules — Fully honest framing: not computationally attackable here. Grounding: formal statements, barrier theorems (relativization, natural proofs, algebrization — source-backed); aux kills on folklore claims; NO grandiose claims. Value = clean formulations + question tree."
     questions:
       - "Barrier map; which folk claims die?"
     deliverables:

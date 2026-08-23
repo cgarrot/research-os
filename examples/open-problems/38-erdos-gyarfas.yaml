@@ -2,7 +2,7 @@ campaign:
   title: "Conjecture d'Erdős–Gyárfás"
   modules: [mathematics]
   objective:
-    statement: "Open problem (Wikipedia FR, théorie des graphes): Tout graphe à arêtes bien couvertes par des cycles… (conjecture d'Erdős–Gyárfás sur les cycles de longueurs puissances de 2). Goal: OPERATIONAL progress under our epistemic rules — Grounding + small-case script checks (graph enumeration for tiny n); falsify auxiliaries; source-backed known results."
+    statement: "Open problem (Wikipedia FR, graph theory): Every graph whose edges are well covered by cycles… (the Erdős–Gyárfás conjecture on cycles of power-of-2 lengths). Goal: OPERATIONAL progress under our epistemic rules — Grounding + small-case script checks (graph enumeration for tiny n); falsify auxiliaries; source-backed known results."
     questions:
       - "Which reformulation is testable on small graphs?"
     deliverables:

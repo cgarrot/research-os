@@ -1,8 +1,8 @@
 campaign:
-  title: "Infinité des nombres premiers réguliers"
+  title: "Infinitude of regular primes"
   modules: [mathematics]
   objective:
-    statement: "Open problem (Wikipedia FR, théorie des nombres): Existe-t-il une infinité de nombres premiers réguliers (ne divisant pas le cardinal du groupe des classes d'idéaux du bon corps) ? Goal: OPERATIONAL progress under our epistemic rules — Regular = p does not divide numerators of Bernoulli numbers B_2..B_{p-3}: workers compute regularity exactly for p < 300 via Bernoulli numerators (sympy bernoulli) — pointwise verifiable where expressible is hard (no bernoulli in verifier) → script + artifacts + empirical tables; falsify auxiliaries on regular/irregular density."
+    statement: "Open problem (Wikipedia FR, number theory): Do there exist infinitely many regular primes (not dividing the cardinality of the ideal class group of the appropriate field)? Goal: OPERATIONAL progress under our epistemic rules — Regular = p does not divide numerators of Bernoulli numbers B_2..B_{p-3}: workers compute regularity exactly for p < 300 via Bernoulli numerators (sympy bernoulli) — pointwise verifiable where expressible is hard (no bernoulli in verifier) → script + artifacts + empirical tables; falsify auxiliaries on regular/irregular density."
     questions:
       - "Verified-by-script regularity table range?"
       - "Density claims that die?"

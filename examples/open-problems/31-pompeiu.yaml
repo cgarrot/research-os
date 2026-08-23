@@ -1,10 +1,10 @@
 campaign:
-  title: "Problème de Pompeiu"
+  title: "Pompeiu problem"
   modules: [mathematics]
   objective:
-    statement: "Open problem (Wikipedia FR, analyse): Le problème de Pompeiu (sur les fonctions dont l'intégrale sur certaines transformations s'annule). Goal: OPERATIONAL progress under our epistemic rules — Grounding + formulations; aux kills."
+    statement: "Open problem (Wikipedia (unsolved problems), analyse): The Pompeiu problem (on functions whose integral over certain transformations vanishes). Goal: OPERATIONAL progress under our epistemic rules — Grounding + formulations; aux kills."
     questions:
-      - "Formulations équivalentes; which special cases are settled?"
+      - "Equivalent formulations; which special cases are settled?"
     deliverables:
       - kind: report
         description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled, discovery candidates + novelty statuses"

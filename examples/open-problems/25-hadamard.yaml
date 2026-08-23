@@ -2,7 +2,7 @@ campaign:
   title: "Conjecture de Hadamard"
   modules: [mathematics]
   objective:
-    statement: "Open problem (Wikipedia FR, algèbre): Pour tout n = 4k, il existe une matrice de Hadamard d'ordre n. Goal: OPERATIONAL progress under our epistemic rules — Workers construct Hadamard matrices for reachable orders (Sylvester, Paley, direct products) with script-verified orthogonality (artifacts); gap orders recorded; falsify auxiliaries on which orders resist known constructions."
+    statement: "Open problem (Wikipedia FR, algebra): Pour tout n = 4k, il existe une matrice de Hadamard d'ordre n. Goal: OPERATIONAL progress under our epistemic rules — Workers construct Hadamard matrices for reachable orders (Sylvester, Paley, direct products) with script-verified orthogonality (artifacts); gap orders recorded; falsify auxiliaries on which orders resist known constructions."
     questions:
       - "Which orders <= 100 can be constructed and script-verified?"
       - "Gap list?"

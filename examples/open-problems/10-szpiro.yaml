@@ -2,9 +2,9 @@ campaign:
   title: "Conjecture de Szpiro"
   modules: [mathematics]
   objective:
-    statement: "Open problem (Wikipedia FR, théorie des nombres): Conjecture de Szpiro (relation entre le discriminant et le conducteur d'une courbe elliptique). Goal: OPERATIONAL progress under our epistemic rules — Grounding + formulations (abc comparison), no exact armory. Aux kills allowed."
+    statement: "Open problem (Wikipedia (unsolved problems), number theory): Conjecture de Szpiro (relation entre le discriminant et le conducteur d'une courbe elliptique). Goal: OPERATIONAL progress under our epistemic rules — Grounding + formulations (abc comparison), no exact armory. Aux kills allowed."
     questions:
-      - "Formulations équivalentes et cas particuliers testables?"
+      - "Equivalent formulations and testable special cases?"
     deliverables:
       - kind: report
         description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled, discovery candidates + novelty statuses"

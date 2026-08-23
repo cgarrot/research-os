@@ -2,7 +2,7 @@ campaign:
   title: "Conjecture de Hadwiger"
   modules: [mathematics]
   objective:
-    statement: "Open problem (Wikipedia FR, théorie des graphes): Tout graphe sans contraction de K_t est t-1-colorable (Hadwiger, généralise le théorème des quatre couleurs). Goal: OPERATIONAL progress under our epistemic rules — Grounding + status table (proved t <= 6); workers script-verify tiny cases; aux kills."
+    statement: "Open problem (Wikipedia FR, graph theory): Every graph without a K_t contraction is t-1-colorable (Hadwiger, generalizes the four color theorem). Goal: OPERATIONAL progress under our epistemic rules — Grounding + status table (proved t <= 6); workers script-verify tiny cases; aux kills."
     questions:
       - "What exactly is known per t; which small checks are feasible?"
     deliverables:

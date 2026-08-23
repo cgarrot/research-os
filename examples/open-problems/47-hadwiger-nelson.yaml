@@ -1,8 +1,8 @@
 campaign:
-  title: "Problème de Hadwiger–Nelson"
+  title: "Hadwiger–Nelson problem"
   modules: [mathematics]
   objective:
-    statement: "Open problem (Wikipedia FR, théorie des graphes / géométrie): Nombre chromatique du plan (entre 5 et 7 après de Grey). Goal: OPERATIONAL progress under our epistemic rules — Unit-distance graph coloring certificates: a finite graph + coloring is exactly checkable in scripts (artifact); workers reproduce the 5-chromatic construction era results on small graphs, verify 4-colorability of classical unit-distance graphs (Moser spindle etc.); falsify claims of smaller chromatic unit graphs."
+    statement: "Open problem (Wikipedia FR, graph theory / geometry): The chromatic number of the plane (between 5 and 7 after de Grey). Goal: OPERATIONAL progress under our epistemic rules — Unit-distance graph coloring certificates: a finite graph + coloring is exactly checkable in scripts (artifact); workers reproduce the 5-chromatic construction era results on small graphs, verify 4-colorability of classical unit-distance graphs (Moser spindle etc.); falsify claims of smaller chromatic unit graphs."
     questions:
       - "Classical spindles script-verified?"
       - "Which candidate bounds die?"

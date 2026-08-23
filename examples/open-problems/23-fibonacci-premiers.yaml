@@ -1,8 +1,8 @@
 campaign:
-  title: "Infinité de nombres de Fibonacci premiers"
+  title: "Infinitude of Fibonacci primes"
   modules: [mathematics]
   objective:
-    statement: "Open problem (Wikipedia FR, théorie des nombres): Existe-t-il une infinité de nombres de Fibonacci premiers ? Goal: OPERATIONAL progress under our epistemic rules — F_n prime requires n prime (source-backed); F_n < 3.3e24 for n <= ~115: scan exactly (scripts + pointwise VERIFIED witnesses for each Fibonacci prime found); density auxiliaries to kill."
+    statement: "Open problem (Wikipedia FR, number theory): Do there exist infinitely many prime Fibonacci numbers? Goal: OPERATIONAL progress under our epistemic rules — F_n prime requires n prime (source-backed); F_n < 3.3e24 for n <= ~115: scan exactly (scripts + pointwise VERIFIED witnesses for each Fibonacci prime found); density auxiliaries to kill."
     questions:
       - "Verified Fibonacci primes in range?"
       - "Heuristic claims that die?"

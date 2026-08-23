@@ -2,7 +2,7 @@ campaign:
   title: "Conjecture de Schanuel"
   modules: [mathematics]
   objective:
-    statement: "Open problem (Wikipedia FR, analyse): Conjecture de Schanuel sur la dimension transcendante de nombres exponentiellement algébriquement indépendants. Goal: OPERATIONAL progress under our epistemic rules — Grounding + consequences chain (Lindemann, Gelfond-Schneider as source-backed); aux kills on plausible strengthenings."
+    statement: "Open problem (Wikipedia FR, analyse): Schanuel's conjecture on the transcendence dimension of exponentially algebraically independent numbers. Goal: OPERATIONAL progress under our epistemic rules — Grounding + consequences chain (Lindemann, Gelfond-Schneider as source-backed); aux kills on plausible strengthenings."
     questions:
       - "Which consequences are independently testable?"
     deliverables:

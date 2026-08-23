@@ -2,7 +2,7 @@ campaign:
   title: "Conjecture de reconstruction"
   modules: [mathematics]
   objective:
-    statement: "Open problem (Wikipedia FR, théorie des graphes): Les graphes (>= 3 sommets) sont déterminés par leur collection de sous-graphes privés d'un sommet (Kelly–Ulam). Goal: OPERATIONAL progress under our epistemic rules — Exhaustive verification for small n via scripts (all graphs n <= 6 reconstructed uniquely?); exact artifacts; falsify variants (digraph version is FALSE — verify that counterexample exactly!); source-backed."
+    statement: "Open problem (Wikipedia FR, graph theory): Graphs (>= 3 vertices) are determined by their collection of vertex-deleted subgraphs (Kelly–Ulam). Goal: OPERATIONAL progress under our epistemic rules — Exhaustive verification for small n via scripts (all graphs n <= 6 reconstructed uniquely?); exact artifacts; falsify variants (digraph version is FALSE — verify that counterexample exactly!); source-backed."
     questions:
       - "Small-n exhaustive coverage?"
       - "Digraph counterexample verified exactly?"

@@ -2,7 +2,7 @@ campaign:
   title: "Conjecture de Lehmer"
   modules: [mathematics]
   objective:
-    statement: "Open problem (Wikipedia FR, analyse / théorie des nombres): Conjecture de Lehmer (plus petite mesure de Mahler > 1 est celle du polynôme de Lehmer). Goal: OPERATIONAL progress under our epistemic rules — Grounding + known record polynomials (source-backed); aux kills on candidate lower bounds."
+    statement: "Open problem (Wikipedia FR, analysis / number theory): Lehmer's conjecture (the smallest Mahler measure > 1 is that of Lehmer's polynomial). Goal: OPERATIONAL progress under our epistemic rules — Grounding + known record polynomials (source-backed); aux kills on candidate lower bounds."
     questions:
       - "Known record list; what would a counterexample require?"
     deliverables:

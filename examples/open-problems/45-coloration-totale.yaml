@@ -2,7 +2,7 @@ campaign:
   title: "Conjecture de coloration totale"
   modules: [mathematics]
   objective:
-    statement: "Open problem (Wikipedia FR, théorie des graphes): L'indice de coloration totale d'un graphe est au plus Delta + 2 (conjecture de Behzad). Goal: OPERATIONAL progress under our epistemic rules — Small-graph exhaustive checks in scripts (exact artifacts); falsify tightenings (Delta+1 claims); source-backed status."
+    statement: "Open problem (Wikipedia FR, graph theory): L'indice de coloration totale d'un graphe est au plus Delta + 2 (conjecture de Behzad). Goal: OPERATIONAL progress under our epistemic rules — Small-graph exhaustive checks in scripts (exact artifacts); falsify tightenings (Delta+1 claims); source-backed status."
     questions:
       - "Which small graph classes verified?"
     deliverables:

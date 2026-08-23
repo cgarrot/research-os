@@ -1,8 +1,8 @@
 campaign:
-  title: "Nombre de carrés magiques"
+  title: "Number of magic squares"
   modules: [mathematics]
   objective:
-    statement: "Open problem (Wikipedia FR, combinatoire): Déterminer le nombre de carrés magiques (notamment 5x5). Goal: OPERATIONAL progress under our epistemic rules — Grounding + known counts (source-backed); workers verify small counts (3x3 = 8 modulo symmetries, 4x4 with Frenicle normalization) via scripts; aux kills."
+    statement: "Open problem (Wikipedia FR, combinatoire): Determine the number of magic squares (in particular 5x5). Goal: OPERATIONAL progress under our epistemic rules — Grounding + known counts (source-backed); workers verify small counts (3x3 = 8 modulo symmetries, 4x4 with Frenicle normalization) via scripts; aux kills."
     questions:
       - "Which counts are script-verifiable within budget?"
     deliverables:

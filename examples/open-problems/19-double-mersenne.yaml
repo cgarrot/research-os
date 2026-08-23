@@ -2,7 +2,7 @@ campaign:
   title: "Double de Mersenne premier pour p > 31 ?"
   modules: [mathematics]
   objective:
-    statement: "Open problem (Wikipedia FR, théorie des nombres): Existe-t-il un nombre double de Mersenne MM_p = 2^(2^p - 1) - 1 premier pour p > 31 ? Goal: OPERATIONAL progress under our epistemic rules — Size makes exact checks impossible beyond tiny p; grounding + structural claims; aux kills on heuristics."
+    statement: "Open problem (Wikipedia FR, number theory): Existe-t-il un nombre double de Mersenne MM_p = 2^(2^p - 1) - 1 premier pour p > 31 ? Goal: OPERATIONAL progress under our epistemic rules — Size makes exact checks impossible beyond tiny p; grounding + structural claims; aux kills on heuristics."
     questions:
       - "Why the search stalls (bit sizes); what partial statements are testable?"
     deliverables:

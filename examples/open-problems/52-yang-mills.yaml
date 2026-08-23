@@ -2,7 +2,7 @@ campaign:
   title: "Existence de Yang–Mills avec gap de masse"
   modules: [mathematics]
   objective:
-    statement: "Open problem (Wikipedia FR, physique mathématique): Existence et gap de masse d'une théorie de Yang–Mills en 4D (prix du millénaire). Goal: OPERATIONAL progress under our epistemic rules — Grounding: rigorous results ladder (2D/3D solved — source-backed), lattice heuristics = exploration only; aux kills. No numerics-as-evidence."
+    statement: "Open problem (Wikipedia FR, mathematical physics): Existence and mass gap of a Yang–Mills theory in 4D (Millennium Prize). Goal: OPERATIONAL progress under our epistemic rules — Grounding: rigorous results ladder (2D/3D solved — source-backed), lattice heuristics = exploration only; aux kills. No numerics-as-evidence."
     questions:
       - "Result ladder; which discretization claims are falsifiable?"
     deliverables:

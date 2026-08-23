@@ -2,7 +2,7 @@ campaign:
   title: "Conjecture d'Erdős–Faber–Lovász"
   modules: [mathematics]
   objective:
-    statement: "Open problem (Wikipedia FR, théorie des graphes): Coloration de graphes linéaires par n couleurs (résolue en 2021 pour n assez grand — statut exact des petits cas). Goal: OPERATIONAL progress under our epistemic rules — Verify the 2021 asymptotic status (source-backed); workers script-check small n exhaustively (exact artifacts); falsify auxiliaries on tightness."
+    statement: "Open problem (Wikipedia FR, graph theory): Coloring linear hypergraphs with n colors (solved in 2021 for sufficiently large n — exact status of the small cases). Goal: OPERATIONAL progress under our epistemic rules — Verify the 2021 asymptotic status (source-backed); workers script-check small n exhaustively (exact artifacts); falsify auxiliaries on tightness."
     questions:
       - "Which small n are exhaustively checked clean?"
     deliverables:

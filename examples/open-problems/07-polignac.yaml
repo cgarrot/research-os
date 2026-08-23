@@ -2,7 +2,7 @@ campaign:
   title: "Polignac — every even gap 2k occurs infinitely often"
   modules: [mathematics]
   objective:
-    statement: "Open problem (Wikipedia FR, théorie des nombres): Conjecture de Polignac : pour tout k >= 1, il existe une infinité de paires de premiers consécutifs distantes de 2k. Goal: OPERATIONAL progress under our epistemic rules — Verifier armory: next_prime_gap(n) is exact. (1) bounded/verified: for each even 2k in a chosen set, the FIRST occurrence of gap 2k below a bound K via worker search + exact-point verification of the witness pair (is_prime on both endpoints); (2) auxiliaries to kill or support: 'every even gap <= 100 occurs below N' (search), density claims, 'record gaps keep growing' statements; (3) source-backed: known record gaps."
+    statement: "Open problem (Wikipedia FR, number theory): Polignac's conjecture: for every k >= 1, there exist infinitely many pairs of consecutive primes at distance 2k. Goal: OPERATIONAL progress under our epistemic rules — Verifier armory: next_prime_gap(n) is exact. (1) bounded/verified: for each even 2k in a chosen set, the FIRST occurrence of gap 2k below a bound K via worker search + exact-point verification of the witness pair (is_prime on both endpoints); (2) auxiliaries to kill or support: 'every even gap <= 100 occurs below N' (search), density claims, 'record gaps keep growing' statements; (3) source-backed: known record gaps."
     questions:
       - "First occurrence of each even gap 2k <= 100: verified witnesses?"
       - "Which plausible bounds on first-occurrence positions die to exact counterexamples?"

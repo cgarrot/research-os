@@ -1,8 +1,8 @@
 campaign:
-  title: "La liste des 65 nombres idoines d'Euler est-elle complète ?"
+  title: "Is Euler's list of 65 idoneal numbers complete?"
   modules: [mathematics]
   objective:
-    statement: "Open problem (Wikipedia FR, théorie des nombres): Les nombres idoines (convenables) d'Euler : la liste de 65 nombres est-elle complète ? Goal: OPERATIONAL progress under our epistemic rules — Ground the definition precisely; workers test idoneality-like conditions within reach (scripts); aux kills; source-backed: Weinberger's conditional result (one more at most, under GRH)."
+    statement: "Open problem (Wikipedia FR, number theory): Euler's idoneal (convenient) numbers: is the list of 65 numbers complete? Goal: OPERATIONAL progress under our epistemic rules — Ground the definition precisely; workers test idoneality-like conditions within reach (scripts); aux kills; source-backed: Weinberger's conditional result (one more at most, under GRH)."
     questions:
       - "Definition operationalized; which candidate lists are testable?"
     deliverables:

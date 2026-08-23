@@ -1,8 +1,8 @@
 campaign:
-  title: "Tous les nombres de Fermat F_n (n >= 5) sont-ils composés ?"
+  title: "Are all Fermat numbers F_n (n >= 5) composite?"
   modules: [mathematics]
   objective:
-    statement: "Open problem (Wikipedia FR, théorie des nombres): Les nombres de Fermat F_n = 2^(2^n) + 1 sont-ils tous composés pour n >= 5 ? Goal: OPERATIONAL progress under our epistemic rules — F_5, F_6 verifiable composite by deterministic Miller-Rabin (exact-point, not_prime) — do it; F_7+ via sympy factoring in worker scripts (empirical); record known factorizations as source-backed; aux kills."
+    statement: "Open problem (Wikipedia FR, number theory): Are all Fermat numbers F_n = 2^(2^n) + 1 composite for n >= 5? Goal: OPERATIONAL progress under our epistemic rules — F_5, F_6 verifiable composite by deterministic Miller-Rabin (exact-point, not_prime) — do it; F_7+ via sympy factoring in worker scripts (empirical); record known factorizations as source-backed; aux kills."
     questions:
       - "F_5, F_6 exactly verified composite?"
       - "Which ranges/claims documented?"
