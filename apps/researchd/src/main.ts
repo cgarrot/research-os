@@ -148,13 +148,30 @@ const scheduler = new Scheduler({
     process.stderr.write(`[notify/${proj.state.id}] ${message}\n`);
   },
   runningHeadless: (proj) => {
-    // a headless run is "alive" only within its wall-clock ceiling — runs whose
-    // worker.exited was lost (daemon crash) must not block autoSpawn forever
+    // A headless run is "alive" only if BOTH:
+    //   (a) it is within its wall-clock ceiling, AND
+    //   (b) its task (if any) is still in a live state — a run whose task was
+    //       requeued/expired/accepted is a GHOST whose worker.exited was lost.
+    // Also, a run with no task that has been "running" for >25min without ever
+    // leasing anything is a ghost too (workers claim within seconds).
     const ceilingMs = (proj.state.workers.maxRunMinutes ?? Math.min(proj.state.budgets.limits.wallClockMinutes, 720)) * 60_000 + 120_000;
     const now = Date.now();
-    return [...proj.agentRuns.values()].filter(
-      (r) => r.mode === "headless" && r.status === "running" && r.startedAt && now - Date.parse(r.startedAt) < ceilingMs,
-    ).length;
+    const liveTask = new Set<string>();
+    for (const t of proj.tasks.values()) {
+      if (t.status === "leased" || t.status === "running") liveTask.add(t.id);
+    }
+    let alive = 0;
+    for (const r of proj.agentRuns.values()) {
+      if (r.mode !== "headless" || r.status !== "running" || !r.startedAt) continue;
+      if (now - Date.parse(r.startedAt) > ceilingMs) continue;
+      if (r.taskId && liveTask.has(r.taskId)) { alive++; continue; }
+      if (!r.taskId && now - Date.parse(r.startedAt) < 25 * 60_000) { alive++; continue; } // fresh idle worker (claims within seconds)
+      // ghost: mark it dead so projections stay honest AND autoSpawn unblocks
+      core.apply(proj, "worker.exited", { kind: "system", id: "researchd" }, {
+        runId: r.id, status: "failed", summary: "ghost run detected (no live task; worker.exited lost)",
+      }, { correlationId: r.id });
+    }
+    return alive;
   },
 });
 
@@ -165,7 +182,7 @@ const server = http.createServer((req, res) => {
     sseStream(core, url.searchParams.get("campaign"), res);
     return;
   }
-  void handleRequest({ core, modulesDir: MODULES_DIR, piPackageDir: PI_PACKAGE_DIR, mesh, jobs: jobRunner }, req, res).catch((err) => {
+  void handleRequest({ core, modulesDir: MODULES_DIR, piPackageDir: PI_PACKAGE_DIR, mesh, jobs: jobRunner, schedulerHealth: heartbeat }, req, res).catch((err) => {
     process.stderr.write(`[researchd] request error: ${String(err)}\n`);
     if (!res.headersSent) {
       res.writeHead(500, { "content-type": "application/json" });
@@ -175,6 +192,11 @@ const server = http.createServer((req, res) => {
 });
 
 let timer: NodeJS.Timeout | undefined;
+// scheduler heartbeat — lets the queue watchdog distinguish a dead scheduler from an idle queue
+let lastTickMs = 0;
+let tickCount = 0;
+let tickErrors = 0;
+const heartbeat = (): { lastTickMs: number; tickCount: number; tickErrors: number } => ({ lastTickMs, tickCount, tickErrors });
 server.on("error", (err) => {
   // port taken (stale daemon): fail fast — never tick or spawn workers unbound
   process.stderr.write(`[researchd] FATAL: cannot bind — ${String(err)}\n`);
@@ -184,7 +206,17 @@ server.on("error", (err) => {
 server.listen(PORT, "127.0.0.1", () => {
   process.stderr.write(`[researchd] listening on http://127.0.0.1:${PORT}\n`);
   // scheduler only starts once the port is actually ours
-  timer = setInterval(() => scheduler.tick(), TICK_MS);
+  timer = setInterval(() => {
+    try {
+      scheduler.tick();
+      tickCount += 1;
+      lastTickMs = Date.now();
+    } catch (err) {
+      tickErrors += 1;
+      lastTickMs = Date.now();
+      process.stderr.write(`[researchd] scheduler tick threw: ${String(err)}\n`);
+    }
+  }, TICK_MS);
   timer.unref?.();
 });
 

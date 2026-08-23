@@ -34,6 +34,8 @@ export interface DaemonContext {
   piPackageDir: string;
   mesh: { status(): Promise<unknown>; broadcast(room: string, message: string, refs?: string[]): Promise<unknown> };
   jobs?: { create(proj: import("@research-os/core").CampaignProjection, input: { name: string; command: string[]; cwd?: string; wallSeconds?: number; createdBy: string }): unknown };
+  /** scheduler heartbeat for the watchdog (null when absent, e.g. tests) */
+  schedulerHealth?: () => { lastTickMs: number; tickCount: number; tickErrors: number } | null;
 }
 
 export async function handleRequest(ctx: DaemonContext, req: IncomingMessage, res: ServerResponse): Promise<void> {
@@ -80,7 +82,7 @@ async function route(
   if (v !== "v1") return null;
 
   if (resource === "health" && method === "GET") {
-    return { ok: true, campaigns: core.listCampaigns().length, pid: process.pid, version: "0.1.0" };
+    return { ok: true, campaigns: core.listCampaigns().length, pid: process.pid, version: "0.1.0", scheduler: ctx.schedulerHealth ? ctx.schedulerHealth() : null };
   }
 
   if (resource === "campaigns") {

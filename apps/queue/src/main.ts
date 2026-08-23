@@ -13,6 +13,7 @@ import { spawn, type ChildProcess } from "node:child_process";
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { Watchdog, DEFAULT_WATCHDOG, eventsLiveness, type CampaignLiveness } from "./watchdog.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "../../..");
@@ -31,6 +32,7 @@ interface QueueState {
   current: { file: string; campaignId: string; startedAt: string; adopted?: boolean } | null;
   done: { file: string; campaignId: string; status: string; finishedAt: string; report?: string; summary?: string; boundsOk?: boolean; boundsFindings?: string }[];
   failed: { file: string; reason: string; at: string }[];
+  watchdog?: { incidents: Record<string, { stage: string; note?: string; restarts: number[] }> };
 }
 
 const log = (msg: string): void => {
@@ -222,13 +224,81 @@ function slugFromTitle(title: string): string {
   return title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 48);
 }
 
+
+async function watchdogTick(watchdog: Watchdog, state: QueueState): Promise<string[]> {
+  const acted: string[] = [];
+  try {
+    const campaigns = await api<{ id: string; status: string; workspace?: string; counts?: { queued?: number; tasksByStatus?: Record<string, number> } }[]>("GET", "/v1/campaigns", undefined, 10_000);
+    const now = Date.now();
+    for (const c of campaigns) {
+      const byStatus = c.counts?.tasksByStatus ?? {};
+      const queued = Number(byStatus.queued ?? 0);
+      const leased = Number(byStatus.running ?? 0) + Number(byStatus.leased ?? 0);
+      if (c.status !== "running" || queued + leased === 0) continue;
+      const { eventsFile, mtimeMs } = eventsLiveness(HOME, c.id, c.workspace);
+      const live: CampaignLiveness = {
+        campaignId: c.id, status: c.status, running: c.status === "running",
+        queuedTasks: queued, leasedTasks: leased, eventsFile, eventsMtimeMs: mtimeMs,
+      };
+      const d = watchdog.evaluate(live, now);
+      if (d.action === "none") continue;
+      if (d.action === "warn") {
+        log(`WATCHDOG ⚠ ${c.id}: ${d.reason} (events file: ${path.basename(path.dirname(path.dirname(eventsFile)))})`);
+        acted.push(`${c.id}:warn`);
+      } else if (d.action === "restart" || d.action === "kill") {
+        log(`WATCHDOG ${d.action === "kill" ? "🔴" : "🟠"} ${c.id}: ${d.reason} — restarting researchd`);
+        await restartDaemon(d.action === "kill");
+        acted.push(`${c.id}:${d.action}`);
+      } else if (d.action === "park") {
+        log(`WATCHDOG 🅿 ${c.id}: ${d.reason} — pausing campaign for human review`);
+        try {
+          await api("POST", `/v1/campaigns/${encodeURIComponent(c.id)}/pause`, { reason: d.reason }, 10_000);
+        } catch (err) {
+          log(`pause failed for ${c.id}: ${String(err)}`);
+        }
+        acted.push(`${c.id}:park`);
+      }
+    }
+  } catch (err) {
+    // API unreachable: ensureDaemon in the next tick handles respawn — no watchdog spam
+  }
+  return acted;
+}
+
+async function restartDaemon(hard: boolean): Promise<void> {
+  const pid = daemon?.pid;
+  if (pid) {
+    try {
+      process.kill(pid, hard ? "SIGKILL" : "SIGTERM");
+      log(`daemon pid ${pid} ${hard ? "SIGKILLed" : "SIGTERMed"}`);
+    } catch {
+      /* already dead */
+    }
+    await sleep(2000);
+  }
+  // pkill strays then respawn (ensureDaemon on next tick also covers this)
+  const { spawn: sp } = await import("node:child_process");
+  sp("/usr/bin/pkill", ["-f", "apps/researchd/dist/main.js"], { stdio: "ignore" });
+  await sleep(1000);
+  await ensureDaemon();
+}
+
 async function main(): Promise<void> {
   const state = loadState();
   log(`queue supervisor up — dir=${QUEUE_DIR} state=${STATE_FILE} once=${ONCE}`);
   log(`progress: ${state.done.length} done, ${state.failed.length} failed${state.current ? `, current=${state.current.campaignId}` : ""}`);
+  const watchdog = new Watchdog({ ...DEFAULT_WATCHDOG, idleThresholdMs: Number(process.env.RESEARCH_QUEUE_IDLE_MS ?? DEFAULT_WATCHDOG.idleThresholdMs) });
+  if (!state.watchdog) state.watchdog = { incidents: {} };
+  watchdog.state = { incidents: state.watchdog.incidents as never };
+
   for (;;) {
     try {
       if (await tick(state)) saveState(state);
+      const actions = await watchdogTick(watchdog, state);
+      if (actions.length > 0) {
+        state.watchdog = { incidents: watchdog.state.incidents as never };
+        saveState(state);
+      }
     } catch (err) {
       log(`tick error: ${err instanceof Error ? err.message : String(err)}`);
       saveState(state);

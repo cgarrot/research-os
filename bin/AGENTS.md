@@ -39,3 +39,17 @@ Campaign state is event-sourced under `workspaces/c_N-*/state/events.jsonl`. Kil
 - Ports/pidfiles are per-port; run only one researchd per `RESEARCH_HOME` unless you set distinct `RESEARCH_PORT`s.
 - Interactive tmux workers need a nudge (send-keys) for campaigns created AFTER their session started.
 - `research-headless.sh`/`research-open-problems.sh` keep the daemon UP on timeout (exit 2) — check `research campaign status` before relaunching.
+
+## Incident taxonomy + watchdog (v2, 2026-08-23)
+
+Three production incidents shaped the self-healing layer:
+
+| Incident | Symptom | Root cause | Fix |
+|---|---|---|---|
+| daemon crash + EADDRINUSE | queue watchdog child died binding against a zombie | scheduler ticked before `listen` success | scheduler starts ONLY after bind; bind error ⇒ exit(1) |
+| ghost agent_runs (14:05Z) | API healthy, zero events for 2h, no respawns | worker.exited lost on crash ⇒ runningHeadless counted ghosts ⇒ autoSpawn blocked | ghost detection: a headless run is alive only while its task is live (or <25min taskless); ghosts get honest `worker.exited` |
+| scheduler silence (invisible to v1 watchdog) | daemon answers /health but nothing happens | the two above, or any future scheduler stall | watchdog v2: EVENT-FILE silence detection |
+
+**Watchdog v2 (apps/queue/src/watchdog.ts)** — liveness = events.jsonl mtime on a running campaign WITH pending work. Escalation ladder per campaign: `warn (10min silence) → SIGTERM daemon (15min) → SIGKILL+respawn (20min) → park campaign for human review (25min)`, with 5-min stage cooldowns and a circuit breaker (max 3 daemon restarts/hour per campaign — beyond that, park instead of flapping). Recovery clears non-terminal incidents; `parked` is sticky (humans own it). State persists in `queue.json.watchdog`. researchd exposes `scheduler.lastTickMs/tickCount/tickErrors` via `/v1/health` (a dead scheduler is distinguishable from an idle queue). Tunables: `RESEARCH_QUEUE_IDLE_MS` (default 600000).
+
+**Ops reflex when suspicious**: `research queue` → any `WATCHDOG ⚠/🟠/🔴/🅿` line maps to the ladder stage; `curl :8787/v1/health | jq .scheduler` tells you if ticks flow; `stat workspaces/c_*/state/events.jsonl` is the durable truth.
