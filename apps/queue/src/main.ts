@@ -30,7 +30,8 @@ const ONCE = process.argv.includes("--once");
 
 interface QueueState {
   startedAt: string;
-  current: { file: string; campaignId: string; startedAt: string; adopted?: boolean } | null;
+  current: { file: string; campaignId: string; startedAt: string; adopted?: boolean } | null; // legacy single-slot (read compat)
+  slots?: { file: string; campaignId: string; startedAt: string; adopted?: boolean }[];
   done: { file: string; campaignId: string; status: string; finishedAt: string; report?: string; summary?: string; boundsOk?: boolean; boundsFindings?: string; firstPass?: boolean }[];
   failed: { file: string; reason: string; at: string }[];
   watchdog?: { incidents: Record<string, { stage: string; note?: string; restarts: number[] }> };
@@ -50,7 +51,7 @@ function loadState(): QueueState {
       /* rebuild */
     }
   }
-  return { startedAt: new Date().toISOString(), current: null, done: [], failed: [] };
+  return { startedAt: new Date().toISOString(), current: null, slots: [], done: [], failed: [] };
 }
 
 function saveState(s: QueueState): void {
@@ -120,8 +121,9 @@ function queueFiles(): string[] {
 
 async function nextFile(state: QueueState): Promise<string | null> {
   const doneFiles = new Set([...state.done.map((d) => d.file), ...state.failed.map((f) => f.file)]);
+  const activeFiles = new Set((state.slots ?? []).map((s) => s.file));
   for (const f of queueFiles()) {
-    if (!doneFiles.has(f)) return f;
+    if (!doneFiles.has(f) && !activeFiles.has(f)) return f;
   }
   return null;
 }
@@ -168,27 +170,35 @@ async function createViaCli(file: string): Promise<string> {
 async function tick(state: QueueState): Promise<boolean> {
   await ensureDaemon();
 
-  // 1. current campaign: wait or settle
-  if (state.current) {
-    const campaigns = await api<CampaignSummary[]>("GET", "/v1/campaigns");
-    const cur = campaigns.find((c) => c.id === state.current!.campaignId);
+  // v0.5: multi-slot concurrent campaigns. Legacy `current` migrates into slots.
+  if (!state.slots) state.slots = [];
+  if (state.current && !state.slots.some((x) => x.campaignId === state.current!.campaignId)) {
+    state.slots.push(state.current);
+  }
+  state.current = null;
+
+  let changed = false;
+  const campaigns = await api<{ id: string; title: string; status: string }[]>("GET", "/v1/campaigns");
+
+  // 1. settle finished slots
+  for (const slot of [...state.slots]) {
+    const cur = campaigns.find((c) => c.id === slot.campaignId);
     if (!cur) {
-      log(`current campaign ${state.current.campaignId} vanished — marking failed`);
-      state.failed.push({ file: state.current.file, reason: "campaign missing from researchd", at: new Date().toISOString() });
-      state.current = null;
-      return true;
+      log(`slot campaign ${slot.campaignId} vanished — marking failed`);
+      state.failed.push({ file: slot.file, reason: "campaign missing from researchd", at: new Date().toISOString() });
+      state.slots = state.slots.filter((x) => x !== slot);
+      changed = true;
+      continue;
     }
     if (cur.status === "running" || cur.status === "created" || cur.status === "paused") {
-      if (cur.status === "paused") log(`waiting: ${cur.id} is PAUSED (resume or stop it to unblock the queue)`);
-      return false;
+      if (cur.status === "paused") log(`waiting: ${cur.id} is PAUSED (resume or stop it to unblock the slot)`);
+      continue;
     }
     try {
-      const report = await exportReport(cur.id, state.current.file);
-      // V0.4.4: attach the bounds integrity check to the done entry
+      const report = await exportReport(cur.id, slot.file);
       const bounds = await runCheckBounds(cur.id);
-      state.done.push({ file: state.current.file, campaignId: cur.id, status: cur.status, finishedAt: new Date().toISOString(), report, summary: cur.title, boundsOk: bounds.ok, boundsFindings: bounds.findings, firstPass: true });
+      state.done.push({ file: slot.file, campaignId: cur.id, status: cur.status, finishedAt: new Date().toISOString(), report, summary: cur.title, boundsOk: bounds.ok, boundsFindings: bounds.findings, firstPass: true });
       log(`DONE ${cur.id} (${cur.status}) — report: ${report}${bounds.ok ? " — bounds OK" : ` — ⚠ BOUNDS: ${bounds.findings.slice(0, 200)}`}`);
-      // v0.3: consolidate the finished campaign into the knowledge base
       try {
         const k = openKnowledge(HOME);
         const wsDir = await findWorkspaceDir(cur.id);
@@ -196,15 +206,14 @@ async function tick(state: QueueState): Promise<boolean> {
           const evFile = path.join(wsDir, "state", "events.jsonl");
           if (existsSync(evFile)) {
             const events = readFileSync(evFile, "utf8").split("\n").filter(Boolean).map((l) => JSON.parse(l) as never);
-            const problem = state.current.file.replace(/\.yaml$/, "");
+            const problem = slot.file.replace(/\.yaml$/, "");
             const r = consolidate(k, events, problem);
             log(`CONSOLIDATED ${problem}: +${r.added} knowledge objects (${r.skipped} idempotent-skips)`);
-            // T1 trigger: bound < verifier ceiling ⇒ enqueue a deeper reiteration AFTER the pending novelty queue
             const bb = bestBound(k, problem);
             const CEILINGS: Record<string, number> = { "01-collatz-syracuse": 5_000_000, "05-gilbreath": 5000 };
             const ceiling = CEILINGS[problem];
             if (bb && ceiling && bb.max >= ceiling * 0.999) {
-              log(`T1 SKIP ${problem}: bound ${bb.max} already at verifier ceiling ${ceiling} — no reiteration (avoid loop)`);
+              log(`T1 SKIP ${problem}: bound ${bb.max} already at verifier ceiling ${ceiling}`);
             } else if (bb) {
               const reiterateFile = path.join(QUEUE_DIR, `${problem}-round2.yaml`);
               if (!existsSync(reiterateFile)) {
@@ -212,7 +221,6 @@ async function tick(state: QueueState): Promise<boolean> {
                 log(`T1 ENQUEUED ${problem}-round2.yaml (prior bound ${bb.max.toLocaleString("en-US")} < ceiling)`);
               }
             }
-            // v0.3.1: agent distillation — a short campaign whose worker reads the journal and distills lessons
             const distillFile = path.join(QUEUE_DIR, `zz-${problem}-distill.yaml`);
             if (!existsSync(distillFile)) {
               writeFileSync(distillFile, renderDistill(problem, cur.id), "utf8");
@@ -224,42 +232,40 @@ async function tick(state: QueueState): Promise<boolean> {
         log(`consolidation failed for ${cur.id}: ${err instanceof Error ? err.message : String(err)}`);
       }
     } catch (err) {
-      state.failed.push({ file: state.current.file, reason: `report export failed: ${String(err)}`, at: new Date().toISOString() });
+      state.failed.push({ file: slot.file, reason: `report export failed: ${String(err)}`, at: new Date().toISOString() });
       log(`report export failed for ${cur.id}: ${String(err)}`);
     }
-    state.current = null;
-    return true;
+    state.slots = state.slots.filter((x) => x !== slot);
+    changed = true;
   }
 
-  // 2. adopt any running campaign (started by hand)
-  const campaigns = await api<CampaignSummary[]>("GET", "/v1/campaigns");
-  const running = campaigns.filter((c) => c.status === "running");
-  if (running.length > 0) {
-    const cur = running[0];
+  // 2. adopt untracked running campaigns (hand-started)
+  for (const cur of campaigns.filter((c) => c.status === "running")) {
+    if (state.slots.some((x) => x.campaignId === cur.id)) continue;
     const base = slugFromTitle(cur.title);
     const fileGuess = queueFiles().find((f) => f.replace(/\.yaml$/, "").endsWith(base)) ?? `adopted-${cur.id.replace("campaign:", "")}.yaml`;
-    state.current = { file: fileGuess, campaignId: cur.id, startedAt: new Date().toISOString(), adopted: true };
+    state.slots.push({ file: fileGuess, campaignId: cur.id, startedAt: new Date().toISOString(), adopted: true });
     log(`ADOPTED running campaign ${cur.id} — ${cur.title.slice(0, 70)}`);
-    return true;
+    changed = true;
   }
 
-  // 3. start the next queue file
-  const file = await nextFile(state);
-  if (!file) {
-    log("queue empty — idle (drop new YAMLs into the queue dir; they get picked up)");
-    return false;
+  // 3. fill free slots up to MAX_CONCURRENT
+  const MAX_CONCURRENT = Number(process.env.RESEARCH_QUEUE_CONCURRENCY ?? 3);
+  while (state.slots.length < MAX_CONCURRENT) {
+    const file = await nextFile(state);
+    if (!file) {
+      if (state.slots.length === 0) log("queue empty — idle (drop new YAMLs into the queue dir)");
+      break;
+    }
+    const created = await createViaCli(file);
+    await api("POST", `/v1/campaigns/${encodeURIComponent(created)}/start`, {});
+    state.slots.push({ file, campaignId: created, startedAt: new Date().toISOString() });
+    log(`STARTED ${created} from ${file} (slot ${state.slots.length}/${MAX_CONCURRENT})`);
+    changed = true;
   }
-  const created = await createViaCli(file);
-  await api("POST", `/v1/campaigns/${encodeURIComponent(created)}/start`, {});
-  state.current = { file, campaignId: created, startedAt: new Date().toISOString() };
-  log(`STARTED ${created} from ${file}`);
-  return true;
-}
 
-function slugFromTitle(title: string): string {
-  return title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 48);
+  return changed;
 }
-
 
 
 async function findWorkspaceDir(campaignId: string): Promise<string | null> {
@@ -268,6 +274,10 @@ async function findWorkspaceDir(campaignId: string): Promise<string | null> {
   return c?.workspace ?? null;
 }
 
+
+function slugFromTitle(title: string): string {
+  return title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 48);
+}
 
 function renderDistill(problem: string, sourceCampaignId: string): string {
   return `campaign:
