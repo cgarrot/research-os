@@ -4,6 +4,7 @@ import { type ContextItem, type ContextPack, type TaskSpec, canonicalJson } from
 import type { CampaignProjection } from "./core.js";
 import { retrieve, skillsForRole } from "./memoryService.js";
 import { relevantGlobalLessons, relevantGlobalSkills } from "./globalMemory.js";
+import { recentRejectionFeedback } from "./reinforcement.js";
 import { sha256, truncate } from "./util.js";
 import path from "node:path";
 
@@ -114,6 +115,7 @@ export function buildContextPack(proj: CampaignProjection, task: TaskSpec): Cont
     analogousCases,
     globalLessons,
     priorRuns,
+    recentRejections: recentRejectionFeedback(proj, 5),
     peerWorkNotice: blind
       ? "BLIND MODE: rival workers are exploring other approaches in parallel. Do NOT contact peers or assume their results. Commit your own independent work."
       : "Coordinate sparingly over mesh for targeted questions only; persist durable results in ResearchOS first.",

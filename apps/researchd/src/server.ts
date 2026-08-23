@@ -111,6 +111,28 @@ async function route(
     if (b === "pause" && method === "POST") { pauseCampaign(core, proj); return campaignSummary(proj); }
     if (b === "resume" && method === "POST") { resumeCampaign(core, proj); return campaignSummary(proj); }
     if (b === "stop" && method === "POST") { stopCampaign(core, proj, String(body.reason ?? "operator")); return campaignSummary(proj); }
+    if (b === "review" && method === "GET") {
+      // v0.4: human review bundle — quarantined/promotion-ready candidates + distilled lessons
+      const candidates = [...proj.objects.values()].filter((o) => o.type === "discovery_candidate").map((o) => ({
+        id: o.id,
+        content: o.content as Record<string, unknown>,
+      }));
+      const lessons: unknown[] = [];
+      try {
+        const kn = (await import("@research-os/core")).openKnowledge(process.env.RESEARCH_HOME ?? path.join(path.dirname(process.cwd()), "workspaces"));
+        for (const line of (await import("node:fs")).readFileSync(kn.objectsFile, "utf8").split("\n")) {
+          if (!line.trim()) continue;
+          try {
+            const ko = JSON.parse(line) as { kind: string; problem: string; statement: string; provenance?: { campaignId?: string } };
+            if (["lesson", "generalized-skill", "cross-link", "synthesis"].includes(ko.kind) && ko.provenance?.campaignId === proj.state.id) {
+              lessons.push({ kind: ko.kind, statement: ko.statement, problem: ko.problem });
+            }
+          } catch { /* skip */ }
+        }
+      } catch { /* knowledge optional */ }
+      const verifications = [...proj.verifications.values()].filter((v) => v.status === "passed").slice(-10).map((v) => ({ id: v.id, verifier: v.verifierId, target: v.targetId }));
+      return { campaignId: proj.state.id, status: proj.state.status, candidates, lessons, recentVerifications: verifications, humanActions: ["accept <candidateId>", "reject <candidateId>", "note <text>"] };
+    }
     if (b === "journal" && method === "GET") {
       // v0.3.1: paginated journal access for consolidator workers
       const offset = Number(query.get("offset") ?? 0);
@@ -469,6 +491,37 @@ async function route(
       object: { ...obj!, content: { ...cand, promotionStatus: "human-review" }, updatedAt: new Date().toISOString() } as never,
     });
     return { promoted: true, promotionStatus: "human-review", reasons: ["correctness + novelty + frontier gates passed — awaiting HUMAN review"] };
+  }
+
+  if (resource === "review" && a === "decision" && method === "POST") {
+    // v0.4: human decision on a candidate/lesson — persisted as an event
+    const cid = String(body.campaignId ?? "");
+    const proj = core.getCampaign(cid.includes(":") ? cid : `campaign:${cid}`);
+    if (!proj) throw new Error(`unknown campaign ${cid}`);
+    const decision = String(body.decision ?? "");
+    const subjectId = String(body.subjectId ?? "");
+    const note = body.note ? String(body.note) : undefined;
+    if (!["accept", "reject", "note"].includes(decision)) throw new Error("decision must be accept|reject|note");
+    if (decision !== "note" && !subjectId) throw new Error("subjectId required for accept/reject");
+    const ev = core.apply(proj, "human.intervention", { kind: "human", id: "operator" }, { decision, subjectId, note, at: new Date().toISOString() });
+    // accept on a discovery_candidate flips promotionStatus to accepted-result
+    if (decision === "accept") {
+      const obj = proj.objects.get(subjectId);
+      if (obj && obj.type === "discovery_candidate") {
+        const content = obj.content as Record<string, unknown>;
+        content.promotionStatus = "accepted-result";
+        core.apply(proj, "object.created", { kind: "human", id: "operator" }, { object: { ...obj, content, updatedAt: new Date().toISOString() } as never });
+      }
+    }
+    if (decision === "reject") {
+      const obj = proj.objects.get(subjectId);
+      if (obj && obj.type === "discovery_candidate") {
+        const content = obj.content as Record<string, unknown>;
+        content.promotionStatus = "rejected";
+        core.apply(proj, "object.created", { kind: "human", id: "operator" }, { object: { ...obj, content, updatedAt: new Date().toISOString() } as never });
+      }
+    }
+    return { recorded: true, eventId: ev.id, decision, subjectId };
   }
 
   if (resource === "knowledge" && a === "lesson" && method === "POST") {

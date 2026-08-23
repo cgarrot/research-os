@@ -38,6 +38,8 @@ export interface ContextPack {
   analogousCases: ContextItem[];
   /** lessons harvested from OTHER campaigns (workspace-global negative memory) — V0.4 */
   globalLessons?: ContextItem[];
+  /** audit rejection classes from prior tasks — avoid repeating these mistakes (v0.4) */
+  recentRejections?: string[];
   /** PRIOR RUNS on this same problem: verified bounds, dead-ends, skills — extend, don't repeat (v0.3) */
   priorRuns?: {
     problem: string;

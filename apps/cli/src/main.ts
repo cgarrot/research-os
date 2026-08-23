@@ -97,6 +97,39 @@ async function main(): Promise<void> {
       print(await api("GET", `/v1/campaigns/${id}/workers`));
       break;
     }
+    case "review": {
+      const id = normalizeId(args[1] ?? args[0]);
+      const out = (await api("GET", `/v1/campaigns/${id}/review`)) as { campaignId: string; status: string; candidates: unknown[]; lessons: unknown[]; recentVerifications: unknown[] };
+      console.log(`=== HUMAN REVIEW — ${out.campaignId} (${out.status}) ===`);
+      console.log(`\nCandidates (${out.candidates.length}):`);
+      for (const c of out.candidates as { id: string; content: { candidateType?: string; statement?: string; promotionStatus?: string; correctnessStatus?: string; noveltyStatus?: string } }[]) {
+        console.log(`  ${c.id} [${c.content.promotionStatus ?? "?"}] ${c.content.candidateType ?? "?"}: ${String(c.content.statement ?? "").slice(0, 90)}`);
+        console.log(`      correctness=${c.content.correctnessStatus ?? "?"} novelty=${c.content.noveltyStatus ?? "?"}`);
+      }
+      console.log(`\nDistilled lessons (${(out.lessons as unknown[]).length}):`);
+      for (const l of out.lessons as { kind: string; statement: string }[]) {
+        console.log(`  [${l.kind}] ${l.statement.slice(0, 110)}`);
+      }
+      console.log(`\nRecent verifications:`);
+      for (const v of out.recentVerifications as { id: string; verifier: string; target: string }[]) {
+        console.log(`  ${v.id} ${v.verifier} on ${v.target}`);
+      }
+      console.log(`\nActions: research decide ${id} accept|reject <subjectId> — research decide ${id} note "text"`);
+      break;
+    }
+    case "decide": {
+      const id = normalizeId(args[1] ?? args[0]);
+      const decision = args[2];
+      const subjectId = decision === "note" ? undefined : args[3];
+      const note = decision === "note" ? args.slice(3).join(" ") : undefined;
+      if (!decision || (decision !== "note" && !subjectId)) {
+        console.error("usage: research decide <campaign> accept|reject <subjectId> | note <text>");
+        break;
+      }
+      const out = await api("POST", "/v1/review/decision", { campaignId: id, decision, subjectId, note });
+      print(out);
+      break;
+    }
     case "frontier": {
       print(await api("GET", `/v1/campaigns/${normalizeId(args[1] ?? args[0])}/frontier`));
       break;

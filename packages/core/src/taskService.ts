@@ -165,6 +165,7 @@ export function submitResult(
     blockers: input.blockers,
     resourceUsage: { minutesUsed: input.minutesUsed, tokensEstimate: input.tokensEstimate },
     summary: input.summary,
+    skillsUsed: input.skillsUsed ?? [],
     submittedAt: nowIso(),
     idempotencyKey: input.idempotencyKey,
   };

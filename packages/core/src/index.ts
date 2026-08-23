@@ -18,3 +18,4 @@ export * from "./bounds.js";
 export * from "./globalMemory.js";
 export * from "./novelty.js";
 export * from "./knowledge.js";
+export * from "./reinforcement.js";

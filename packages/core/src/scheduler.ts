@@ -4,6 +4,7 @@
 import type { TaskSpec, VerifierDefinition, ResearchObject } from "@research-os/contracts";
 import type { CampaignProjection, ResearchCore } from "./core.js";
 import { expireLeases, queuedTasks } from "./taskService.js";
+import { rankDescriptors } from "./reinforcement.js";
 import { completedCriteria, markCompleted } from "./campaignService.js";
 
 export const PHASES = ["ground", "generate", "critique", "test", "consolidate"] as const;
@@ -219,7 +220,23 @@ export class Scheduler {
       const covered = new Set<string>();
       for (const b of proj.branches.values()) for (const tag of b.methodTags) covered.add(tag.toLowerCase());
       const uncovered = allDescriptors.filter((d) => !covered.has(String(d).toLowerCase()));
-      const seedPool = uncovered.length > 0 ? uncovered : allDescriptors;
+      let seedPool = uncovered.length > 0 ? uncovered : allDescriptors;
+      // v0.4: RL priors — order the pool by past acceptance (UCB bonus keeps explorers alive)
+      try {
+        const ranked = rankDescriptors(
+          [...proj.tasks.values()]
+            .filter((t) => t.round < round)
+            .map((t) => ({ taskId: t.id, round: t.round, phase: t.phase, descriptor: String(t.seed ?? ""), role: t.role, accepted: proj.tasks.get(t.id)?.status === "accepted", rejectionClasses: [], skillsUsed: [], verifiedClaims: 0, minutes: 0 })),
+          "generate",
+        );
+        if (ranked.length > 0) {
+          // UCB order, but only among the current pool; unseen descriptors keep their place
+          const rankOf = new Map(ranked.map((d, i) => [d, i]));
+          seedPool = [...seedPool].sort((a, b) => (rankOf.get(String(a)) ?? 999) - (rankOf.get(String(b)) ?? 999));
+        }
+      } catch {
+        /* priors are best-effort */
+      }
       // V0.6.3: paradigm-break task when stagnant — before normal generation
       const stag = stagnationSignals(proj);
       if (stag.stagnant) {
