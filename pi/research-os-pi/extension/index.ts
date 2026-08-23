@@ -287,6 +287,40 @@ export default function (pi: ExtensionAPI): void {
     }),
   );
 
+  // ---------------- journal & distillation (v0.3.1) ----------------
+  pi.registerTool(
+    tool("research_get_journal", "Read the EVENT JOURNAL of a campaign (paginated, optionally filtered by event type). For consolidator/distillation tasks: read the full journal of the source campaign to understand what actually happened before writing lessons.", {
+      campaignId: Type.String({ description: "the SOURCE campaign to read (not your own)" }),
+      offset: Type.Optional(Type.Number()),
+      limit: Type.Optional(Type.Number({ description: "max 500 per page" })),
+      type: Type.Optional(Type.String({ description: "filter: claim.status_changed, verification.passed, object.created, memory.episode_created..." })),
+    }, async (p) => {
+      const out = await api("GET", `/v1/campaigns/${encodeURIComponent(String(p.campaignId))}/journal?offset=${p.offset ?? 0}&limit=${p.limit ?? 100}${p.type ? `&type=${encodeURIComponent(String(p.type))}` : ""}`);
+      const evts = (out.events ?? []) as Array<{ id: string; type: string; timestamp: string; payload: unknown }>;
+      const lines = evts.map((e) => `${e.id} ${e.timestamp.slice(11, 19)} ${e.type} ${JSON.stringify(e.payload).slice(0, 140)}`);
+      return `journal ${out.total} events (showing ${out.offset}+${evts.length})\n${lines.join("\n")}`.slice(0, 3000);
+    }),
+  );
+
+  pi.registerTool(
+    tool("research_submit_lesson", "Submit an agent-DISTILLED lesson from a campaign journal. MANDATORY: cite sourceEventIds from the journal (real ids you actually read — fabricated ids are REJECTED). Kinds: lesson (what mattered), generalized-skill (transferable procedure + applicability), cross-link (analogy between problems), synthesis (narrative for the next round).", {
+      sourceCampaignId: Type.String(),
+      kind: Type.String({ description: "lesson|generalized-skill|cross-link|synthesis" }),
+      title: Type.String(),
+      body: Type.String({ description: "the distilled insight — what happened, why it matters, what to do differently" }),
+      sourceEventIds: Type.Array(Type.String(), { description: "REAL event ids from the journal that substantiate this" }),
+      sourceObjectIds: Type.Optional(Type.Array(Type.String())),
+      applicability: Type.Optional(Type.String({ description: "for generalized-skill: when/where this transfers across problems" })),
+      relatedProblems: Type.Optional(Type.Array(Type.String())),
+    }, async (p) => {
+      const out = await api("POST", "/v1/knowledge/lesson", { ...p });
+      if (!out.accepted) {
+        return `REJECTED: ${JSON.stringify(out.validation?.reasons ?? [])} — cite REAL event ids from the journal (use research_get_journal first)`;
+      }
+      return `lesson accepted: ${out.knowledgeObject?.id} (${out.knowledgeObject?.kind}) — validated against ${out.validation?.found?.length ?? 0} source events`;
+    }),
+  );
+
   // ---------------- novelty & discovery (module v0.2) ----------------
   pi.registerTool(
     tool("research_novelty_search", "Fan out a novelty query to scholarly providers (oeis | arxiv | openalex | crossref | semantic-scholar). Each hit is stored as a novelty_evidence object with the query. Use multiple query VARIANTS (exact phrase, notation, definition keywords) — one query is never novelty evidence.", {

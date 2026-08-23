@@ -209,8 +209,14 @@ async function tick(state: QueueState): Promise<boolean> {
               const reiterateFile = path.join(QUEUE_DIR, `${problem}-round2.yaml`);
               if (!existsSync(reiterateFile)) {
                 writeFileSync(reiterateFile, renderReiterate(problem, bb.max), "utf8");
-                log(`T1 ENQUEUED ${problem}-round2.yaml (prior bound ${bb.max.toLocaleString("en-US")} < ceiling — the file sorts after pending novelty runs)`);
+                log(`T1 ENQUEUED ${problem}-round2.yaml (prior bound ${bb.max.toLocaleString("en-US")} < ceiling)`);
               }
+            }
+            // v0.3.1: agent distillation — a short campaign whose worker reads the journal and distills lessons
+            const distillFile = path.join(QUEUE_DIR, `zz-${problem}-distill.yaml`);
+            if (!existsSync(distillFile)) {
+              writeFileSync(distillFile, renderDistill(problem, cur.id), "utf8");
+              log(`DISTILL ENQUEUED zz-${problem}-distill.yaml (agent consolidation of ${cur.id})`);
             }
           }
         }
@@ -260,6 +266,49 @@ async function findWorkspaceDir(campaignId: string): Promise<string | null> {
   const campaigns = await api<{ id: string; workspace?: string }[]>("GET", "/v1/campaigns", undefined, 10_000);
   const c = campaigns.find((x) => x.id === campaignId);
   return c?.workspace ?? null;
+}
+
+
+function renderDistill(problem: string, sourceCampaignId: string): string {
+  return `campaign:
+  title: "DISTILL — ${problem} (agent consolidation of ${sourceCampaignId})"
+  modules: [mathematics]
+  objective:
+    statement: "You are a CONSOLIDATOR: read the full event journal of ${sourceCampaignId} (research_get_journal, all pages) and distill what the mechanical extractor CANNOT capture. Produce 3-7 knowledge lessons: (1) LESSONS — the 3-5 things that actually mattered (which strategy won, what was the real bottleneck, what surprised); (2) GENERALIZED-SKILLS — procedures learned here that transfer to OTHER problems (state applicability); (3) CROSS-LINKS — real analogies to other problems in the queue (the C-sharding skill from taxicab applies to Ramsey, etc); (4) SYNTHESIS — a 5-sentence narrative for the next round. MANDATORY: every lesson cites sourceEventIds you actually read — fabricated ids are REJECTED by the validation gate."
+    questions:
+      - "What were the 3 most important events/decisions in the journal?"
+      - "Which learned procedures transfer to other problems?"
+      - "What narrative summary would help the next round start smarter?"
+    deliverables:
+      - kind: report
+        description: "Distilled lessons with journal citations"
+    successCriteria:
+      - type: claim_status
+        value: verified
+        description: "at least one lesson accepted through the source-validation gate"
+    constraints:
+      - "every lesson MUST cite real event ids from research_get_journal"
+      - "lessons without sources are rejected — no invention"
+    exclusions: []
+    assumptions: []
+    riskClass: low
+  models:
+    defaultPool:
+      - id: zai-glm-5.3
+        provider: zai
+        model: glm-5.3
+        runtime: pi
+        thinkingLevel: max
+        tags: [default]
+  search: { policy: round-robin, blindGenerators: 1, maxBranches: 2 }
+  budgets: { maxAgentRuns: 4, maxTasks: 6, maxRounds: 1, maxExperiments: 2, wallClockMinutes: 45, maxTokensEstimate: 10000000 }
+  autonomy: { level: L3, humanApprovalRequiredFor: [] }
+  workers: { autoSpawn: 1, leaseSeconds: 1800, maxRunMinutes: 45 }
+  stop: { onSuccess: true, onBudgetExhausted: true, noProgressRounds: 1, successSemantics: "any", minRounds: 1, requireCycle: false }
+  modulePrompts:
+    worker: "CONSOLIDATOR MODE: use research_get_journal to read ALL pages of ${sourceCampaignId}'s journal (object.created, claim.status_changed, verification.passed, memory.episode_created). Then submit 3-7 research_submit_lesson calls: kind lesson/generalized-skill/cross-link/synthesis, each with sourceEventIds from the journal you READ. The validation gate rejects fabricated ids — only cite what you saw."
+  verification: { requireIndependentAudit: true }
+`;
 }
 
 function renderReiterate(problem: string, priorBound: number): string {

@@ -10,7 +10,7 @@ import { tokenize, relevance } from "./util.js";
 
 export interface KnowledgeObject {
   id: string; // ko_<hash8>
-  kind: "claim" | "frontier-reached" | "skill" | "dead-end" | "stat" | "conjecture";
+  kind: "claim" | "frontier-reached" | "skill" | "dead-end" | "stat" | "conjecture" | "lesson" | "generalized-skill" | "cross-link" | "synthesis";
   problem: string; // campaign file slug (e.g. "01-collatz-syracuse") or "(unknown)"
   statement: string;
   status?: string; // epistemic status for claims
@@ -297,4 +297,69 @@ export function bestBound(store: KnowledgeStore, problem: string): { variable: s
   const r = lookup(store, problem);
   if (r.bounds.length === 0) return null;
   return r.bounds.reduce<{ variable: string; max: number }>((a, b) => (b.max > a.max ? { variable: b.variable, max: b.max } : a), { variable: r.bounds[0].variable, max: r.bounds[0].max });
+}
+
+// ---- agent-distilled knowledge (v0.3.1) ----
+
+export interface AgentLesson {
+  kind: "lesson" | "generalized-skill" | "cross-link" | "synthesis";
+  problem: string;
+  title: string;
+  body: string;
+  /** REQUIRED: event ids from the source campaign journal that substantiate this lesson */
+  sourceEventIds: string[];
+  /** optional: object ids created by those events (claims, artifacts...) */
+  sourceObjectIds?: string[];
+  applicability?: string; // for generalized-skill: when/where this transfers
+  relatedProblems?: string[]; // for cross-link
+}
+
+export interface LessonValidationResult {
+  ok: boolean;
+  reasons: string[];
+  found: string[];
+  missing: string[];
+}
+
+/**
+ * ANTI-HALLUCINATION GATE: every lesson must cite REAL event ids from the journal.
+ * A lesson without verifiable sources is rejected — the agent cannot invent history.
+ */
+export function validateLessonSources(lesson: AgentLesson, journalEventIds: Set<string>, journalObjectIds?: Set<string>): LessonValidationResult {
+  const reasons: string[] = [];
+  const found: string[] = [];
+  const missing: string[] = [];
+  if (!lesson.title || lesson.title.trim().length < 5) reasons.push("title too short");
+  if (!lesson.body || lesson.body.trim().length < 20) reasons.push("body too short (min 20 chars)");
+  if (!lesson.sourceEventIds || lesson.sourceEventIds.length === 0) {
+    reasons.push("sourceEventIds is REQUIRED — a lesson without journal citations is not knowledge");
+  } else {
+    for (const id of lesson.sourceEventIds) {
+      if (journalEventIds.has(id)) found.push(id);
+      else missing.push(id);
+    }
+    if (missing.length > 0) reasons.push(`fabricated event ids cited: ${missing.join(", ")}`);
+    if (found.length === 0 && lesson.sourceEventIds.length > 0) reasons.push("no cited event id exists in the journal");
+  }
+  if (lesson.sourceObjectIds && journalObjectIds) {
+    const objMissing = lesson.sourceObjectIds.filter((id) => !journalObjectIds.has(id));
+    if (objMissing.length > 0) reasons.push(`fabricated object ids: ${objMissing.join(", ")}`);
+  }
+  return { ok: reasons.length === 0, reasons, found, missing };
+}
+
+/** Write an agent-distilled lesson into the knowledge store (after validation). */
+export function writeLesson(store: KnowledgeStore, lesson: AgentLesson, campaignId: string): KnowledgeObject {
+  const now = new Date().toISOString();
+  const obj: KnowledgeObject = {
+    id: `ko_${hash8(`lesson|${lesson.problem}|${lesson.title}`)}`,
+    kind: lesson.kind,
+    problem: lesson.problem,
+    statement: lesson.title,
+    how: lesson.body.slice(0, 400),
+    provenance: { campaignId, extractedAt: now },
+    text: `${lesson.title} ${lesson.body} ${lesson.applicability ?? ""} ${(lesson.relatedProblems ?? []).join(" ")}`.slice(0, 2000),
+  };
+  appendFileSync(store.objectsFile, JSON.stringify(obj) + "\n", "utf8");
+  return obj;
 }

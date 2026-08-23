@@ -1,5 +1,6 @@
 // server.ts — tiny zero-dep HTTP API + SSE (spec §57 subset).
 import type { IncomingMessage, ServerResponse } from "node:http";
+import path from "node:path";
 import type { CampaignSpec, ResearchEvent, RetrievalIntent } from "@research-os/contracts";
 import { VERIFIER_ONLY_STATUSES, EPISTEMIC_STATUSES } from "@research-os/contracts";
 import {
@@ -110,6 +111,16 @@ async function route(
     if (b === "pause" && method === "POST") { pauseCampaign(core, proj); return campaignSummary(proj); }
     if (b === "resume" && method === "POST") { resumeCampaign(core, proj); return campaignSummary(proj); }
     if (b === "stop" && method === "POST") { stopCampaign(core, proj, String(body.reason ?? "operator")); return campaignSummary(proj); }
+    if (b === "journal" && method === "GET") {
+      // v0.3.1: paginated journal access for consolidator workers
+      const offset = Number(query.get("offset") ?? 0);
+      const limit = Math.min(Number(query.get("limit") ?? 100), 500);
+      const filter = query.get("type");
+      const all = proj.store.readAll();
+      const filtered = filter ? all.filter((e) => e.type === filter) : all;
+      const page = filtered.slice(offset, offset + limit);
+      return { total: filtered.length, offset, limit, events: page };
+    }
     if (b === "frontier" && method === "GET") {
       // V0.7.2: math frontier snapshot (spec §21) derived from projection
       const claims = [...proj.objects.values()].filter((o) => ["claim", "hypothesis"].includes(o.type));
@@ -458,6 +469,33 @@ async function route(
       object: { ...obj!, content: { ...cand, promotionStatus: "human-review" }, updatedAt: new Date().toISOString() } as never,
     });
     return { promoted: true, promotionStatus: "human-review", reasons: ["correctness + novelty + frontier gates passed — awaiting HUMAN review"] };
+  }
+
+  if (resource === "knowledge" && a === "lesson" && method === "POST") {
+    // v0.3.1: agent-distilled lessons with anti-hallucination source validation
+    const { validateLessonSources, writeLesson, openKnowledge } = await import("@research-os/core");
+    type AgentLesson = import("@research-os/core").AgentLesson;
+    const sourceCampaignId = String(body.sourceCampaignId ?? "");
+    const proj = core.getCampaign(sourceCampaignId.includes(":") ? sourceCampaignId : `campaign:${sourceCampaignId}`);
+    if (!proj) throw new Error(`source campaign not found: ${sourceCampaignId}`);
+    const lesson = body.lesson as AgentLesson;
+    if (!lesson) throw new Error("lesson payload required");
+    // build the journal id sets for validation
+    const events = proj.store.readAll();
+    const eventIds = new Set(events.map((e) => e.id));
+    const objectIds = new Set<string>();
+    for (const e of events) {
+      const p = e.payload as Record<string, unknown>;
+      const obj = p?.object as { id?: string } | undefined;
+      if (obj?.id) objectIds.add(obj.id);
+    }
+    const validation = validateLessonSources(lesson, eventIds, objectIds);
+    if (!validation.ok) {
+      return { accepted: false, validation };
+    }
+    const store = openKnowledge(process.env.RESEARCH_HOME ?? path.join(path.dirname(process.cwd()), "workspaces"));
+    const written = writeLesson(store, lesson, sourceCampaignId);
+    return { accepted: true, knowledgeObject: { id: written.id, kind: written.kind, statement: written.statement }, validation };
   }
 
   if (resource === "verifiers" && method === "GET") {
