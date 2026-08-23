@@ -1,5 +1,5 @@
 campaign:
-  title: "Nombre de carrés magiques — open problem #34"
+  title: "Nombre de carrés magiques"
   modules: [mathematics]
   objective:
     statement: "Open problem (Wikipedia FR, combinatoire): Déterminer le nombre de carrés magiques (notamment 5x5). Goal: OPERATIONAL progress under our epistemic rules — Grounding + known counts (source-backed); workers verify small counts (3x3 = 8 modulo symmetries, 4x4 with Frenicle normalization) via scripts; aux kills."
@@ -7,15 +7,16 @@ campaign:
       - "Which counts are script-verifiable within budget?"
     deliverables:
       - kind: report
-        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled"
+        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled, discovery candidates + novelty statuses"
     successCriteria:
       - type: claim_status
         value: falsified
-        description: at least one auxiliary conjecture falsified by an exact counterexample
+        description: "at least one auxiliary conjecture falsified by an exact counterexample"
     constraints:
       - "exact integer arithmetic only (floats are exploration, never evidence)"
       - "never claim more than what was verified: state bounds honestly"
       - "known literature results are source-backed claims, not campaign-verified"
+      - "records: NO hand-written frontier numbers — dated frontier snapshots only"
     exclusions:
       - "no unbounded claims from computation"
     assumptions:

@@ -1,5 +1,5 @@
 campaign:
-  title: "Conjecture de Szpiro — open problem #10"
+  title: "Conjecture de Szpiro"
   modules: [mathematics]
   objective:
     statement: "Open problem (Wikipedia FR, théorie des nombres): Conjecture de Szpiro (relation entre le discriminant et le conducteur d'une courbe elliptique). Goal: OPERATIONAL progress under our epistemic rules — Grounding + formulations (abc comparison), no exact armory. Aux kills allowed."
@@ -7,15 +7,16 @@ campaign:
       - "Formulations équivalentes et cas particuliers testables?"
     deliverables:
       - kind: report
-        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled"
+        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled, discovery candidates + novelty statuses"
     successCriteria:
       - type: claim_status
         value: falsified
-        description: at least one auxiliary conjecture falsified by an exact counterexample
+        description: "at least one auxiliary conjecture falsified by an exact counterexample"
     constraints:
       - "exact integer arithmetic only (floats are exploration, never evidence)"
       - "never claim more than what was verified: state bounds honestly"
       - "known literature results are source-backed claims, not campaign-verified"
+      - "records: NO hand-written frontier numbers — dated frontier snapshots only"
     exclusions:
       - "no unbounded claims from computation"
     assumptions:

@@ -1,5 +1,5 @@
 campaign:
-  title: "Problème de Hadwiger–Nelson — open problem #47"
+  title: "Problème de Hadwiger–Nelson"
   modules: [mathematics]
   objective:
     statement: "Open problem (Wikipedia FR, théorie des graphes / géométrie): Nombre chromatique du plan (entre 5 et 7 après de Grey). Goal: OPERATIONAL progress under our epistemic rules — Unit-distance graph coloring certificates: a finite graph + coloring is exactly checkable in scripts (artifact); workers reproduce the 5-chromatic construction era results on small graphs, verify 4-colorability of classical unit-distance graphs (Moser spindle etc.); falsify claims of smaller chromatic unit graphs."
@@ -8,18 +8,19 @@ campaign:
       - "Which candidate bounds die?"
     deliverables:
       - kind: report
-        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled"
+        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled, discovery candidates + novelty statuses"
     successCriteria:
       - type: claim_status
         value: verified
-        description: at least one exactly-verified bounded/witness claim (verifier-run)
+        description: "at least one exactly-verified claim/certificate (verifier-run)"
       - type: claim_status
         value: falsified
-        description: at least one auxiliary conjecture falsified by an exact counterexample
+        description: "at least one auxiliary conjecture falsified by an exact counterexample"
     constraints:
       - "exact integer arithmetic only (floats are exploration, never evidence)"
       - "never claim more than what was verified: state bounds honestly"
       - "known literature results are source-backed claims, not campaign-verified"
+      - "records: NO hand-written frontier numbers — dated frontier snapshots only"
     exclusions:
       - "no unbounded claims from computation"
     assumptions:

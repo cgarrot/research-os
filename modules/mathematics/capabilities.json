@@ -1,34 +1,136 @@
 {
   "functions": [
-    { "name": "is_prime", "signature": "is_prime(n) -> bool", "cap": "deterministic Miller-Rabin, exact for n < 3.3e24" },
-    { "name": "next_prime_gap", "signature": "next_prime_gap(n) -> int", "cap": "smallest prime > n minus n; n >= 1" },
-    { "name": "prime_pi", "signature": "prime_pi(x) -> int", "cap": "count of primes <= x (sieve; x <= ~1e7 practical)" },
-    { "name": "goldbach_count", "signature": "goldbach_count(n) -> int", "cap": "unordered prime pairs summing to even n" },
-    { "name": "goldbach_even", "signature": "goldbach_even(n) -> 0|1", "cap": "1 iff even n >= 4 has a prime decomposition (USE THIS, not 2*m mappings)" },
-    { "name": "legendre_gap", "signature": "legendre_gap(n) -> int", "cap": "primes strictly between n^2 and (n+1)^2 (USE THIS for Legendre)" },
-    { "name": "rad", "signature": "rad(n) -> int", "cap": "product of distinct prime factors; n <= ~1e12 practical" },
-    { "name": "abc_quality_gt", "signature": "abc_quality_gt(a,b,c,p,q) -> 0|1", "cap": "EXACT quality comparison q(a+b=c) > p/q via integer powers (no floats); requires coprime a+b=c" },
-    { "name": "waring_min_s", "signature": "waring_min_s(n,k) -> int", "cap": "minimal s: n is a sum of s k-th powers; k <= 4, n <= 20000" },
-    { "name": "sigma_ratio_at_least", "signature": "sigma_ratio_at_least(n,num,den) -> 0|1", "cap": "divisor_sum(n)/n >= num/den exactly" },
-    { "name": "divisor_sum", "signature": "divisor_sum(n) -> int", "cap": "sum of divisors, exact" },
-    { "name": "factorial", "signature": "factorial(n) -> int", "cap": "0 <= n <= 20000" },
-    { "name": "primorial", "signature": "primorial(n) -> int", "cap": "product of first n primes; n <= 5000" },
-    { "name": "gilbreath_rows_ok", "signature": "gilbreath_rows_ok(k) -> 0|1", "cap": "first k Gilbreath difference rows all start with 1; k <= 5000" },
-    { "name": "is_mersenne_prime", "signature": "is_mersenne_prime(e) -> 0|1", "cap": "Lucas-Lehmer for M_e; odd e >= 3" },
-    { "name": "collatz_steps", "signature": "collatz_steps(n) -> int", "cap": "memoized; n < 2^60 practical" },
-    { "name": "collatz_max", "signature": "collatz_max(n) -> int", "cap": "max excursion until 1" }
+    {
+      "name": "is_prime",
+      "signature": "is_prime(n) -> bool",
+      "cap": "deterministic Miller-Rabin, exact for n < 3.3e24"
+    },
+    {
+      "name": "next_prime_gap",
+      "signature": "next_prime_gap(n) -> int",
+      "cap": "smallest prime > n minus n; n >= 1"
+    },
+    {
+      "name": "prime_pi",
+      "signature": "prime_pi(x) -> int",
+      "cap": "count of primes <= x (sieve; x <= ~1e7 practical)"
+    },
+    {
+      "name": "goldbach_count",
+      "signature": "goldbach_count(n) -> int",
+      "cap": "unordered prime pairs summing to even n"
+    },
+    {
+      "name": "goldbach_even",
+      "signature": "goldbach_even(n) -> 0|1",
+      "cap": "1 iff even n >= 4 has a prime decomposition (USE THIS, not 2*m mappings)"
+    },
+    {
+      "name": "legendre_gap",
+      "signature": "legendre_gap(n) -> int",
+      "cap": "primes strictly between n^2 and (n+1)^2 (USE THIS for Legendre)"
+    },
+    {
+      "name": "rad",
+      "signature": "rad(n) -> int",
+      "cap": "product of distinct prime factors; n <= ~1e12 practical"
+    },
+    {
+      "name": "abc_quality_gt",
+      "signature": "abc_quality_gt(a,b,c,p,q) -> 0|1",
+      "cap": "EXACT quality comparison q(a+b=c) > p/q via integer powers (no floats); requires coprime a+b=c"
+    },
+    {
+      "name": "waring_min_s",
+      "signature": "waring_min_s(n,k) -> int",
+      "cap": "minimal s: n is a sum of s k-th powers; k <= 4, n <= 20000"
+    },
+    {
+      "name": "sigma_ratio_at_least",
+      "signature": "sigma_ratio_at_least(n,num,den) -> 0|1",
+      "cap": "divisor_sum(n)/n >= num/den exactly"
+    },
+    {
+      "name": "divisor_sum",
+      "signature": "divisor_sum(n) -> int",
+      "cap": "sum of divisors, exact"
+    },
+    {
+      "name": "factorial",
+      "signature": "factorial(n) -> int",
+      "cap": "0 <= n <= 20000"
+    },
+    {
+      "name": "primorial",
+      "signature": "primorial(n) -> int",
+      "cap": "product of first n primes; n <= 5000"
+    },
+    {
+      "name": "gilbreath_rows_ok",
+      "signature": "gilbreath_rows_ok(k) -> 0|1",
+      "cap": "first k Gilbreath difference rows all start with 1; k <= 5000"
+    },
+    {
+      "name": "is_mersenne_prime",
+      "signature": "is_mersenne_prime(e) -> 0|1",
+      "cap": "Lucas-Lehmer for M_e; odd e >= 3"
+    },
+    {
+      "name": "collatz_steps",
+      "signature": "collatz_steps(n) -> int",
+      "cap": "memoized; n < 2^60 practical"
+    },
+    {
+      "name": "collatz_max",
+      "signature": "collatz_max(n) -> int",
+      "cap": "max excursion until 1"
+    }
   ],
   "predicates": [
-    "prime", "not_prime", "even", "odd", "square", "not_square", "mersenne_prime", "not_mersenne_prime",
-    "equals:K", "not_equals:K", "divisible_by:K", "not_divisible_by:K",
-    "greater_than:K", "less_than:K", "geq:K", "leq:K",
-    "collatz_terminates", "collatz_steps_less_than:K", "collatz_steps_greater_than:K", "collatz_max_value_less_than:K",
-    "sigma_ratio_at_least:num/den", "sigma_ratio_equals:num/den"
+    "prime",
+    "not_prime",
+    "even",
+    "odd",
+    "square",
+    "not_square",
+    "mersenne_prime",
+    "not_mersenne_prime",
+    "equals:K",
+    "not_equals:K",
+    "divisible_by:K",
+    "not_divisible_by:K",
+    "greater_than:K",
+    "less_than:K",
+    "geq:K",
+    "leq:K",
+    "collatz_terminates",
+    "collatz_steps_less_than:K",
+    "collatz_steps_greater_than:K",
+    "collatz_max_value_less_than:K",
+    "sigma_ratio_at_least:num/den",
+    "sigma_ratio_equals:num/den"
   ],
   "modes": [
-    { "name": "point", "usage": "{expression, assignment, predicate}", "semantics": "exact single assignment" },
-    { "name": "exhaustive", "usage": "{expression, variables:[{name,min,max}], predicate}", "semantics": "COMPLETE cartesian product — proof of the bounded statement; <= 5M cases" },
-    { "name": "witness/certificate", "usage": "certificate-check verifier: {script, witness, expression?, predicate?, allDistinct?, tupleAllPrime?}", "semantics": "runner decides exit; verify() + exact checks must all pass" }
+    {
+      "name": "point",
+      "usage": "{expression, assignment, predicate}",
+      "semantics": "exact single assignment"
+    },
+    {
+      "name": "exhaustive",
+      "usage": "{expression, variables:[{name,min,max}], predicate}",
+      "semantics": "COMPLETE cartesian product \u2014 proof of the bounded statement; <= 5M cases"
+    },
+    {
+      "name": "witness/certificate",
+      "usage": "certificate-check verifier: {script, witness, expression?, predicate?, allDistinct?, tupleAllPrime?}",
+      "semantics": "runner decides exit; verify() + exact checks must all pass"
+    },
+    {
+      "name": "frontier-record hunt",
+      "usage": "hunt.py jobs: python3 <module>/python/hunt.py --problem vdw|ramsey|ramsey-circulant --strategy random-restart|hill|sa|tabu|evo --seconds N --seed S --checkpoint ckpt.json (durable via research_job_create)",
+      "semantics": "search engine; final validate() independent; RESULT line = certificate when valid"
+    }
   ],
-  "notes": "Exhaustive cap 5,000,000 cases (maxCases default 3,000,000). Prefer goldbach_even(n)/legendre_gap(n) over 2*m / m*m variable mappings — they keep the verified domain equal to the natural claim variable."
+  "notes": "Exhaustive cap 5,000,000 cases (maxCases default 3,000,000). Prefer goldbach_even(n)/legendre_gap(n) over 2*m / m*m variable mappings \u2014 they keep the verified domain equal to the natural claim variable. Novelty layer v0.2: frontier snapshots (records stale in 24h), discovery candidates quarantined, promotion gate = correctness x novelty x fresh frontier -> human review. hunt.py circulant space: 17-vertex Ramsey graphs 2^136 -> 2^8 (Paley P(17) rediscovered)."
 }

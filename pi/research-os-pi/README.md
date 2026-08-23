@@ -3,7 +3,7 @@
 Pi extension + skill turning a Pi session into a ResearchOS worker.
 
 - `extension/index.ts` — registers the `research_*` tools (read / write /
-  read / write / coordination tools) talking to the `researchd` HTTP API.
+  coordination per RESEARCH_OS_SPEC §8) talking to the `researchd` HTTP API.
 - `skills/research-worker/SKILL.md` — the worker loop + hard rules.
 
 ## Usage

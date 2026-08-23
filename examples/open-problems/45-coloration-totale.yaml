@@ -1,5 +1,5 @@
 campaign:
-  title: "Conjecture de coloration totale — open problem #45"
+  title: "Conjecture de coloration totale"
   modules: [mathematics]
   objective:
     statement: "Open problem (Wikipedia FR, théorie des graphes): L'indice de coloration totale d'un graphe est au plus Delta + 2 (conjecture de Behzad). Goal: OPERATIONAL progress under our epistemic rules — Small-graph exhaustive checks in scripts (exact artifacts); falsify tightenings (Delta+1 claims); source-backed status."
@@ -7,18 +7,19 @@ campaign:
       - "Which small graph classes verified?"
     deliverables:
       - kind: report
-        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled"
+        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled, discovery candidates + novelty statuses"
     successCriteria:
       - type: claim_status
         value: verified
-        description: at least one exactly-verified bounded/witness claim (verifier-run)
+        description: "at least one exactly-verified claim/certificate (verifier-run)"
       - type: claim_status
         value: falsified
-        description: at least one auxiliary conjecture falsified by an exact counterexample
+        description: "at least one auxiliary conjecture falsified by an exact counterexample"
     constraints:
       - "exact integer arithmetic only (floats are exploration, never evidence)"
       - "never claim more than what was verified: state bounds honestly"
       - "known literature results are source-backed claims, not campaign-verified"
+      - "records: NO hand-written frontier numbers — dated frontier snapshots only"
     exclusions:
       - "no unbounded claims from computation"
     assumptions:

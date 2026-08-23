@@ -33,6 +33,7 @@ export interface DaemonContext {
   modulesDir: string;
   piPackageDir: string;
   mesh: { status(): Promise<unknown>; broadcast(room: string, message: string, refs?: string[]): Promise<unknown> };
+  jobs?: { create(proj: import("@research-os/core").CampaignProjection, input: { name: string; command: string[]; cwd?: string; wallSeconds?: number; createdBy: string }): unknown };
 }
 
 export async function handleRequest(ctx: DaemonContext, req: IncomingMessage, res: ServerResponse): Promise<void> {
@@ -374,6 +375,78 @@ async function route(
       return new RawResponse(200, { "content-type": "application/octet-stream" }, buf);
     }
     return null;
+  }
+
+  if (resource === "jobs") {
+    if (method === "POST" && !a) {
+      if (!ctx.jobs) throw new Error("job runner unavailable");
+      const proj = core.requireCampaign(String(body.campaignId));
+      const command = (body.command ?? []) as string[];
+      if (command.length === 0 || typeof command[0] !== "string") throw new Error("job needs a command array");
+      const job = ctx.jobs.create(proj, {
+        name: String(body.name ?? "job"),
+        command,
+        cwd: body.cwd ? String(body.cwd) : undefined,
+        wallSeconds: body.wallSeconds === undefined ? undefined : Math.min(Number(body.wallSeconds), 86400),
+        createdBy: String(body.createdBy ?? "worker"),
+      }) as { id: string; status: string; pid?: number };
+      return { job };
+    }
+    if (method === "GET" && !a) {
+      const proj = core.requireCampaign(String(query.get("campaignId") ?? ""));
+      return [...proj.jobs.values()];
+    }
+    if (method === "GET" && a) {
+      const ref = a.includes(":") ? a : `job:${a}`;
+      for (const proj of core.listCampaigns()) {
+        const j = proj.jobs.get(ref);
+        if (j) return j;
+      }
+      throw new Error(`job not found: ${a}`);
+    }
+    return null;
+  }
+
+  if (resource === "novelty" && a === "search" && method === "POST") {
+    const { noveltySearch } = await import("./noveltyProviders.js");
+    const proj = core.requireCampaign(String(body.campaignId));
+    const queryText = String(body.query ?? "");
+    if (!queryText && !Array.isArray(body.terms)) throw new Error("novelty search needs query or terms");
+    const out = await noveltySearch(core, proj, {
+      query: queryText,
+      terms: Array.isArray(body.terms) ? (body.terms as string[]) : undefined,
+      providers: Array.isArray(body.providers) ? (body.providers as string[]) : undefined,
+      auditId: body.auditId ? String(body.auditId) : undefined,
+      maxPerQuery: body.maxPerQuery === undefined ? undefined : Number(body.maxPerQuery),
+    });
+    return out;
+  }
+
+  if (resource === "candidates" && a && b === "promote" && method === "POST") {
+    const { promotionCheck, asCandidate, asFrontierSnapshot, isStale } = await import("@research-os/core");
+    const cid = body.campaignId ? String(body.campaignId) : "";
+    let proj = cid ? core.getCampaign(cid.includes(":") ? cid : `campaign:${cid}`) : undefined;
+    let obj = proj?.objects.get(a.includes(":") ? a : `discovery_candidate:${a}`);
+    if (!obj) {
+      outer: for (const p of core.listCampaigns()) {
+        for (const [id, o] of p.objects) {
+          if (o.type === "discovery_candidate" && (id === a || id.endsWith(a))) { proj = p; obj = o; break outer; }
+        }
+      }
+    }
+    if (!obj || !proj) throw new Error(`not a discovery_candidate: ${a}`);
+    const cand = asCandidate(obj);
+    if (!cand) throw new Error(`not a discovery_candidate: ${a}`);
+    const frontier = cand.frontierSnapshotId ? asFrontierSnapshot(proj.objects.get(cand.frontierSnapshotId)) : null;
+    const fresh = frontier ? !isStale(frontier) : false;
+    const check = promotionCheck(cand, fresh);
+    if (!check.ok) {
+      return { promoted: false, promotionStatus: check.promotionStatus, reasons: check.reasons };
+    }
+    core.apply(proj, "object.created", { kind: "auditor", id: "promotion-gate" }, {
+      object: { ...obj!, content: { ...cand, promotionStatus: "human-review" }, updatedAt: new Date().toISOString() } as never,
+    });
+    return { promoted: true, promotionStatus: "human-review", reasons: ["correctness + novelty + frontier gates passed — awaiting HUMAN review"] };
   }
 
   if (resource === "verifiers" && method === "GET") {

@@ -1,5 +1,5 @@
 campaign:
-  title: "Existence de Yang–Mills avec gap de masse — open problem #52"
+  title: "Existence de Yang–Mills avec gap de masse"
   modules: [mathematics]
   objective:
     statement: "Open problem (Wikipedia FR, physique mathématique): Existence et gap de masse d'une théorie de Yang–Mills en 4D (prix du millénaire). Goal: OPERATIONAL progress under our epistemic rules — Grounding: rigorous results ladder (2D/3D solved — source-backed), lattice heuristics = exploration only; aux kills. No numerics-as-evidence."
@@ -7,15 +7,16 @@ campaign:
       - "Result ladder; which discretization claims are falsifiable?"
     deliverables:
       - kind: report
-        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled"
+        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled, discovery candidates + novelty statuses"
     successCriteria:
       - type: claim_status
         value: falsified
-        description: at least one auxiliary conjecture falsified by an exact counterexample
+        description: "at least one auxiliary conjecture falsified by an exact counterexample"
     constraints:
       - "exact integer arithmetic only (floats are exploration, never evidence)"
       - "never claim more than what was verified: state bounds honestly"
       - "known literature results are source-backed claims, not campaign-verified"
+      - "records: NO hand-written frontier numbers — dated frontier snapshots only"
     exclusions:
       - "no unbounded claims from computation"
     assumptions:

@@ -1,5 +1,5 @@
 campaign:
-  title: "Conjecture du coureur solitaire — open problem #33"
+  title: "Conjecture du coureur solitaire"
   modules: [mathematics]
   objective:
     statement: "Open problem (Wikipedia FR, combinatoire): Pour k coureurs de vitesses distinctes, il existe un moment où chacun est à distance >= 1/(k+1) de l'origine (sur un circuit unité). Goal: OPERATIONAL progress under our epistemic rules — Small k exhaustive checks in worker scripts (k <= 5 within budget) = empirical support + artifacts; pointwise verification of lonely assignments is expressible (min over fractions — workers can craft exact expression or use scripts + numerical-evidence framing); falsify auxiliaries (tightness claims, which speed sets fail)."
@@ -8,18 +8,19 @@ campaign:
       - "Tightness witnesses (distance exactly 1/(k+1))?"
     deliverables:
       - kind: report
-        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled"
+        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled, discovery candidates + novelty statuses"
     successCriteria:
       - type: claim_status
         value: verified
-        description: at least one exactly-verified bounded/witness claim (verifier-run)
+        description: "at least one exactly-verified claim/certificate (verifier-run)"
       - type: claim_status
         value: falsified
-        description: at least one auxiliary conjecture falsified by an exact counterexample
+        description: "at least one auxiliary conjecture falsified by an exact counterexample"
     constraints:
       - "exact integer arithmetic only (floats are exploration, never evidence)"
       - "never claim more than what was verified: state bounds honestly"
       - "known literature results are source-backed claims, not campaign-verified"
+      - "records: NO hand-written frontier numbers — dated frontier snapshots only"
     exclusions:
       - "no unbounded claims from computation"
     assumptions:

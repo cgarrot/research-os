@@ -1,5 +1,5 @@
 campaign:
-  title: "Tous les nombres de Fermat F_n (n >= 5) sont-ils composés ? — open problem #20"
+  title: "Tous les nombres de Fermat F_n (n >= 5) sont-ils composés ?"
   modules: [mathematics]
   objective:
     statement: "Open problem (Wikipedia FR, théorie des nombres): Les nombres de Fermat F_n = 2^(2^n) + 1 sont-ils tous composés pour n >= 5 ? Goal: OPERATIONAL progress under our epistemic rules — F_5, F_6 verifiable composite by deterministic Miller-Rabin (exact-point, not_prime) — do it; F_7+ via sympy factoring in worker scripts (empirical); record known factorizations as source-backed; aux kills."
@@ -8,18 +8,19 @@ campaign:
       - "Which ranges/claims documented?"
     deliverables:
       - kind: report
-        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled"
+        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled, discovery candidates + novelty statuses"
     successCriteria:
       - type: claim_status
         value: verified
-        description: at least one exactly-verified bounded/witness claim (verifier-run)
+        description: "at least one exactly-verified claim/certificate (verifier-run)"
       - type: claim_status
         value: falsified
-        description: at least one auxiliary conjecture falsified by an exact counterexample
+        description: "at least one auxiliary conjecture falsified by an exact counterexample"
     constraints:
       - "exact integer arithmetic only (floats are exploration, never evidence)"
       - "never claim more than what was verified: state bounds honestly"
       - "known literature results are source-backed claims, not campaign-verified"
+      - "records: NO hand-written frontier numbers — dated frontier snapshots only"
     exclusions:
       - "no unbounded claims from computation"
     assumptions:

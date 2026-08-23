@@ -1,5 +1,5 @@
 campaign:
-  title: "Conjecture abc — open problem #9"
+  title: "Conjecture abc"
   modules: [mathematics]
   objective:
     statement: "Open problem (Wikipedia FR, théorie des nombres): Conjecture abc : pour tout eps > 0 il existe K_eps tel que pour tous a,b,c premiers entre eux avec a+b=c, c < K_eps * rad(abc)^(1+eps). Goal: OPERATIONAL progress under our epistemic rules — No verifier predicate for rad — workers script exact abc-hits (rad via sympy factorization) and register artifacts; individual hit computations can be exact-point verified when expressible; falsify auxiliaries ('abc quality above X exists below Y' searches); source-backed: known abc-hit records."
@@ -8,18 +8,19 @@ campaign:
       - "Which qualitative claims about quality distribution die?"
     deliverables:
       - kind: report
-        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled"
+        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled, discovery candidates + novelty statuses"
     successCriteria:
       - type: claim_status
         value: verified
-        description: at least one exactly-verified bounded/witness claim (verifier-run)
+        description: "at least one exactly-verified claim/certificate (verifier-run)"
       - type: claim_status
         value: falsified
-        description: at least one auxiliary conjecture falsified by an exact counterexample
+        description: "at least one auxiliary conjecture falsified by an exact counterexample"
     constraints:
       - "exact integer arithmetic only (floats are exploration, never evidence)"
       - "never claim more than what was verified: state bounds honestly"
       - "known literature results are source-backed claims, not campaign-verified"
+      - "records: NO hand-written frontier numbers — dated frontier snapshots only"
     exclusions:
       - "no unbounded claims from computation"
     assumptions:

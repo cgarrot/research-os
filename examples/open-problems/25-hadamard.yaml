@@ -1,5 +1,5 @@
 campaign:
-  title: "Conjecture de Hadamard — open problem #25"
+  title: "Conjecture de Hadamard"
   modules: [mathematics]
   objective:
     statement: "Open problem (Wikipedia FR, algèbre): Pour tout n = 4k, il existe une matrice de Hadamard d'ordre n. Goal: OPERATIONAL progress under our epistemic rules — Workers construct Hadamard matrices for reachable orders (Sylvester, Paley, direct products) with script-verified orthogonality (artifacts); gap orders recorded; falsify auxiliaries on which orders resist known constructions."
@@ -8,18 +8,19 @@ campaign:
       - "Gap list?"
     deliverables:
       - kind: report
-        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled"
+        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled, discovery candidates + novelty statuses"
     successCriteria:
       - type: claim_status
         value: verified
-        description: at least one exactly-verified bounded/witness claim (verifier-run)
+        description: "at least one exactly-verified claim/certificate (verifier-run)"
       - type: claim_status
         value: falsified
-        description: at least one auxiliary conjecture falsified by an exact counterexample
+        description: "at least one auxiliary conjecture falsified by an exact counterexample"
     constraints:
       - "exact integer arithmetic only (floats are exploration, never evidence)"
       - "never claim more than what was verified: state bounds honestly"
       - "known literature results are source-backed claims, not campaign-verified"
+      - "records: NO hand-written frontier numbers — dated frontier snapshots only"
     exclusions:
       - "no unbounded claims from computation"
     assumptions:

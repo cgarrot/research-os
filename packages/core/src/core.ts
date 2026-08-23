@@ -36,6 +36,7 @@ export interface CampaignProjection {
   verifications: Map<string, VerificationRecord>;
   memories: Map<string, MemoryItem>;
   skills: Map<string, ResearchSkill>;
+  jobs: Map<string, import("@research-os/contracts").ComputeJob>;
   artifacts: Map<string, ArtifactManifest>;
   agentRuns: Map<string, AgentRun>;
   envelopes: Map<string, ResultEnvelope>;
@@ -204,6 +205,7 @@ export function emptyProjection(id: string, stateDir: string, workspaceDir: stri
     skills: new Map(),
     artifacts: new Map(),
     agentRuns: new Map(),
+    jobs: new Map(),
     envelopes: new Map(),
     seq: new Map(),
     eventSeq: 0,
@@ -486,6 +488,40 @@ export function applyEvent(proj: CampaignProjection, ev: ResearchEvent): void {
         r.tokensEstimate = p.tokensEstimate === undefined ? undefined : Number(p.tokensEstimate);
         r.tokensEstimated = p.tokensEstimated === undefined ? undefined : Boolean(p.tokensEstimated);
       }
+      break;
+    }
+    case "job.created": {
+      const j = p.job as unknown as import("@research-os/contracts").ComputeJob;
+      proj.jobs.set(j.id, j);
+      break;
+    }
+    case "job.checkpoint": {
+      const j = proj.jobs.get(String(p.jobId));
+      if (j) {
+        j.lastProgress = p.metric ? String(p.metric) : j.lastProgress;
+      }
+      break;
+    }
+    case "job.completed": {
+      const j = proj.jobs.get(String(p.jobId));
+      if (j) {
+        j.status = "completed";
+        j.endedAt = ev.timestamp;
+        j.exitCode = p.exitCode === undefined ? undefined : Number(p.exitCode);
+        j.stdoutArtifactRef = p.stdoutArtifactRef ? String(p.stdoutArtifactRef) : undefined;
+        j.metric = p.metric ? String(p.metric) : undefined;
+      }
+      break;
+    }
+    case "job.failed": {
+      const j = proj.jobs.get(String(p.jobId));
+      if (j) {
+        j.status = (p.reason === "timeout" ? "timeout" : p.reason === "interrupted" ? "interrupted" : "failed") as never;
+        j.endedAt = ev.timestamp;
+        j.exitCode = p.exitCode === undefined ? undefined : Number(p.exitCode);
+        j.stdoutArtifactRef = p.stdoutArtifactRef ? String(p.stdoutArtifactRef) : undefined;
+      }
+      // replay-honesty: a job still "running" after a daemon crash is marked interrupted at load
       break;
     }
     case "experiment.planned":

@@ -1,5 +1,5 @@
 campaign:
-  title: "Cuboïde parfait — open problem #27"
+  title: "Cuboïde parfait"
   modules: [mathematics]
   objective:
     statement: "Open problem (Wikipedia FR, algèbre / arithmétique): Existe-t-il un cuboïde parfait (arêtes, diagonales de faces et diagonale de l'espace toutes entières) ? Goal: OPERATIONAL progress under our epistemic rules — Any Euler brick / perfect cuboid candidate becomes a certificate-check witness: {a,b,c} with verify() checking the six face diagonals (and space diagonal for perfect) are perfect squares — exact integer math only; absence ranges stay empirical. Search a <= b <= c <= K: workers script (Euler bricks known — perfect one unknown); any witness = exact artifact (all quantities integers, checkable exactly; expressible claims pointwise verifiable); "
@@ -8,18 +8,19 @@ campaign:
       - "Which parameter reductions die?"
     deliverables:
       - kind: report
-        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled"
+        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled, discovery candidates + novelty statuses"
     successCriteria:
       - type: claim_status
         value: verified
-        description: at least one exactly-verified bounded/witness claim (verifier-run)
+        description: "at least one exactly-verified claim/certificate (verifier-run)"
       - type: claim_status
         value: falsified
-        description: at least one auxiliary conjecture falsified by an exact counterexample
+        description: "at least one auxiliary conjecture falsified by an exact counterexample"
     constraints:
       - "exact integer arithmetic only (floats are exploration, never evidence)"
       - "never claim more than what was verified: state bounds honestly"
       - "known literature results are source-backed claims, not campaign-verified"
+      - "records: NO hand-written frontier numbers — dated frontier snapshots only"
     exclusions:
       - "no unbounded claims from computation"
     assumptions:

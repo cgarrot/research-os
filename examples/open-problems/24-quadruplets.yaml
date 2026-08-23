@@ -1,5 +1,5 @@
 campaign:
-  title: "Infinité de quadruplets de nombres premiers — open problem #24"
+  title: "Infinité de quadruplets de nombres premiers"
   modules: [mathematics]
   objective:
     statement: "Open problem (Wikipedia FR, théorie des nombres): Existe-t-il une infinité de quadruplets de nombres premiers (p, p+2, p+6, p+8) ? Goal: OPERATIONAL progress under our epistemic rules — Pointwise VERIFIED quadruplet witnesses via certificate-check: witness {p,q,r,s}, tupleAllPrime [p,q,r,s], exact expression 'p*p+p*2' style checks per component (or verify() asserting p+2==q, q+4==r, r+2==s and primality) — certificates, not just script artifacts. Pointwise VERIFIED quadruplet witnesses (is_prime on 4 values via exact-point or script artifacts + verifier points); prime constellation pattern constraints (mod 210 etc.) as source-backed; empirical"
@@ -8,18 +8,19 @@ campaign:
       - "Which structural claims die?"
     deliverables:
       - kind: report
-        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled"
+        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled, discovery candidates + novelty statuses"
     successCriteria:
       - type: claim_status
         value: verified
-        description: at least one exactly-verified bounded/witness claim (verifier-run)
+        description: "at least one exactly-verified claim/certificate (verifier-run)"
       - type: claim_status
         value: falsified
-        description: at least one auxiliary conjecture falsified by an exact counterexample
+        description: "at least one auxiliary conjecture falsified by an exact counterexample"
     constraints:
       - "exact integer arithmetic only (floats are exploration, never evidence)"
       - "never claim more than what was verified: state bounds honestly"
       - "known literature results are source-backed claims, not campaign-verified"
+      - "records: NO hand-written frontier numbers — dated frontier snapshots only"
     exclusions:
       - "no unbounded claims from computation"
     assumptions:

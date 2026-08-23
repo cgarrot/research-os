@@ -1,5 +1,5 @@
 campaign:
-  title: "Nombre de Ramsey R(5,5) — open problem #36"
+  title: "Nombre de Ramsey R(5,5)"
   modules: [mathematics]
   objective:
     statement: "Open problem (Wikipedia FR, théorie de Ramsey): Déterminer R(5,5) (sait seulement 43 <= R(5,5) <= 48). Goal: OPERATIONAL progress under our epistemic rules — A 2-coloring of K_42 avoiding monochromatic K_5 is a certificate: certificate-check witness {edge coloring}, verify() enumerating all C(42,5) 5-sets (feasible in budget) — certificate verified ⇒ R(5,5) >= 43 verified. Reproduce the known 42-construction first, then hunt. Certificate-centric: lower bound = a 2-coloring of K_42 with no monochromatic K_5 (finite exact check in scripts — VERIFIED-grade artifact via exhaustive clique check); workers search colorings (symme"
@@ -8,18 +8,19 @@ campaign:
       - "Which pruned searches were exhausted clean?"
     deliverables:
       - kind: report
-        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled"
+        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled, discovery candidates + novelty statuses"
     successCriteria:
       - type: claim_status
         value: verified
-        description: at least one exactly-verified bounded/witness claim (verifier-run)
+        description: "at least one exactly-verified claim/certificate (verifier-run)"
       - type: claim_status
         value: falsified
-        description: at least one auxiliary conjecture falsified by an exact counterexample
+        description: "at least one auxiliary conjecture falsified by an exact counterexample"
     constraints:
       - "exact integer arithmetic only (floats are exploration, never evidence)"
       - "never claim more than what was verified: state bounds honestly"
       - "known literature results are source-backed claims, not campaign-verified"
+      - "records: NO hand-written frontier numbers — dated frontier snapshots only"
     exclusions:
       - "no unbounded claims from computation"
     assumptions:

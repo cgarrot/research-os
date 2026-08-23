@@ -1,5 +1,5 @@
 campaign:
-  title: "Nombres premiers jumeaux — open problem #8"
+  title: "Nombres premiers jumeaux"
   modules: [mathematics]
   objective:
     statement: "Open problem (Wikipedia FR, théorie des nombres): Conjecture des nombres premiers jumeaux : il existe une infinité de premiers p tels que p+2 soit premier. Goal: OPERATIONAL progress under our epistemic rules — Twin = Polignac k=1. (1) verify the largest twin-free interval structure via next_prime_gap (pointwise verified witnesses); (2) empirical support: twin counts up to 10^7 in worker scripts (numerical-evidence framing); (3) falsify auxiliaries about twin density/monotonicity; (4) source-backed: Zhang/Maynard bounded-gap results."
@@ -8,18 +8,19 @@ campaign:
       - "Which density monotonicity claims die exactly?"
     deliverables:
       - kind: report
-        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled"
+        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled, discovery candidates + novelty statuses"
     successCriteria:
       - type: claim_status
         value: verified
-        description: at least one exactly-verified bounded/witness claim (verifier-run)
+        description: "at least one exactly-verified claim/certificate (verifier-run)"
       - type: claim_status
         value: falsified
-        description: at least one auxiliary conjecture falsified by an exact counterexample
+        description: "at least one auxiliary conjecture falsified by an exact counterexample"
     constraints:
       - "exact integer arithmetic only (floats are exploration, never evidence)"
       - "never claim more than what was verified: state bounds honestly"
       - "known literature results are source-backed claims, not campaign-verified"
+      - "records: NO hand-written frontier numbers — dated frontier snapshots only"
     exclusions:
       - "no unbounded claims from computation"
     assumptions:

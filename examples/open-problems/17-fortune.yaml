@@ -1,5 +1,5 @@
 campaign:
-  title: "Conjecture de Fortune — open problem #17"
+  title: "Conjecture de Fortune"
   modules: [mathematics]
   objective:
     statement: "Open problem (Wikipedia FR, théorie des nombres): Pour tout n >= 1, le nombre de Fortune F_n (plus petit entier > 1 tel que primorial(n) + F_n soit premier) est premier. Goal: OPERATIONAL progress under our epistemic rules — primorial(n) helper added to the verifier library: bounded VERIFIED check 'F_n is prime for all n in [1, K]' via exhaustive-finite with expression computing the Fortune number (needs next-prime-after search... prefer: workers compute F_n per n in scripts, then VERIFIED pointwise via exact-point on each primorial(n)+F_n with predicate prime — a batch of verified witnesses; plus falsify auxiliaries on F_n growth)."
@@ -8,18 +8,19 @@ campaign:
       - "Growth claims that die?"
     deliverables:
       - kind: report
-        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled"
+        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled, discovery candidates + novelty statuses"
     successCriteria:
       - type: claim_status
         value: verified
-        description: at least one exactly-verified bounded/witness claim (verifier-run)
+        description: "at least one exactly-verified claim/certificate (verifier-run)"
       - type: claim_status
         value: falsified
-        description: at least one auxiliary conjecture falsified by an exact counterexample
+        description: "at least one auxiliary conjecture falsified by an exact counterexample"
     constraints:
       - "exact integer arithmetic only (floats are exploration, never evidence)"
       - "never claim more than what was verified: state bounds honestly"
       - "known literature results are source-backed claims, not campaign-verified"
+      - "records: NO hand-written frontier numbers — dated frontier snapshots only"
     exclusions:
       - "no unbounded claims from computation"
     assumptions:

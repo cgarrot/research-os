@@ -1,5 +1,5 @@
 campaign:
-  title: "Taxicab(5, 2, n) pour n > 1 — open problem #15"
+  title: "Taxicab(5, 2, n) pour n > 1"
   modules: [mathematics]
   objective:
     statement: "Open problem (Wikipedia FR, théorie des nombres): Existe-t-il des entiers somme de deux puissances cinquièmes positives d'au moins deux manières différentes (taxicab(5,2,n), n > 1) ? Goal: OPERATIONAL progress under our epistemic rules — ANY collision a^5+b^5=c^5+d^5 with {a,b}≠{c,d} becomes a VERIFIED certificate: mathematics:certificate-check with witness {a,b,c,d}, your verify() script, exact cross-check expression 'a**5+b**5-(c**5+d**5)' predicate 'equals:0' and allDistinct. Absence scans below K stay empirical (numerical-evidence). Hunt for a^5 + b^5 = c^5 + d^5 with {a,b} != {c,d}: workers script exhaustive/search up to a reachable bound (hash tables over a^5+b^5); ANY found witness is exactly verifiable (exact-point, equals on"
@@ -8,18 +8,19 @@ campaign:
       - "Modular obstructions worth recording?"
     deliverables:
       - kind: report
-        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled"
+        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled, discovery candidates + novelty statuses"
     successCriteria:
       - type: claim_status
         value: verified
-        description: at least one exactly-verified bounded/witness claim (verifier-run)
+        description: "at least one exactly-verified claim/certificate (verifier-run)"
       - type: claim_status
         value: falsified
-        description: at least one auxiliary conjecture falsified by an exact counterexample
+        description: "at least one auxiliary conjecture falsified by an exact counterexample"
     constraints:
       - "exact integer arithmetic only (floats are exploration, never evidence)"
       - "never claim more than what was verified: state bounds honestly"
       - "known literature results are source-backed claims, not campaign-verified"
+      - "records: NO hand-written frontier numbers — dated frontier snapshots only"
     exclusions:
       - "no unbounded claims from computation"
     assumptions:

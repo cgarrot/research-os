@@ -1,5 +1,5 @@
 campaign:
-  title: "Problème de Waring — valeurs de g(k) et G(k) — open problem #11"
+  title: "Problème de Waring — valeurs de g(k) et G(k)"
   modules: [mathematics]
   objective:
     statement: "Open problem (Wikipedia FR, théorie des nombres): Déterminer g(k) (tout entier est somme d'au plus g(k) puissances k-ièmes) et G(k) (tout entier ASSEZ grand). Goal: OPERATIONAL progress under our epistemic rules — Workers compute g(k) candidates by exhaustive check (scripts, sympy) for k <= 5 within budget; representability of individual numbers = script-verifiable (artifacts + empirically_supported for ranges); falsify auxiliaries on G(k) lower bounds; source-backed: known g(k) values."
@@ -8,18 +8,19 @@ campaign:
       - "Which naive G(k) claims die?"
     deliverables:
       - kind: report
-        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled"
+        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled, discovery candidates + novelty statuses"
     successCriteria:
       - type: claim_status
         value: verified
-        description: at least one exactly-verified bounded/witness claim (verifier-run)
+        description: "at least one exactly-verified claim/certificate (verifier-run)"
       - type: claim_status
         value: falsified
-        description: at least one auxiliary conjecture falsified by an exact counterexample
+        description: "at least one auxiliary conjecture falsified by an exact counterexample"
     constraints:
       - "exact integer arithmetic only (floats are exploration, never evidence)"
       - "never claim more than what was verified: state bounds honestly"
       - "known literature results are source-backed claims, not campaign-verified"
+      - "records: NO hand-written frontier numbers — dated frontier snapshots only"
     exclusions:
       - "no unbounded claims from computation"
     assumptions:

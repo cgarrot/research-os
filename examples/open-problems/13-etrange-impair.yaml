@@ -1,5 +1,5 @@
 campaign:
-  title: "Nombres étranges impairs — open problem #13"
+  title: "Nombres étranges impairs"
   modules: [mathematics]
   objective:
     statement: "Open problem (Wikipedia FR, théorie des nombres): Existe-t-il un nombre étrange (abondant, non semi-parfait : aucune partie propre de ses diviseurs ne somme à n) IMPAIR ? Goal: OPERATIONAL progress under our epistemic rules — Known: weird numbers exist (even, e.g. 70); odd unknown. Workers script abundant+subset checks for odd n up to a reachable bound; any witness computation is exact (artifact); aux kills on density/structure; source-backed: known bounds."
@@ -8,18 +8,19 @@ campaign:
       - "Which structural shortcuts die?"
     deliverables:
       - kind: report
-        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled"
+        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled, discovery candidates + novelty statuses"
     successCriteria:
       - type: claim_status
         value: verified
-        description: at least one exactly-verified bounded/witness claim (verifier-run)
+        description: "at least one exactly-verified claim/certificate (verifier-run)"
       - type: claim_status
         value: falsified
-        description: at least one auxiliary conjecture falsified by an exact counterexample
+        description: "at least one auxiliary conjecture falsified by an exact counterexample"
     constraints:
       - "exact integer arithmetic only (floats are exploration, never evidence)"
       - "never claim more than what was verified: state bounds honestly"
       - "known literature results are source-backed claims, not campaign-verified"
+      - "records: NO hand-written frontier numbers — dated frontier snapshots only"
     exclusions:
       - "no unbounded claims from computation"
     assumptions:

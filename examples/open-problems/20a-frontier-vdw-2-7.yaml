@@ -1,0 +1,54 @@
+campaign:
+  title: "Van der Waerden W(2,7) — frontier-record hunt"
+  modules: [mathematics]
+  objective:
+    statement: "Open problem (Wikipedia FR, théorie de Ramsey): Improve the computational lower bound for W(2,7): a 2-coloring of [1, n] with no monochromatic 7-term arithmetic progression, with n beyond the current public record. Goal: OPERATIONAL progress under our epistemic rules — MANDATORY ORDER: (1) FRONTIER FIRST — research_frontier_snapshot for W(2,7) lower bound from ≥2 dated sources (dynamic surveys / LeapsInBounds / Rabung-Lotts 2012 lineage; cached reference value: valid coloring known to n=3703, i.e. W(2,7) > 3703 — treat ONLY as cache, refresh live). (2) Improvement predicate: a coloring of [1, 3704]+ with zero monochromatic 7-APs. (3) Reproduce the known-record length on a SMALL instance first (validator sanity: e.g. n=352/k=5 era fixtures via hunt.py) — validator must accept known-valid and reject known-invalid. (4) Certificate: witness = the coloring; certificate-check with verify() brute-forcing all 7-APs + structural check (length). (5) SEARCH as durable jobs: hunt.py --problem vdw --n 3704 --k 7 with a strategy PORTFOLIO (sa, random-restart, tabu, evo; multiple seeds; consider cyclic/zipper constructions from power-residue classes — Rabung-Lotts method — as primers/checkpoints). Wall-clock honesty: this is a long hunt; negative results = search-exhausted-under-strategy-X memories with telemetry. NO record claim without: fresh frontier refresh + improvement PASS + novelty audit deep + research_candidate_promote (terminal = human review)."
+    questions:
+      - "What exactly is the current best public certificate length and its provenance/date?"
+      - "Which construction families (cyclic zippers, power classes mod p, SA repair) reach farthest per CPU-hour?"
+      - "Can symmetry-reduced spaces (cyclic colorings) beat the full search at n≈3704?"
+    deliverables:
+      - kind: report
+        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled, discovery candidates + novelty statuses"
+    successCriteria:
+      - type: claim_status
+        value: verified
+        description: "at least one exactly-verified claim/certificate (verifier-run)"
+      - type: claim_status
+        value: falsified
+        description: "at least one auxiliary conjecture falsified by an exact counterexample"
+    constraints:
+      - "exact integer arithmetic only (floats are exploration, never evidence)"
+      - "never claim more than what was verified: state bounds honestly"
+      - "known literature results are source-backed claims, not campaign-verified"
+      - "records: NO hand-written frontier numbers — dated frontier snapshots only"
+    exclusions:
+      - "no unbounded claims from computation"
+    assumptions:
+      - "standard mathematical definitions"
+    riskClass: low
+  models:
+    defaultPool:
+      - id: zai-glm-5.3
+        provider: zai
+        model: glm-5.3
+        runtime: pi
+        thinkingLevel: max
+        tags: [default]
+  search:
+    policy: round-robin
+    blindGenerators: 3
+    maxBranches: 8
+  budgets:
+    maxAgentRuns: 48
+    maxTasks: 90
+    maxRounds: 6
+    maxExperiments: 40
+    wallClockMinutes: 480
+    maxTokensEstimate: 50000000
+  autonomy: { level: L3, humanApprovalRequiredFor: [] }
+  workers: { autoSpawn: 2, leaseSeconds: 3600, maxRunMinutes: 360 }
+  stop: { onSuccess: true, onBudgetExhausted: true, noProgressRounds: 3, successSemantics: "all", minRounds: 2, requireCycle: true }
+  modulePrompts:
+    worker: "DISCOVERY MODE (frontier-record): follow the frontier-first / certificate-hunting / novelty-audit skills IN ORDER. Frontier snapshot BEFORE hunting (research_frontier_snapshot, dated sources); long searches as research_job_create jobs (hunt.py, checkpoints, portfolios — never hours of compute inside your turns); candidates quarantined via research_discovery_candidate; promotion only through research_candidate_promote (terminal = human review). Novelty is decided by the adversarial novelty audit, never by the claimant."
+  verification: { requireIndependentAudit: true }

@@ -1,5 +1,5 @@
 campaign:
-  title: "Conjecture d'Erdős–Faber–Lovász — open problem #40"
+  title: "Conjecture d'Erdős–Faber–Lovász"
   modules: [mathematics]
   objective:
     statement: "Open problem (Wikipedia FR, théorie des graphes): Coloration de graphes linéaires par n couleurs (résolue en 2021 pour n assez grand — statut exact des petits cas). Goal: OPERATIONAL progress under our epistemic rules — Verify the 2021 asymptotic status (source-backed); workers script-check small n exhaustively (exact artifacts); falsify auxiliaries on tightness."
@@ -7,18 +7,19 @@ campaign:
       - "Which small n are exhaustively checked clean?"
     deliverables:
       - kind: report
-        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled"
+        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled, discovery candidates + novelty statuses"
     successCriteria:
       - type: claim_status
         value: verified
-        description: at least one exactly-verified bounded/witness claim (verifier-run)
+        description: "at least one exactly-verified claim/certificate (verifier-run)"
       - type: claim_status
         value: falsified
-        description: at least one auxiliary conjecture falsified by an exact counterexample
+        description: "at least one auxiliary conjecture falsified by an exact counterexample"
     constraints:
       - "exact integer arithmetic only (floats are exploration, never evidence)"
       - "never claim more than what was verified: state bounds honestly"
       - "known literature results are source-backed claims, not campaign-verified"
+      - "records: NO hand-written frontier numbers — dated frontier snapshots only"
     exclusions:
       - "no unbounded claims from computation"
     assumptions:

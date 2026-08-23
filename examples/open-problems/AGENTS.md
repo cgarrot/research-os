@@ -9,7 +9,7 @@ node bin/generate-open-problem-campaigns.mjs --check   # drift check (exit 1 if 
 
 ## Modes & profiles (catalog fields)
 
-- `mode`: `bounded` (exactly-verified bound reachable with today's verifier library) · `aux` (falsification/witness-centric) · `search` (witness hunt — runs the FULL budget, `stop.onSuccess: false`) · `exploration` (grounding/formulations, quick profile).
+- `mode`: `frontier-record` (dated frontier snapshot FIRST, then certificate hunt via durable jobs, promotion gate) · `new-object` (define object → exact census → novelty audit → conjectures) · `bounded` (exactly-verified bound reachable with today's verifier library) · `aux` (falsification/witness-centric) · `search` (witness hunt — runs the FULL budget, `stop.onSuccess: false`) · `exploration` (grounding/formulations, quick profile).
 - `profile`: `standard` (4h ceiling) · `deep` (10h) · `quick` (1h). Ceilings, not durations — most campaigns end earlier on criteria.
 
 Success criteria are **OR semantics**: the first satisfied criterion completes the campaign; reports show honestly which ones were met. `search`-mode campaigns only stop on budget/rounds/no-progress.
@@ -37,5 +37,10 @@ Edit `catalog.json` (next number, mode, profile, focus text), regenerate, valida
 
 ## Done so far
 
-The ledger lives in `workspaces/queue.json` at runtime (`research queue` shows it).
-Every completed campaign exports a report to `workspaces/reports/<slug>.md`.
+| Problem | Campaign | Result |
+|---|---|---|
+| 01-collatz-syracuse | c_5 | completed — verified [1, 5·10⁶] (exhaustive 5M/5M) + falsified auxiliary + empirical |
+| 02-goldbach | c_6 | completed — 2 verified bounded claims (reduced-residue depth checks on [10, 10⁵]) |
+| (duplicate bootstrap artifact) | c_7 | stopped — ignore |
+| 03-legendre | c_8 | started by the supervisor 2026-08-22T23:15Z |
+| 04-brocard … 54-birch-swinnerton-dyer | — | queued (numeric order) |

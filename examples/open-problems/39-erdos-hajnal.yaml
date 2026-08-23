@@ -1,5 +1,5 @@
 campaign:
-  title: "Conjecture d'Erdős–Hajnal — open problem #39"
+  title: "Conjecture d'Erdős–Hajnal"
   modules: [mathematics]
   objective:
     statement: "Open problem (Wikipedia FR, théorie des graphes): Pour toute famille H de graphes interdits, il existe delta > 0 tel que tout graphe H-libre contient une clique ou un stable de taille n^delta. Goal: OPERATIONAL progress under our epistemic rules — Grounding + small-case computational support (workers, empirical); aux kills."
@@ -7,15 +7,16 @@ campaign:
       - "Known delta values; which small cases are checkable?"
     deliverables:
       - kind: report
-        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled"
+        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled, discovery candidates + novelty statuses"
     successCriteria:
       - type: claim_status
         value: falsified
-        description: at least one auxiliary conjecture falsified by an exact counterexample
+        description: "at least one auxiliary conjecture falsified by an exact counterexample"
     constraints:
       - "exact integer arithmetic only (floats are exploration, never evidence)"
       - "never claim more than what was verified: state bounds honestly"
       - "known literature results are source-backed claims, not campaign-verified"
+      - "records: NO hand-written frontier numbers — dated frontier snapshots only"
     exclusions:
       - "no unbounded claims from computation"
     assumptions:

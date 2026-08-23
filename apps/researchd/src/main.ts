@@ -22,6 +22,7 @@ import {
   type GlobalSkillEntry,
 } from "@research-os/core";
 import { handleRequest, sseStream } from "./server.js";
+import { JobRunner } from "./jobs.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "../../.."); // apps/researchd/dist -> repo root
@@ -41,6 +42,13 @@ process.stderr.write(`[researchd] replayed ${loaded.events} events across ${load
 
 const modules = loadModules([MODULES_DIR]);
 process.stderr.write(`[researchd] modules: ${modules.map((m) => `${m.manifest.id}(${m.verifiers.length} verifiers)`).join(", ") || "none"}\n`);
+
+// ---- durable compute jobs (novelty layer §8.6)
+const jobRunner = new JobRunner(core, (job) => {
+  process.stderr.write(`[job] ${job.id} ${job.status}${job.metric ? ` metric=${job.metric.slice(0, 80)}` : ""}\n`);
+});
+// replay-honesty: jobs still running with no live child were interrupted by a crash
+JobRunner.replayInterruptions(core);
 
 // ---- mesh transport (same broker as all Pi workers; transport only — invariant B)
 const mesh = new PiMeshTransportAdapter((frame) => {
@@ -157,7 +165,7 @@ const server = http.createServer((req, res) => {
     sseStream(core, url.searchParams.get("campaign"), res);
     return;
   }
-  void handleRequest({ core, modulesDir: MODULES_DIR, piPackageDir: PI_PACKAGE_DIR, mesh }, req, res).catch((err) => {
+  void handleRequest({ core, modulesDir: MODULES_DIR, piPackageDir: PI_PACKAGE_DIR, mesh, jobs: jobRunner }, req, res).catch((err) => {
     process.stderr.write(`[researchd] request error: ${String(err)}\n`);
     if (!res.headersSent) {
       res.writeHead(500, { "content-type": "application/json" });

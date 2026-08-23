@@ -23,6 +23,13 @@
       "maxRounds": 3,
       "maxExperiments": 12,
       "wallClockMinutes": 60
+    },
+    "record": {
+      "maxAgentRuns": 48,
+      "maxTasks": 90,
+      "maxRounds": 6,
+      "maxExperiments": 40,
+      "wallClockMinutes": 480
     }
   },
   "problems": [
@@ -217,6 +224,51 @@
       "questions": [
         "F_5, F_6 exactly verified composite?",
         "Which ranges/claims documented?"
+      ]
+    },
+    {
+      "num": "20a",
+      "slug": "20a-frontier-vdw-2-7",
+      "title": "Van der Waerden W(2,7) — frontier-record hunt",
+      "domain": "théorie de Ramsey",
+      "mode": "frontier-record",
+      "profile": "record",
+      "statement": "Improve the computational lower bound for W(2,7): a 2-coloring of [1, n] with no monochromatic 7-term arithmetic progression, with n beyond the current public record.",
+      "focus": "MANDATORY ORDER: (1) FRONTIER FIRST — research_frontier_snapshot for W(2,7) lower bound from ≥2 dated sources (dynamic surveys / LeapsInBounds / Rabung-Lotts 2012 lineage; cached reference value: valid coloring known to n=3703, i.e. W(2,7) > 3703 — treat ONLY as cache, refresh live). (2) Improvement predicate: a coloring of [1, 3704]+ with zero monochromatic 7-APs. (3) Reproduce the known-record length on a SMALL instance first (validator sanity: e.g. n=352/k=5 era fixtures via hunt.py) — validator must accept known-valid and reject known-invalid. (4) Certificate: witness = the coloring; certificate-check with verify() brute-forcing all 7-APs + structural check (length). (5) SEARCH as durable jobs: hunt.py --problem vdw --n 3704 --k 7 with a strategy PORTFOLIO (sa, random-restart, tabu, evo; multiple seeds; consider cyclic/zipper constructions from power-residue classes — Rabung-Lotts method — as primers/checkpoints). Wall-clock honesty: this is a long hunt; negative results = search-exhausted-under-strategy-X memories with telemetry. NO record claim without: fresh frontier refresh + improvement PASS + novelty audit deep + research_candidate_promote (terminal = human review).",
+      "questions": [
+        "What exactly is the current best public certificate length and its provenance/date?",
+        "Which construction families (cyclic zippers, power classes mod p, SA repair) reach farthest per CPU-hour?",
+        "Can symmetry-reduced spaces (cyclic colorings) beat the full search at n≈3704?"
+      ]
+    },
+    {
+      "num": "20b",
+      "slug": "20b-frontier-ramsey-4-6",
+      "title": "Ramsey R(4,6) — frontier-record hunt (36-vertex graph)",
+      "domain": "théorie de Ramsey",
+      "mode": "frontier-record",
+      "profile": "record",
+      "statement": "Improve the lower bound for the Ramsey number R(4,6): construct a graph on 36 vertices with no K4 and no independent set of size 6 (would give R(4,6) >= 37).",
+      "focus": "MANDATORY ORDER: (1) FRONTIER FIRST — research_frontier_snapshot: current bounds 36 <= R(4,6) <= 40 (lower from a 35-vertex graph; upper Angeltveit-McKay lineage). CRITICAL: R(4,6) >= 36 is KNOWN — the target is the 36-VERTEX graph ⟹ R(4,6) >= 37. Refresh live, never trust cached numbers. (2) Reproduce the known 35-vertex certificate (search or literature construction) — validator must PASS it. (3) Certificate: witness = edge set (or circulant connection set); certificate-check with verify() counting K4 (58,905 4-sets) and independent 6-sets (1.9M 6-sets) exactly. (4) SEARCH as durable jobs: hunt.py --problem ramsey --v 36 AND --problem ramsey-circulant --v 36 (circulant space = 2^18, known critical graphs for R(4,4)/R(3,k) are often circulant/Paley-like — symmetry-first). Portfolio + multi-seed; checkpoints. Negative results scoped per strategy. Promotion: fresh frontier + improvement PASS + novelty deep + human review.",
+      "questions": [
+        "Exact current lower-bound certificate for R(4,6) and its construction family?",
+        "Do circulant/strongly-regular candidates survive at 36 vertices (vs 2^630 full space)?",
+        "Which repair heuristics (edge flips within violated cliques) scale to 630-edge bitstrings?"
+      ]
+    },
+    {
+      "num": "20c",
+      "slug": "20c-object-sequence",
+      "title": "Object discovery — a new exact sequence from a classical family",
+      "domain": "théorie des nombres",
+      "mode": "new-object",
+      "profile": "standard",
+      "statement": "Define a nontrivial exact statistic derived from a classical object family (candidates from prior campaigns: gap-champions ladder of sums of two k-th powers; minimal-abundance ladder of odd abundant numbers; solitude ladder of abundancy ratios), compute >= 20 exact terms, audit novelty (values + definition), and generate >= 3 falsifiable conjectures.",
+      "focus": "Object-discovery workflow: (1) OBJECT DEFINITION gate — precise definition, parameters, canonicalization, equivalence; adversary checks well-definedness + 'is this a renamed known construction?'. (2) TWO independent small-census implementations must agree before scaling. (3) >= 20 EXACT terms with per-term provenance artifacts (sequence_candidate object). (4) NOVELTY: OEIS value search on several prefixes + offset windows AND definition search (research_novelty_search; adversarial-novelty-search skill). (5) Pattern mining: rival hypotheses, discriminating experiments, falsification attempts. (6) Candidates: research_discovery_candidate + research_candidate_promote (human review terminal).",
+      "questions": [
+        "Which ladder (gap-champions / minimal-abundance / solitude / other) is most likely unrecorded after OEIS audit?",
+        "Do two independent enumerators agree on the first 20 terms?",
+        "Which rival conjectures survive falsification attempts?"
       ]
     },
     {

@@ -3,6 +3,25 @@
 
 export type AgentRunStatus = "running" | "completed" | "failed" | "killed";
 
+/** Durable compute job (spec §8.6): long searches live OUTSIDE Pi agent turns. */
+export interface ComputeJob {
+  id: string;
+  campaignId: string;
+  name: string;
+  command: string[];
+  cwd: string;
+  status: "running" | "completed" | "failed" | "timeout" | "interrupted";
+  pid?: number;
+  startedAt: string;
+  endedAt?: string;
+  wallSeconds?: number;
+  stdoutArtifactRef?: string;
+  exitCode?: number;
+  metric?: string;
+  lastProgress?: string;
+  createdBy: string;
+}
+
 export interface AgentRun {
   id: string;
   campaignId: string;

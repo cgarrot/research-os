@@ -1,5 +1,5 @@
 campaign:
-  title: "Seuil de percolation — formule générale — open problem #48"
+  title: "Seuil de percolation — formule générale"
   modules: [mathematics]
   objective:
     statement: "Open problem (Wikipedia FR, théorie des graphes / probabilités): Trouver une formule générale pour le seuil de percolation d'un graphe. Goal: OPERATIONAL progress under our epistemic rules — Grounding + known thresholds table (source-backed); simulations = exploration only (random — never exact evidence); aux kills on naive formulas (workers test candidate formulas against known exact thresholds — falsification IS exact)."
@@ -7,15 +7,16 @@ campaign:
       - "Which candidate formulas die against known thresholds?"
     deliverables:
       - kind: report
-        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled"
+        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled, discovery candidates + novelty statuses"
     successCriteria:
       - type: claim_status
         value: falsified
-        description: at least one auxiliary conjecture falsified by an exact counterexample
+        description: "at least one auxiliary conjecture falsified by an exact counterexample"
     constraints:
       - "exact integer arithmetic only (floats are exploration, never evidence)"
       - "never claim more than what was verified: state bounds honestly"
       - "known literature results are source-backed claims, not campaign-verified"
+      - "records: NO hand-written frontier numbers — dated frontier snapshots only"
     exclusions:
       - "no unbounded claims from computation"
     assumptions:

@@ -1,5 +1,5 @@
 campaign:
-  title: "La constante d'Euler-Mascheroni est-elle rationnelle ? — open problem #32"
+  title: "La constante d'Euler-Mascheroni est-elle rationnelle ?"
   modules: [mathematics]
   objective:
     statement: "Open problem (Wikipedia FR, analyse): γ (constante d'Euler-Mascheroni) est-elle rationnelle ? Goal: OPERATIONAL progress under our epistemic rules — Honest framing: rationality is out of computational reach; grounding (irrationality measures, known bounds as source-backed); high-precision computation of γ in scripts is EXPLORATION ONLY (floats) — never evidence; aux kills on naive claims."
@@ -7,15 +7,16 @@ campaign:
       - "What IS known unconditionally; where do heuristic arguments stand?"
     deliverables:
       - kind: report
-        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled"
+        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled, discovery candidates + novelty statuses"
     successCriteria:
       - type: claim_status
         value: falsified
-        description: at least one auxiliary conjecture falsified by an exact counterexample
+        description: "at least one auxiliary conjecture falsified by an exact counterexample"
     constraints:
       - "exact integer arithmetic only (floats are exploration, never evidence)"
       - "never claim more than what was verified: state bounds honestly"
       - "known literature results are source-backed claims, not campaign-verified"
+      - "records: NO hand-written frontier numbers — dated frontier snapshots only"
     exclusions:
       - "no unbounded claims from computation"
     assumptions:

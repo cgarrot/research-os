@@ -1,5 +1,5 @@
 campaign:
-  title: "Conjecture de Schanuel — open problem #29"
+  title: "Conjecture de Schanuel"
   modules: [mathematics]
   objective:
     statement: "Open problem (Wikipedia FR, analyse): Conjecture de Schanuel sur la dimension transcendante de nombres exponentiellement algébriquement indépendants. Goal: OPERATIONAL progress under our epistemic rules — Grounding + consequences chain (Lindemann, Gelfond-Schneider as source-backed); aux kills on plausible strengthenings."
@@ -7,15 +7,16 @@ campaign:
       - "Which consequences are independently testable?"
     deliverables:
       - kind: report
-        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled"
+        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled, discovery candidates + novelty statuses"
     successCriteria:
       - type: claim_status
         value: falsified
-        description: at least one auxiliary conjecture falsified by an exact counterexample
+        description: "at least one auxiliary conjecture falsified by an exact counterexample"
     constraints:
       - "exact integer arithmetic only (floats are exploration, never evidence)"
       - "never claim more than what was verified: state bounds honestly"
       - "known literature results are source-backed claims, not campaign-verified"
+      - "records: NO hand-written frontier numbers — dated frontier snapshots only"
     exclusions:
       - "no unbounded claims from computation"
     assumptions:

@@ -1,0 +1,54 @@
+campaign:
+  title: "Ramsey R(4,6) — frontier-record hunt (36-vertex graph)"
+  modules: [mathematics]
+  objective:
+    statement: "Open problem (Wikipedia FR, théorie de Ramsey): Improve the lower bound for the Ramsey number R(4,6): construct a graph on 36 vertices with no K4 and no independent set of size 6 (would give R(4,6) >= 37). Goal: OPERATIONAL progress under our epistemic rules — MANDATORY ORDER: (1) FRONTIER FIRST — research_frontier_snapshot: current bounds 36 <= R(4,6) <= 40 (lower from a 35-vertex graph; upper Angeltveit-McKay lineage). CRITICAL: R(4,6) >= 36 is KNOWN — the target is the 36-VERTEX graph ⟹ R(4,6) >= 37. Refresh live, never trust cached numbers. (2) Reproduce the known 35-vertex certificate (search or literature construction) — validator must PASS it. (3) Certificate: witness = edge set (or circulant connection set); certificate-check with verify() counting K4 (58,905 4-sets) and independent 6-sets (1.9M 6-sets) exactly. (4) SEARCH as durable jobs: hunt.py --problem ramsey --v 36 AND --problem ramsey-circulant --v 36 (circulant space = 2^18, known critical graphs for R(4,4)/R(3,k) are often circulant/Paley-like — symmetry-first). Portfolio + multi-seed; checkpoints. Negative results scoped per strategy. Promotion: fresh frontier + improvement PASS + novelty deep + human review."
+    questions:
+      - "Exact current lower-bound certificate for R(4,6) and its construction family?"
+      - "Do circulant/strongly-regular candidates survive at 36 vertices (vs 2^630 full space)?"
+      - "Which repair heuristics (edge flips within violated cliques) scale to 630-edge bitstrings?"
+    deliverables:
+      - kind: report
+        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled, discovery candidates + novelty statuses"
+    successCriteria:
+      - type: claim_status
+        value: verified
+        description: "at least one exactly-verified claim/certificate (verifier-run)"
+      - type: claim_status
+        value: falsified
+        description: "at least one auxiliary conjecture falsified by an exact counterexample"
+    constraints:
+      - "exact integer arithmetic only (floats are exploration, never evidence)"
+      - "never claim more than what was verified: state bounds honestly"
+      - "known literature results are source-backed claims, not campaign-verified"
+      - "records: NO hand-written frontier numbers — dated frontier snapshots only"
+    exclusions:
+      - "no unbounded claims from computation"
+    assumptions:
+      - "standard mathematical definitions"
+    riskClass: low
+  models:
+    defaultPool:
+      - id: zai-glm-5.3
+        provider: zai
+        model: glm-5.3
+        runtime: pi
+        thinkingLevel: max
+        tags: [default]
+  search:
+    policy: round-robin
+    blindGenerators: 3
+    maxBranches: 8
+  budgets:
+    maxAgentRuns: 48
+    maxTasks: 90
+    maxRounds: 6
+    maxExperiments: 40
+    wallClockMinutes: 480
+    maxTokensEstimate: 50000000
+  autonomy: { level: L3, humanApprovalRequiredFor: [] }
+  workers: { autoSpawn: 2, leaseSeconds: 3600, maxRunMinutes: 360 }
+  stop: { onSuccess: true, onBudgetExhausted: true, noProgressRounds: 3, successSemantics: "all", minRounds: 2, requireCycle: true }
+  modulePrompts:
+    worker: "DISCOVERY MODE (frontier-record): follow the frontier-first / certificate-hunting / novelty-audit skills IN ORDER. Frontier snapshot BEFORE hunting (research_frontier_snapshot, dated sources); long searches as research_job_create jobs (hunt.py, checkpoints, portfolios — never hours of compute inside your turns); candidates quarantined via research_discovery_candidate; promotion only through research_candidate_promote (terminal = human review). Novelty is decided by the adversarial novelty audit, never by the claimant."
+  verification: { requireIndependentAudit: true }

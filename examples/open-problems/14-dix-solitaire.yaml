@@ -1,5 +1,5 @@
 campaign:
-  title: "Dix est-il un nombre solitaire ? — open problem #14"
+  title: "Dix est-il un nombre solitaire ?"
   modules: [mathematics]
   objective:
     statement: "Open problem (Wikipedia FR, théorie des nombres): Un nombre est solitaire s'il a un seul 'ami' (m != n avec sigma(m)/m = sigma(n)/n). 10 est-il solitaire ? Goal: OPERATIONAL progress under our epistemic rules — Workers search friends of 10 (solve sigma(m)/m = 7/5) via scripted search with pruning; empirical support artifacts; falsify auxiliaries about abundancy classes; source-backed known results."
@@ -8,18 +8,19 @@ campaign:
       - "Which claims about abundancy ratios die?"
     deliverables:
       - kind: report
-        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled"
+        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled, discovery candidates + novelty statuses"
     successCriteria:
       - type: claim_status
         value: verified
-        description: at least one exactly-verified bounded/witness claim (verifier-run)
+        description: "at least one exactly-verified claim/certificate (verifier-run)"
       - type: claim_status
         value: falsified
-        description: at least one auxiliary conjecture falsified by an exact counterexample
+        description: "at least one auxiliary conjecture falsified by an exact counterexample"
     constraints:
       - "exact integer arithmetic only (floats are exploration, never evidence)"
       - "never claim more than what was verified: state bounds honestly"
       - "known literature results are source-backed claims, not campaign-verified"
+      - "records: NO hand-written frontier numbers — dated frontier snapshots only"
     exclusions:
       - "no unbounded claims from computation"
     assumptions:

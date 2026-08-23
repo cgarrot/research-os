@@ -1,5 +1,5 @@
 campaign:
-  title: "Double de Mersenne premier pour p > 31 ? — open problem #19"
+  title: "Double de Mersenne premier pour p > 31 ?"
   modules: [mathematics]
   objective:
     statement: "Open problem (Wikipedia FR, théorie des nombres): Existe-t-il un nombre double de Mersenne MM_p = 2^(2^p - 1) - 1 premier pour p > 31 ? Goal: OPERATIONAL progress under our epistemic rules — Size makes exact checks impossible beyond tiny p; grounding + structural claims; aux kills on heuristics."
@@ -7,15 +7,16 @@ campaign:
       - "Why the search stalls (bit sizes); what partial statements are testable?"
     deliverables:
       - kind: report
-        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled"
+        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled, discovery candidates + novelty statuses"
     successCriteria:
       - type: claim_status
         value: falsified
-        description: at least one auxiliary conjecture falsified by an exact counterexample
+        description: "at least one auxiliary conjecture falsified by an exact counterexample"
     constraints:
       - "exact integer arithmetic only (floats are exploration, never evidence)"
       - "never claim more than what was verified: state bounds honestly"
       - "known literature results are source-backed claims, not campaign-verified"
+      - "records: NO hand-written frontier numbers — dated frontier snapshots only"
     exclusions:
       - "no unbounded claims from computation"
     assumptions:

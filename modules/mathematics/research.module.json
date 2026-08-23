@@ -20,6 +20,10 @@
       "description": "Ground the problem: definitions, known results and bounds, equivalent formulations, measurable sub-questions."
     },
     {
+      "name": "frontier-scout",
+      "description": "Establish the CURRENT PUBLIC FRONTIER before research: recent primary sources, maintained surveys/databases, precise record + date + provenance, exact improvement predicate. Does NOT search for new results."
+    },
+    {
       "name": "explorer",
       "description": "Open independent branches/approaches; vary representation (modular, statistical, structural, algebraic)."
     },
@@ -30,6 +34,22 @@
     {
       "name": "experimentalist",
       "description": "Exact computational experiments; every universal claim gets a bounded exhaustive verification request."
+    },
+    {
+      "name": "certificate-hunter",
+      "description": "Design and improve SEARCH STRATEGIES for certificate targets (hunt.py jobs, symmetry reduction, portfolios). May NOT promote candidates as valid — only the independent verifier decides."
+    },
+    {
+      "name": "novelty-auditor",
+      "description": "ADVERSARIALLY attempt to prove a candidate is ALREADY KNOWN: OEIS (value + definition), literature, structural analogues. Conservative statuses only."
+    },
+    {
+      "name": "object-designer",
+      "description": "Invent coherent computable objects/statistics (versioned definitions, canonicalization, cheap verifiers, well-definedness gate)."
+    },
+    {
+      "name": "pattern-miner",
+      "description": "Analyze exact datasets: patterns, anomalies, rival hypotheses, discriminating experiments."
     },
     {
       "name": "synthesizer",
@@ -65,7 +85,14 @@
     "skills/bounded-verification",
     "skills/change-representation",
     "skills/strengthen-lemma",
-    "skills/falsify-before-proving"
+    "skills/falsify-before-proving",
+    "skills/frontier-first",
+    "skills/novelty-audit",
+    "skills/certificate-hunting",
+    "skills/symmetry-reduction",
+    "skills/canonicalize-objects",
+    "skills/mine-exact-sequences",
+    "skills/adversarial-novelty-search"
   ],
   "verifiers": [
     "verifiers/exact-counterexample.json",
@@ -76,12 +103,12 @@
     "verifiers/lean-kernel.json"
   ],
   "prompts": {
-    "worker": "Mathematics rules: exact integer arithmetic only (no floats as evidence); a finite complete check is a proof of the bounded statement, a large partial check is only support; distinguish them explicitly. Known results quoted from memory are source-backed claims (mark them) — not verified in this campaign. You have FULL tool freedom: write any scripts under experiments/ (python3 + sympy available), run long computations when the question deserves it (nohup + poll + artifact), reuse and extend your earlier scripts across tasks.",
-    "ground": "Ground the problem mathematically: (1) precise definitions of every object involved; (2) known results, bounds and equivalent formulations (mark model-memory items as needing sources); (3) what has been verified computationally in the literature, at which bounds; (4) the cheapest sub-questions whose answer would change the strategy. Record question objects for the top unknowns.",
-    "generate": "Generate genuinely different approaches. Vary the REPRESENTATION (e.g. modular arithmetic view, statistical/stopping-time view, structural/cycle view, 2-adic or algebraic view, inductive invariant view). Every approach must state: thesis, why it might work, cheapest falsification test. At least one approach must be computational-falsification-first.",
-    "critique": "Attack like a referee-assassin: hidden assumptions, quantifier order, boundary cases (n=1, n=2, small primes, powers of 2), and FALSE LEMMAS — cheap small-case checks kill most plausible-looking auxiliary conjectures. When you can defeat a claim cheaply and exactly, run the check and attach contradicting evidence; request verification for the kill.",
-    "test": "Run exact experiments (write code under experiments/, register artifacts). For every universal (∀ over integers) claim: state the bounded version and request exhaustive-finite verification (complete finite domain ⇒ verified bounded claim). For every existential witness: exact-point verification. For insights from large partial scans: numerical-evidence (support only). Never claim unbounded truth from computation.",
-    "consolidate": "Consolidate: verified results (and their exact bounds), falsified conjectures (with the counterexample), surviving approaches and their next step, equivalent formulations discovered, reusable procedures → propose skills with evidence refs. Record a decision object for the round's strategy."
+    "worker": "Mathematics rules: exact integer arithmetic only (no floats as evidence); a finite complete check is a proof of the bounded statement, a large partial check is only support; distinguish them explicitly. Known results quoted from memory are source-backed claims — not verified here. Full tool freedom: scripts under experiments/, sympy, LONG compute must run as durable research_job_create jobs (never inside your turns; poll with research_job_status). Capabilities: research_list_verifiers — do not read module sources.",
+    "ground": "Ground the problem: definitions, known results (mark memory-derived ones as needing sources), unresolved contradictions, cheapest discriminating sub-questions → question objects.",
+    "generate": "Generate genuinely different approaches; vary the REPRESENTATION. Every approach: thesis + why it might work + cheapest falsification. In frontier-record campaigns, at least one approach must be a certificate-hunting plan (search space, symmetry reduction, strategy portfolio).",
+    "critique": "Attack like a referee-assassin: hidden assumptions, quantifier order, boundary cases, FALSE LEMMAS. For any candidate/definition: is it well-defined? invariant under claimed equivalence? a renamed known construction? Kill cheap claims exactly (research_request_verification).",
+    "test": "Exact experiments (scripts + artifacts). For universal claims: bounded exhaustive verification (exhaustive-finite). For witnesses/certificates: certificate-check (runner decides exit — your verify() + exact cross-check must BOTH pass). Long searches: research_job_create with hunt.py (checkpoint, resume) — NEVER hours of compute inside your turns. Candidates found: research_discovery_candidate (quarantined; novelty auditor decides novelty, not you).",
+    "consolidate": "Consolidate: verified results + exact bounds, falsified conjectures, surviving approaches + next steps, NEW search-experience lessons → propose skills (what worked/failed, conditions). Update frontier snapshots that went stale. Record a decision object for the round strategy."
   },
   "runtimeRequirements": {
     "executables": [

@@ -1,5 +1,5 @@
 campaign:
-  title: "Infinité des nombres premiers de Mersenne — open problem #18"
+  title: "Infinité des nombres premiers de Mersenne"
   modules: [mathematics]
   objective:
     statement: "Open problem (Wikipedia FR, théorie des nombres): Existe-t-il une infinité de nombres premiers de Mersenne M_p = 2^p - 1 ? Goal: OPERATIONAL progress under our epistemic rules — Lucas-Lehmer is exact in the verifier (is_mersenne_prime / predicate mersenne_prime): re-verify ALL known Mersenne exponents up to 607+ pointwise (VERIFIED), search for new prime exponents in ranges your budget allows (search runs full budget), empirically map exponent density; aux kills."
@@ -8,18 +8,19 @@ campaign:
       - "Which ranges were searched clean?"
     deliverables:
       - kind: report
-        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled"
+        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled, discovery candidates + novelty statuses"
     successCriteria:
       - type: claim_status
         value: verified
-        description: at least one exactly-verified bounded/witness claim (verifier-run)
+        description: "at least one exactly-verified claim/certificate (verifier-run)"
       - type: claim_status
         value: falsified
-        description: at least one auxiliary conjecture falsified by an exact counterexample
+        description: "at least one auxiliary conjecture falsified by an exact counterexample"
     constraints:
       - "exact integer arithmetic only (floats are exploration, never evidence)"
       - "never claim more than what was verified: state bounds honestly"
       - "known literature results are source-backed claims, not campaign-verified"
+      - "records: NO hand-written frontier numbers — dated frontier snapshots only"
     exclusions:
       - "no unbounded claims from computation"
     assumptions:

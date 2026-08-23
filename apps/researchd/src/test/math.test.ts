@@ -53,7 +53,7 @@ test("math module: verifiers, prompts injection, skills scaffolding", async () =
   const math = modules.find((m) => m.manifest.id === "mathematics");
   assert.ok(math, "mathematics module loads");
   assert.ok(math.verifiers.length >= 6, `six+ exec verifiers (got ${math.verifiers.length})`);
-  assert.equal(math.skills.length, 7, "seven seed skills");
+  assert.ok(math.skills.length >= 14, `14+ seed skills (got ${math.skills.length})`);
 
   const scheduler = new Scheduler({
     core,

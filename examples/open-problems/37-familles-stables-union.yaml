@@ -1,5 +1,5 @@
 campaign:
-  title: "Conjecture des familles stables par unions — open problem #37"
+  title: "Conjecture des familles stables par unions"
   modules: [mathematics]
   objective:
     statement: "Open problem (Wikipedia FR, théorie de Ramsey / combinatoire): Conjecture de Frankl (union-closed) : toute famille non triviale stable par union contient un élément présent dans au moins la moitié des ensembles. Goal: OPERATIONAL progress under our epistemic rules — Frankl counterexample-style witnesses (if any) and minimal-family certificates go through certificate-check with verify() checking union-closure + the <= half frequency violation; exhaustive small ground-sets stay script+empirical. Finite: exhaustive for small ground sets (n <= 12?) via workers' scripts (empirical/absence); pointwise witnesses (a family + element counts) exactly checkable; falsify auxiliaries (strengthenings wit"
@@ -8,18 +8,19 @@ campaign:
       - "Which strengthenings die?"
     deliverables:
       - kind: report
-        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled"
+        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled, discovery candidates + novelty statuses"
     successCriteria:
       - type: claim_status
         value: verified
-        description: at least one exactly-verified bounded/witness claim (verifier-run)
+        description: "at least one exactly-verified claim/certificate (verifier-run)"
       - type: claim_status
         value: falsified
-        description: at least one auxiliary conjecture falsified by an exact counterexample
+        description: "at least one auxiliary conjecture falsified by an exact counterexample"
     constraints:
       - "exact integer arithmetic only (floats are exploration, never evidence)"
       - "never claim more than what was verified: state bounds honestly"
       - "known literature results are source-backed claims, not campaign-verified"
+      - "records: NO hand-written frontier numbers — dated frontier snapshots only"
     exclusions:
       - "no unbounded claims from computation"
     assumptions:

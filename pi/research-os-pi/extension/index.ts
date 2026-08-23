@@ -287,6 +287,83 @@ export default function (pi: ExtensionAPI): void {
     }),
   );
 
+  // ---------------- novelty & discovery (module v0.2) ----------------
+  pi.registerTool(
+    tool("research_novelty_search", "Fan out a novelty query to scholarly providers (oeis | arxiv | openalex | crossref | semantic-scholar). Each hit is stored as a novelty_evidence object with the query. Use multiple query VARIANTS (exact phrase, notation, definition keywords) — one query is never novelty evidence.", {
+      query: Type.Optional(Type.String()),
+      terms: Type.Optional(Type.Array(Type.String(), { description: "sequence terms for OEIS value search" })),
+      providers: Type.Optional(Type.Array(Type.String())),
+      auditId: Type.Optional(Type.String()),
+    }, async (p) => {
+      const out = await api("POST", "/v1/novelty/search", { campaignId: campaign(), ...p });
+      const hits = (out.hits ?? []) as { provider: string; title: string }[];
+      const lines = hits.map((h) => `- [${h.provider}] ${h.title.slice(0, 100)}`).join("\n");
+      return `hits: ${hits.length}${out.errors?.length ? ` (provider errors: ${out.errors.join(",")})` : ""}\n${lines}\nevidence objects: ${((out.evidenceIds ?? []) as string[]).join(", ") || "none"}`;
+    }),
+  );
+
+  pi.registerTool(
+    tool("research_job_create", "Launch a DURABLE compute job (long search/experiment) as a detached process. NEVER run hours-long compute inside your own turns — write the script to experiments/, then create a job. Returns a job id; poll with research_job_status. The script's stdout becomes an immutable artifact; lines containing PROGRESS update the job metric; a final line {\"RESULT\": ...} is captured as the metric.", {
+      name: Type.String(), command: Type.Array(Type.String()),
+      cwd: Type.Optional(Type.String({ description: "relative to the campaign workspace" })),
+      wallSeconds: Type.Optional(Type.Number({ description: "hard kill after this many seconds (default 3600)" })),
+    }, async (p) => {
+      const out = await api("POST", "/v1/jobs", { campaignId: campaign(), ...p, createdBy: alias() });
+      return `job ${out.job.id} launched (pid ${out.job.pid ?? "?"}, status ${out.job.status})`;
+    }),
+  );
+
+  pi.registerTool(
+    tool("research_job_status", "Poll a compute job: status running/completed/failed/timeout, metric (last PROGRESS), stdout artifact ref.", { jobId: Type.String() }, async (p) => {
+      const out = await api("GET", `/v1/jobs/${encodeURIComponent(String(p.jobId))}`);
+      return brief(out, 700);
+    }),
+  );
+
+  pi.registerTool(
+    tool("research_frontier_snapshot", "Record a dated, sourced FRONTIER SNAPSHOT before any record hunt: the current public best (value, type lower-bound/record/...), the sources that establish it (with dates + confidence primary/curated/secondary), and the EXACT improvement predicate. A record hunt MUST NOT run from a hand-written number in a prompt.", {
+      targetId: Type.String(), statement: Type.String(),
+      frontierType: Type.String({ description: "lower-bound|upper-bound|record|sequence-prefix|smallest-known|largest-known" }),
+      currentValue: Type.Optional(Type.String()),
+      comparison: Type.Optional(Type.String()),
+      improvementPredicate: Type.String(),
+      sources: Type.Array(Type.Object({ sourceType: Type.String(), value: Type.String(), date: Type.Optional(Type.String()), ref: Type.Optional(Type.String()) })),
+      sourceAgreement: Type.String(), confidence: Type.String(),
+      certificateSpecId: Type.Optional(Type.String()), notes: Type.Optional(Type.Array(Type.String())),
+    }, async (p) => {
+      const out = await api("POST", "/v1/objects", {
+        campaignId: campaign(), type: "frontier_snapshot", title: `frontier: ${String(p.targetId)} = ${String(p.currentValue ?? "?")} (${String(p.comparison ?? "")})`,
+        content: { ...p, capturedAt: new Date().toISOString() }, createdBy: alias(), tags: ["frontier"],
+      });
+      return `frontier snapshot ${out.object.id} recorded (capturedAt now). Promotion gates will check freshness (24h for records).`;
+    }),
+  );
+
+  pi.registerTool(
+    tool("research_discovery_candidate", "Register a DISCOVERY CANDIDATE (quarantined): the statement, its correctness status (only exactly-verified counts for promotion), certificate artifact, frontier snapshot, metric. Novelty status is set by the novelty auditor separately — never by the claimant.", {
+      candidateType: Type.String({ description: "new-object|sequence|record|conjecture|lemma|counterexample|structural-fact|method" }),
+      statement: Type.String(),
+      correctnessStatus: Type.String({ description: "unverified|computationally-supported|exactly-verified|formally-verified" }),
+      certificateArtifactId: Type.Optional(Type.String()),
+      frontierSnapshotId: Type.Optional(Type.String()),
+      metric: Type.Optional(Type.String()), improvesFrontier: Type.Optional(Type.Boolean()),
+    }, async (p) => {
+      const out = await api("POST", "/v1/objects", {
+        campaignId: campaign(), type: "discovery_candidate",
+        title: `[${String(p.candidateType)}] ${String(p.statement).slice(0, 100)}`,
+        content: { ...p, noveltyStatus: "unchecked", promotionStatus: "quarantined" }, createdBy: alias(), tags: ["candidate"],
+      });
+      return `candidate ${out.object.id} quarantined. Next: exact verification, novelty audit, then /v1/candidates/:id/promote review.`;
+    }),
+  );
+
+  pi.registerTool(
+    tool("research_candidate_promote", "Run the promotion gate on a discovery candidate: enforces correctness + novelty + fresh frontier (records). Terminal state is human-review — nothing auto-publishes.", { candidateId: Type.String() }, async (p) => {
+      const out = await api("POST", `/v1/candidates/${encodeURIComponent(String(p.candidateId))}/promote`, { campaignId: campaign() });
+      return brief(out);
+    }),
+  );
+
   // ---------------- human command ----------------
   pi.registerCommand("research", {
     description: "ResearchOS worker console — show campaign status",

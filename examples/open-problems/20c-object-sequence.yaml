@@ -1,0 +1,54 @@
+campaign:
+  title: "Object discovery — a new exact sequence from a classical family"
+  modules: [mathematics]
+  objective:
+    statement: "Open problem (Wikipedia FR, théorie des nombres): Define a nontrivial exact statistic derived from a classical object family (candidates from prior campaigns: gap-champions ladder of sums of two k-th powers; minimal-abundance ladder of odd abundant numbers; solitude ladder of abundancy ratios), compute >= 20 exact terms, audit novelty (values + definition), and generate >= 3 falsifiable conjectures. Goal: OPERATIONAL progress under our epistemic rules — Object-discovery workflow: (1) OBJECT DEFINITION gate — precise definition, parameters, canonicalization, equivalence; adversary checks well-definedness + 'is this a renamed known construction?'. (2) TWO independent small-census implementations must agree before scaling. (3) >= 20 EXACT terms with per-term provenance artifacts (sequence_candidate object). (4) NOVELTY: OEIS value search on several prefixes + offset windows AND definition search (research_novelty_search; adversarial-novelty-search skill). (5) Pattern mining: rival hypotheses, discriminating experiments, falsification attempts. (6) Candidates: research_discovery_candidate + research_candidate_promote (human review terminal)."
+    questions:
+      - "Which ladder (gap-champions / minimal-abundance / solitude / other) is most likely unrecorded after OEIS audit?"
+      - "Do two independent enumerators agree on the first 20 terms?"
+      - "Which rival conjectures survive falsification attempts?"
+    deliverables:
+      - kind: report
+        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled, discovery candidates + novelty statuses"
+    successCriteria:
+      - type: claim_status
+        value: verified
+        description: "at least one exactly-verified claim/certificate (verifier-run)"
+      - type: claim_status
+        value: falsified
+        description: "at least one auxiliary conjecture falsified by an exact counterexample"
+    constraints:
+      - "exact integer arithmetic only (floats are exploration, never evidence)"
+      - "never claim more than what was verified: state bounds honestly"
+      - "known literature results are source-backed claims, not campaign-verified"
+      - "records: NO hand-written frontier numbers — dated frontier snapshots only"
+    exclusions:
+      - "no unbounded claims from computation"
+    assumptions:
+      - "standard mathematical definitions"
+    riskClass: low
+  models:
+    defaultPool:
+      - id: zai-glm-5.3
+        provider: zai
+        model: glm-5.3
+        runtime: pi
+        thinkingLevel: max
+        tags: [default]
+  search:
+    policy: round-robin
+    blindGenerators: 3
+    maxBranches: 8
+  budgets:
+    maxAgentRuns: 36
+    maxTasks: 80
+    maxRounds: 5
+    maxExperiments: 30
+    wallClockMinutes: 240
+    maxTokensEstimate: 50000000
+  autonomy: { level: L3, humanApprovalRequiredFor: [] }
+  workers: { autoSpawn: 2, leaseSeconds: 3600, maxRunMinutes: 240 }
+  stop: { onSuccess: true, onBudgetExhausted: true, noProgressRounds: 3, successSemantics: "all", minRounds: 2, requireCycle: true }
+  modulePrompts:
+    worker: "DISCOVERY MODE (new-object): follow the frontier-first / certificate-hunting / novelty-audit skills IN ORDER. Frontier snapshot BEFORE hunting (research_frontier_snapshot, dated sources); long searches as research_job_create jobs (hunt.py, checkpoints, portfolios — never hours of compute inside your turns); candidates quarantined via research_discovery_candidate; promotion only through research_candidate_promote (terminal = human review). Novelty is decided by the adversarial novelty audit, never by the claimant."
+  verification: { requireIndependentAudit: true }

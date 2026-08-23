@@ -149,3 +149,14 @@ token accounting depends on provider-reported usage.
 ## License
 
 MIT — see [LICENSE](LICENSE).
+
+## v0.2 — the novelty layer
+
+Beyond solving: **discovering**. The mathematics module now runs a discovery loop —
+map the public *frontier* (dated, sourced snapshots; records go stale in 24h), derive the
+exact *improvement predicate*, hunt *certificates* with durable search jobs
+(`hunt.py`: van der Waerden colorings, Ramsey graphs, circulant symmetry-reduced spaces),
+verify them independently, then **adversarially audit novelty** (OEIS values+definitions,
+OpenAlex/arXiv/Crossref literature) before a promotion gate whose terminal state is always
+*human review*. Correctness and novelty are never collapsed into one score, and a failed
+search is recorded as scoped negative memory — never as nonexistence.

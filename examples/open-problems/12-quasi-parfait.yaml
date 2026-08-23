@@ -1,5 +1,5 @@
 campaign:
-  title: "Nombres quasi parfaits (sigma(n) = n+1) — open problem #12"
+  title: "Nombres quasi parfaits (sigma(n) = n+1)"
   modules: [mathematics]
   objective:
     statement: "Open problem (Wikipedia FR, théorie des nombres): Existe-t-il un nombre quasi parfait (divisor_sum(n) = n + 1) ? Goal: OPERATIONAL progress under our epistemic rules — VERIFIED BOUNDED ABSENCE: exhaustive-finite with expression 'divisor_sum(n)-n-1' predicate not_equals:0 over [1, K] — push K as far as the cap allows; auxiliaries (odd/even only? parity constraints as source-backed claims; sigma structure claims falsifiable)."
@@ -8,18 +8,19 @@ campaign:
       - "Which structural claims about sigma die?"
     deliverables:
       - kind: report
-        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled"
+        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled, discovery candidates + novelty statuses"
     successCriteria:
       - type: claim_status
         value: verified
-        description: at least one exactly-verified bounded/witness claim (verifier-run)
+        description: "at least one exactly-verified claim/certificate (verifier-run)"
       - type: claim_status
         value: falsified
-        description: at least one auxiliary conjecture falsified by an exact counterexample
+        description: "at least one auxiliary conjecture falsified by an exact counterexample"
     constraints:
       - "exact integer arithmetic only (floats are exploration, never evidence)"
       - "never claim more than what was verified: state bounds honestly"
       - "known literature results are source-backed claims, not campaign-verified"
+      - "records: NO hand-written frontier numbers — dated frontier snapshots only"
     exclusions:
       - "no unbounded claims from computation"
     assumptions:

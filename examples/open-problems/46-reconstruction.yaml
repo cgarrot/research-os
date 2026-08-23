@@ -1,5 +1,5 @@
 campaign:
-  title: "Conjecture de reconstruction — open problem #46"
+  title: "Conjecture de reconstruction"
   modules: [mathematics]
   objective:
     statement: "Open problem (Wikipedia FR, théorie des graphes): Les graphes (>= 3 sommets) sont déterminés par leur collection de sous-graphes privés d'un sommet (Kelly–Ulam). Goal: OPERATIONAL progress under our epistemic rules — Exhaustive verification for small n via scripts (all graphs n <= 6 reconstructed uniquely?); exact artifacts; falsify variants (digraph version is FALSE — verify that counterexample exactly!); source-backed."
@@ -8,18 +8,19 @@ campaign:
       - "Digraph counterexample verified exactly?"
     deliverables:
       - kind: report
-        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled"
+        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled, discovery candidates + novelty statuses"
     successCriteria:
       - type: claim_status
         value: verified
-        description: at least one exactly-verified bounded/witness claim (verifier-run)
+        description: "at least one exactly-verified claim/certificate (verifier-run)"
       - type: claim_status
         value: falsified
-        description: at least one auxiliary conjecture falsified by an exact counterexample
+        description: "at least one auxiliary conjecture falsified by an exact counterexample"
     constraints:
       - "exact integer arithmetic only (floats are exploration, never evidence)"
       - "never claim more than what was verified: state bounds honestly"
       - "known literature results are source-backed claims, not campaign-verified"
+      - "records: NO hand-written frontier numbers — dated frontier snapshots only"
     exclusions:
       - "no unbounded claims from computation"
     assumptions:

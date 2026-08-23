@@ -1,5 +1,5 @@
 campaign:
-  title: "P = NP — open problem #49"
+  title: "P = NP"
   modules: [mathematics]
   objective:
     statement: "Open problem (Wikipedia FR, informatique théorique): Le problème P = NP (prix du millénaire). Goal: OPERATIONAL progress under our epistemic rules — Fully honest framing: not computationally attackable here. Grounding: formal statements, barrier theorems (relativization, natural proofs, algebrization — source-backed); aux kills on folklore claims; NO grandiose claims. Value = clean formulations + question tree."
@@ -7,15 +7,16 @@ campaign:
       - "Barrier map; which folk claims die?"
     deliverables:
       - kind: report
-        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled"
+        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled, discovery candidates + novelty statuses"
     successCriteria:
       - type: claim_status
         value: falsified
-        description: at least one auxiliary conjecture falsified by an exact counterexample
+        description: "at least one auxiliary conjecture falsified by an exact counterexample"
     constraints:
       - "exact integer arithmetic only (floats are exploration, never evidence)"
       - "never claim more than what was verified: state bounds honestly"
       - "known literature results are source-backed claims, not campaign-verified"
+      - "records: NO hand-written frontier numbers — dated frontier snapshots only"
     exclusions:
       - "no unbounded claims from computation"
     assumptions:

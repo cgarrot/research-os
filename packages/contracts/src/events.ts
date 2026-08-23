@@ -62,6 +62,10 @@ export const EVENT_TYPES = [
   "round.closed",
   "worker.spawned",
   "worker.exited",
+  "job.created",
+  "job.checkpoint",
+  "job.completed",
+  "job.failed",
   "human.intervention",
 ] as const;
 

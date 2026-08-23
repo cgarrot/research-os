@@ -1,5 +1,5 @@
 campaign:
-  title: "Conjecture de 1-factorisation — open problem #43"
+  title: "Conjecture de 1-factorisation"
   modules: [mathematics]
   objective:
     statement: "Open problem (Wikipedia FR, théorie des graphes): Tout graphe régulier de degré impair (et quelques variantes pairs) admet une 1-factorisation (conjecture de 1-factorisation des graphes réguliers de degré impair). Goal: OPERATIONAL progress under our epistemic rules — Constructive checks for small regular graphs in scripts (exact artifacts); falsify auxiliaries on odd-degree exceptions; source-backed status."
@@ -7,18 +7,19 @@ campaign:
       - "Which small orders constructed/verified?"
     deliverables:
       - kind: report
-        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled"
+        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled, discovery candidates + novelty statuses"
     successCriteria:
       - type: claim_status
         value: verified
-        description: at least one exactly-verified bounded/witness claim (verifier-run)
+        description: "at least one exactly-verified claim/certificate (verifier-run)"
       - type: claim_status
         value: falsified
-        description: at least one auxiliary conjecture falsified by an exact counterexample
+        description: "at least one auxiliary conjecture falsified by an exact counterexample"
     constraints:
       - "exact integer arithmetic only (floats are exploration, never evidence)"
       - "never claim more than what was verified: state bounds honestly"
       - "known literature results are source-backed claims, not campaign-verified"
+      - "records: NO hand-written frontier numbers — dated frontier snapshots only"
     exclusions:
       - "no unbounded claims from computation"
     assumptions:

@@ -1,5 +1,5 @@
 campaign:
-  title: "Hypothèse de Riemann — open problem #50"
+  title: "Hypothèse de Riemann"
   modules: [mathematics]
   objective:
     statement: "Open problem (Wikipedia FR, théorie des nombres / analyse): L'hypothèse de Riemann (prix du millénaire) : tous les zéros non triviaux de zeta ont partie réelle 1/2. Goal: OPERATIONAL progress under our epistemic rules — Honest framing: literature verifications reach astronomic heights; our numeric zeta checks (mpmath, worker scripts) are EXPLORATION only — reframe value as: equivalent formulations map, explicit-formula consequences (source-backed), falsifiable auxiliaries (e.g. claims about Skewes-type bounds, small-zero-free strips scriptable numerically = support only)."
@@ -7,15 +7,16 @@ campaign:
       - "Formulation map; which auxiliaries die?"
     deliverables:
       - kind: report
-        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled"
+        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled, discovery candidates + novelty statuses"
     successCriteria:
       - type: claim_status
         value: falsified
-        description: at least one auxiliary conjecture falsified by an exact counterexample
+        description: "at least one auxiliary conjecture falsified by an exact counterexample"
     constraints:
       - "exact integer arithmetic only (floats are exploration, never evidence)"
       - "never claim more than what was verified: state bounds honestly"
       - "known literature results are source-backed claims, not campaign-verified"
+      - "records: NO hand-written frontier numbers — dated frontier snapshots only"
     exclusions:
       - "no unbounded claims from computation"
     assumptions:
