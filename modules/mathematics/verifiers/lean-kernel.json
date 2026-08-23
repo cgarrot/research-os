@@ -1,0 +1,14 @@
+{
+  "name": "lean-kernel",
+  "kind": "exec",
+  "label": "Lean 4 kernel check",
+  "description": "Compile a Lean 4 theorem+proof; accepted ONLY on clean compilation with no sorry/admit/native_decide/axiom. Requires the elan/Lake toolchain — without it the verifier ERRORS (never passes). Use for formal lemma verification; statement alignment remains a separate human/LLM audit.",
+  "command": ["python3", "{script}", "{input_file}"],
+  "script": "verifiers/lean-kernel.py",
+  "timeoutSeconds": 330,
+  "onPass": "verified",
+  "onFail": "inconclusive",
+  "inputs": [
+    { "name": "source", "description": "Lean 4 source containing the theorem statement and its proof", "required": true }
+  ]
+}

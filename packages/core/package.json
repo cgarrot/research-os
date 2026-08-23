@@ -1,0 +1,24 @@
+{
+  "name": "@research-os/core",
+  "version": "0.1.0",
+  "description": "ResearchOS research core: event-sourced state, scheduler, tasks, memory, verification, artifacts, modules, runtime adapters. Zero runtime deps; harness-independent.",
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc -p .",
+    "typecheck": "tsc -p . --noEmit",
+    "test": "tsc -p . && echo \"core: no unit tests (see apps/researchd e2e)\""
+  },
+  "dependencies": {
+    "@research-os/contracts": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.0",
+    "@types/node": "^22.0.0"
+  }
+}

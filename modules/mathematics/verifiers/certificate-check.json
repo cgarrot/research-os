@@ -1,0 +1,19 @@
+{
+  "name": "certificate-check",
+  "kind": "exec",
+  "label": "Witness certificate (script + exact cross-check)",
+  "description": "For search-mode discoveries: turn a witness (an assignment, a coloring, a construction) into a VERIFIED certificate. Provide: the witness JSON, a python `verify(witness) -> bool` script (your checking logic), and optionally an exact expression+predicate cross-check the runner evaluates itself, plus structural constraints (allDistinct, tupleAllPrime). Exit 0 = certificate verified. The runner decides the exit code; passing requires verify() AND every exact/structural check.",
+  "command": ["python3", "{script}", "{input_file}"],
+  "script": "verifiers/cert-runner.py",
+  "timeoutSeconds": 120,
+  "onPass": "verified",
+  "onFail": "inconclusive",
+  "inputs": [
+    { "name": "script", "description": "python source defining verify(witness) -> bool", "required": true },
+    { "name": "witness", "description": "the witness as a JSON object (e.g. {\"a\":27,\"b\":84,\"c\":110,\"d\":133})", "required": true },
+    { "name": "expression", "description": "optional exact cross-check expression over witness variables", "required": false },
+    { "name": "predicate", "description": "predicate for the cross-check (required with expression)", "required": false },
+    { "name": "allDistinct", "description": "optional witness keys that must be pairwise distinct", "required": false },
+    { "name": "tupleAllPrime", "description": "optional witness keys that must all be prime", "required": false }
+  ]
+}

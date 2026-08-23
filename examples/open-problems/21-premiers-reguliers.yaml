@@ -1,0 +1,50 @@
+campaign:
+  title: "Infinité des nombres premiers réguliers — open problem #21"
+  modules: [mathematics]
+  objective:
+    statement: "Open problem (Wikipedia FR, théorie des nombres): Existe-t-il une infinité de nombres premiers réguliers (ne divisant pas le cardinal du groupe des classes d'idéaux du bon corps) ? Goal: OPERATIONAL progress under our epistemic rules — Regular = p does not divide numerators of Bernoulli numbers B_2..B_{p-3}: workers compute regularity exactly for p < 300 via Bernoulli numerators (sympy bernoulli) — pointwise verifiable where expressible is hard (no bernoulli in verifier) → script + artifacts + empirical tables; falsify auxiliaries on regular/irregular density."
+    questions:
+      - "Verified-by-script regularity table range?"
+      - "Density claims that die?"
+    deliverables:
+      - kind: report
+        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled"
+    successCriteria:
+      - type: claim_status
+        value: verified
+        description: at least one exactly-verified bounded/witness claim (verifier-run)
+      - type: claim_status
+        value: falsified
+        description: at least one auxiliary conjecture falsified by an exact counterexample
+    constraints:
+      - "exact integer arithmetic only (floats are exploration, never evidence)"
+      - "never claim more than what was verified: state bounds honestly"
+      - "known literature results are source-backed claims, not campaign-verified"
+    exclusions:
+      - "no unbounded claims from computation"
+    assumptions:
+      - "standard mathematical definitions"
+    riskClass: low
+  models:
+    defaultPool:
+      - id: zai-glm-5.3
+        provider: zai
+        model: glm-5.3
+        runtime: pi
+        thinkingLevel: max
+        tags: [default]
+  search:
+    policy: round-robin
+    blindGenerators: 3
+    maxBranches: 8
+  budgets:
+    maxAgentRuns: 36
+    maxTasks: 80
+    maxRounds: 5
+    maxExperiments: 30
+    wallClockMinutes: 240
+    maxTokensEstimate: 50000000
+  autonomy: { level: L3, humanApprovalRequiredFor: [] }
+  workers: { autoSpawn: 2, leaseSeconds: 3600, maxRunMinutes: 240 }
+  stop: { onSuccess: true, onBudgetExhausted: true, noProgressRounds: 3, successSemantics: "all", minRounds: 2, requireCycle: true }
+  verification: { requireIndependentAudit: true }

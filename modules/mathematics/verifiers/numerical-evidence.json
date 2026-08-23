@@ -1,0 +1,16 @@
+{
+  "name": "numerical-evidence",
+  "kind": "exec",
+  "label": "Numerical evidence over a PARTIAL domain",
+  "description": "Evidence producer, NOT a prover: the tested range must be strictly smaller than the claim's full domain. Exit 0 = all tested cases pass → claim becomes empirically_supported (support only, never verified). Exit 1 = counterexample inside the tested range → FALSIFIED (a counterexample is exact regardless of coverage).",
+  "command": ["python3", "{script}", "{input_file}"],
+  "script": "verifiers/check.py",
+  "timeoutSeconds": 600,
+  "onPass": "empirically_supported",
+  "onFail": "falsified",
+  "inputs": [
+    { "name": "expression", "description": "integer arithmetic over the variables", "required": true },
+    { "name": "variables", "description": "the PARTIAL range actually tested, e.g. [{\"name\":\"n\",\"min\":1,\"max\":10000}]", "required": true },
+    { "name": "predicate", "description": "predicate to test on the partial range", "required": true }
+  ]
+}

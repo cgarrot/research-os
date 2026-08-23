@@ -1,0 +1,7 @@
+node_modules/
+dist/
+*.tsbuildinfo
+workspaces/*
+!workspaces/AGENTS.md
+.DS_Store
+.mesh/

@@ -1,0 +1,50 @@
+campaign:
+  title: "Nombre de Ramsey R(5,5) — open problem #36"
+  modules: [mathematics]
+  objective:
+    statement: "Open problem (Wikipedia FR, théorie de Ramsey): Déterminer R(5,5) (sait seulement 43 <= R(5,5) <= 48). Goal: OPERATIONAL progress under our epistemic rules — A 2-coloring of K_42 avoiding monochromatic K_5 is a certificate: certificate-check witness {edge coloring}, verify() enumerating all C(42,5) 5-sets (feasible in budget) — certificate verified ⇒ R(5,5) >= 43 verified. Reproduce the known 42-construction first, then hunt. Certificate-centric: lower bound = a 2-coloring of K_42 with no monochromatic K_5 (finite exact check in scripts — VERIFIED-grade artifact via exhaustive clique check); workers search colorings (symme"
+    questions:
+      - "Known 42-coloring reproduced and script-verified?"
+      - "Which pruned searches were exhausted clean?"
+    deliverables:
+      - kind: report
+        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled"
+    successCriteria:
+      - type: claim_status
+        value: verified
+        description: at least one exactly-verified bounded/witness claim (verifier-run)
+      - type: claim_status
+        value: falsified
+        description: at least one auxiliary conjecture falsified by an exact counterexample
+    constraints:
+      - "exact integer arithmetic only (floats are exploration, never evidence)"
+      - "never claim more than what was verified: state bounds honestly"
+      - "known literature results are source-backed claims, not campaign-verified"
+    exclusions:
+      - "no unbounded claims from computation"
+    assumptions:
+      - "standard mathematical definitions"
+    riskClass: low
+  models:
+    defaultPool:
+      - id: zai-glm-5.3
+        provider: zai
+        model: glm-5.3
+        runtime: pi
+        thinkingLevel: max
+        tags: [default]
+  search:
+    policy: round-robin
+    blindGenerators: 3
+    maxBranches: 8
+  budgets:
+    maxAgentRuns: 60
+    maxTasks: 120
+    maxRounds: 8
+    maxExperiments: 60
+    wallClockMinutes: 600
+    maxTokensEstimate: 50000000
+  autonomy: { level: L3, humanApprovalRequiredFor: [] }
+  workers: { autoSpawn: 2, leaseSeconds: 3600, maxRunMinutes: 360 }
+  stop: { onSuccess: false, onBudgetExhausted: true, noProgressRounds: 3, successSemantics: "all", minRounds: 2, requireCycle: true }
+  verification: { requireIndependentAudit: true }

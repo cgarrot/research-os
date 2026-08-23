@@ -1,0 +1,46 @@
+campaign:
+  title: "Nombres parfaits impairs — open problem #6: verified absence below a bound"
+  modules: [mathematics]
+  objective:
+    statement: "Open problem (Wikipedia FR): does an odd perfect number exist (n odd with divisor_sum(n) = 2n)? Goal: VERIFIED PROGRESS: (1) largest K with 'no odd n in [1, K] is perfect' exactly verified (exhaustive-finite: divisor_sum(n) - 2n != 0 for odd n up to K; divisor_sum is O(sqrt n) — pick K within time budget); (2) auxiliary: known structural constraints (odd perfect => specific prime-power shape) as source-backed claims; generate falsifiable auxiliaries (e.g. about abundancy of odd numbers, density) and test exactly; (3) relate to multiperfect/quasi-perfect questions."
+    questions:
+      - "Largest exactly-verified K for odd n?"
+      - "What do abundancy indices divisor_sum(n)/n look like for odd n in the range (max, where)?"
+      - "Which auxiliary claims die exactly?"
+    deliverables:
+      - kind: report
+        description: "Verified absence bound + abundancy analysis"
+    successCriteria:
+      - type: claim_status
+        value: verified
+        description: "Verified no-odd-perfect bound claim"
+      - type: claim_status
+        value: falsified
+        description: "At least one auxiliary conjecture falsified exactly"
+    constraints: ["exact arithmetic only", "odd n only in the exhaustive claim"]
+    exclusions: ["no unbounded claims"]
+    assumptions: ["standard divisor sum"]
+    riskClass: low
+  models:
+    defaultPool:
+      - id: zai-glm-5.3
+        provider: zai
+        model: glm-5.3
+        runtime: pi
+        thinkingLevel: max
+        tags: [default]
+  search:
+    policy: round-robin
+    blindGenerators: 3
+    maxBranches: 8
+  budgets:
+    maxAgentRuns: 24
+    maxTasks: 40
+    maxRounds: 3
+    maxExperiments: 10
+    wallClockMinutes: 50
+    maxTokensEstimate: 30000000
+  autonomy: { level: L3, humanApprovalRequiredFor: [] }
+  workers: { autoSpawn: 2, leaseSeconds: 1800 }
+  stop: { onSuccess: true, onBudgetExhausted: true, noProgressRounds: 2 }
+  verification: { requireIndependentAudit: true }

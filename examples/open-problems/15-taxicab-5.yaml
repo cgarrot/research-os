@@ -1,0 +1,50 @@
+campaign:
+  title: "Taxicab(5, 2, n) pour n > 1 — open problem #15"
+  modules: [mathematics]
+  objective:
+    statement: "Open problem (Wikipedia FR, théorie des nombres): Existe-t-il des entiers somme de deux puissances cinquièmes positives d'au moins deux manières différentes (taxicab(5,2,n), n > 1) ? Goal: OPERATIONAL progress under our epistemic rules — ANY collision a^5+b^5=c^5+d^5 with {a,b}≠{c,d} becomes a VERIFIED certificate: mathematics:certificate-check with witness {a,b,c,d}, your verify() script, exact cross-check expression 'a**5+b**5-(c**5+d**5)' predicate 'equals:0' and allDistinct. Absence scans below K stay empirical (numerical-evidence). Hunt for a^5 + b^5 = c^5 + d^5 with {a,b} != {c,d}: workers script exhaustive/search up to a reachable bound (hash tables over a^5+b^5); ANY found witness is exactly verifiable (exact-point, equals on"
+    questions:
+      - "Searched bound reached? Any collision found (verify it!)?"
+      - "Modular obstructions worth recording?"
+    deliverables:
+      - kind: report
+        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled"
+    successCriteria:
+      - type: claim_status
+        value: verified
+        description: at least one exactly-verified bounded/witness claim (verifier-run)
+      - type: claim_status
+        value: falsified
+        description: at least one auxiliary conjecture falsified by an exact counterexample
+    constraints:
+      - "exact integer arithmetic only (floats are exploration, never evidence)"
+      - "never claim more than what was verified: state bounds honestly"
+      - "known literature results are source-backed claims, not campaign-verified"
+    exclusions:
+      - "no unbounded claims from computation"
+    assumptions:
+      - "standard mathematical definitions"
+    riskClass: low
+  models:
+    defaultPool:
+      - id: zai-glm-5.3
+        provider: zai
+        model: glm-5.3
+        runtime: pi
+        thinkingLevel: max
+        tags: [default]
+  search:
+    policy: round-robin
+    blindGenerators: 3
+    maxBranches: 8
+  budgets:
+    maxAgentRuns: 60
+    maxTasks: 120
+    maxRounds: 8
+    maxExperiments: 60
+    wallClockMinutes: 600
+    maxTokensEstimate: 50000000
+  autonomy: { level: L3, humanApprovalRequiredFor: [] }
+  workers: { autoSpawn: 2, leaseSeconds: 3600, maxRunMinutes: 360 }
+  stop: { onSuccess: false, onBudgetExhausted: true, noProgressRounds: 3, successSemantics: "all", minRounds: 2, requireCycle: true }
+  verification: { requireIndependentAudit: true }

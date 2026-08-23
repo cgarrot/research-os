@@ -1,0 +1,100 @@
+{
+  "id": "mathematics",
+  "name": "Mathematics",
+  "version": "0.1.0",
+  "coreApi": ">=0.1 <0.2",
+  "description": "Mathematical research module: conjecture exploration, exact computation, counterexample search, bounded verification, symbolic identities. Lean formalization arrives as an optional verifier when a toolchain is installed.",
+  "capabilities": [
+    "exact-arithmetic",
+    "primality-and-factorization",
+    "counterexample-verification",
+    "exhaustive-finite-verification",
+    "numerical-evidence",
+    "symbolic-identity",
+    "collatz-trajectories",
+    "conjecture-workflow"
+  ],
+  "roles": [
+    {
+      "name": "scout",
+      "description": "Ground the problem: definitions, known results and bounds, equivalent formulations, measurable sub-questions."
+    },
+    {
+      "name": "explorer",
+      "description": "Open independent branches/approaches; vary representation (modular, statistical, structural, algebraic)."
+    },
+    {
+      "name": "adversary",
+      "description": "Attack claims: hidden assumptions, quantifier errors, small-case counterexamples, false lemmas."
+    },
+    {
+      "name": "experimentalist",
+      "description": "Exact computational experiments; every universal claim gets a bounded exhaustive verification request."
+    },
+    {
+      "name": "synthesizer",
+      "description": "Consolidate rounds, extract skills, record decisions, update the frontier."
+    },
+    {
+      "name": "conjecture-generator",
+      "description": "Turn empirical patterns into explicit falsifiable statements (multiple rivals, not one favorite)."
+    },
+    {
+      "name": "theorem-scout",
+      "description": "Search knowledge (model knowledge marked source-needed, literature via tools) for results that collapse a branch."
+    },
+    {
+      "name": "formalizer",
+      "description": "Make statements precise: variables, domains, quantifiers, assumptions — ready for formalization (Lean verifier optional)."
+    }
+  ],
+  "diversityDescriptors": [
+    "computational",
+    "algebraic-identity",
+    "modular-arithmetic",
+    "extremal",
+    "structural",
+    "probabilistic-heuristic",
+    "representation-change",
+    "inductive-invariant"
+  ],
+  "skills": [
+    "skills/exact-arithmetic-first",
+    "skills/test-small-cases",
+    "skills/minimal-counterexample",
+    "skills/bounded-verification",
+    "skills/change-representation",
+    "skills/strengthen-lemma",
+    "skills/falsify-before-proving"
+  ],
+  "verifiers": [
+    "verifiers/exact-counterexample.json",
+    "verifiers/exact-point.json",
+    "verifiers/exhaustive-finite.json",
+    "verifiers/numerical-evidence.json",
+    "verifiers/symbolic-identity.json",
+    "verifiers/lean-kernel.json"
+  ],
+  "prompts": {
+    "worker": "Mathematics rules: exact integer arithmetic only (no floats as evidence); a finite complete check is a proof of the bounded statement, a large partial check is only support; distinguish them explicitly. Known results quoted from memory are source-backed claims (mark them) — not verified in this campaign. You have FULL tool freedom: write any scripts under experiments/ (python3 + sympy available), run long computations when the question deserves it (nohup + poll + artifact), reuse and extend your earlier scripts across tasks.",
+    "ground": "Ground the problem mathematically: (1) precise definitions of every object involved; (2) known results, bounds and equivalent formulations (mark model-memory items as needing sources); (3) what has been verified computationally in the literature, at which bounds; (4) the cheapest sub-questions whose answer would change the strategy. Record question objects for the top unknowns.",
+    "generate": "Generate genuinely different approaches. Vary the REPRESENTATION (e.g. modular arithmetic view, statistical/stopping-time view, structural/cycle view, 2-adic or algebraic view, inductive invariant view). Every approach must state: thesis, why it might work, cheapest falsification test. At least one approach must be computational-falsification-first.",
+    "critique": "Attack like a referee-assassin: hidden assumptions, quantifier order, boundary cases (n=1, n=2, small primes, powers of 2), and FALSE LEMMAS — cheap small-case checks kill most plausible-looking auxiliary conjectures. When you can defeat a claim cheaply and exactly, run the check and attach contradicting evidence; request verification for the kill.",
+    "test": "Run exact experiments (write code under experiments/, register artifacts). For every universal (∀ over integers) claim: state the bounded version and request exhaustive-finite verification (complete finite domain ⇒ verified bounded claim). For every existential witness: exact-point verification. For insights from large partial scans: numerical-evidence (support only). Never claim unbounded truth from computation.",
+    "consolidate": "Consolidate: verified results (and their exact bounds), falsified conjectures (with the counterexample), surviving approaches and their next step, equivalent formulations discovered, reusable procedures → propose skills with evidence refs. Record a decision object for the round's strategy."
+  },
+  "runtimeRequirements": {
+    "executables": [
+      "python3"
+    ]
+  },
+  "optionalExecutables": [
+    "lean",
+    "lake",
+    "sympy"
+  ],
+  "safety": {
+    "class": "low",
+    "notes": "Pure integer/symbolic computation. Verifier scripts are sandboxed by the core (own dir, timeout, no network)."
+  }
+}

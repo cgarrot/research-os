@@ -1,0 +1,46 @@
+campaign:
+  title: "Conjecture de Lehmer — open problem #30"
+  modules: [mathematics]
+  objective:
+    statement: "Open problem (Wikipedia FR, analyse / théorie des nombres): Conjecture de Lehmer (plus petite mesure de Mahler > 1 est celle du polynôme de Lehmer). Goal: OPERATIONAL progress under our epistemic rules — Grounding + known record polynomials (source-backed); aux kills on candidate lower bounds."
+    questions:
+      - "Known record list; what would a counterexample require?"
+    deliverables:
+      - kind: report
+        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled"
+    successCriteria:
+      - type: claim_status
+        value: falsified
+        description: at least one auxiliary conjecture falsified by an exact counterexample
+    constraints:
+      - "exact integer arithmetic only (floats are exploration, never evidence)"
+      - "never claim more than what was verified: state bounds honestly"
+      - "known literature results are source-backed claims, not campaign-verified"
+    exclusions:
+      - "no unbounded claims from computation"
+    assumptions:
+      - "standard mathematical definitions"
+    riskClass: low
+  models:
+    defaultPool:
+      - id: zai-glm-5.3
+        provider: zai
+        model: glm-5.3
+        runtime: pi
+        thinkingLevel: max
+        tags: [default]
+  search:
+    policy: round-robin
+    blindGenerators: 3
+    maxBranches: 8
+  budgets:
+    maxAgentRuns: 20
+    maxTasks: 40
+    maxRounds: 3
+    maxExperiments: 12
+    wallClockMinutes: 60
+    maxTokensEstimate: 50000000
+  autonomy: { level: L3, humanApprovalRequiredFor: [] }
+  workers: { autoSpawn: 2, leaseSeconds: 3600, maxRunMinutes: 60 }
+  stop: { onSuccess: true, onBudgetExhausted: true, noProgressRounds: 3, successSemantics: "all", minRounds: 2, requireCycle: true }
+  verification: { requireIndependentAudit: true }

@@ -1,0 +1,46 @@
+campaign:
+  title: "Groupes de Burnside B(m, n) — finitude — open problem #28"
+  modules: [mathematics]
+  objective:
+    statement: "Open problem (Wikipedia FR, algèbre): Pour quels entiers m, n > 0 le groupe de Burnside B(m, n) (m générateurs, exposant n) est-il fini ? Goal: OPERATIONAL progress under our epistemic rules — Grounding + known finiteness results table (source-backed); aux kills on small-case claims."
+    questions:
+      - "Known (m,n) finiteness map; which small questions are computable?"
+    deliverables:
+      - kind: report
+        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled"
+    successCriteria:
+      - type: claim_status
+        value: falsified
+        description: at least one auxiliary conjecture falsified by an exact counterexample
+    constraints:
+      - "exact integer arithmetic only (floats are exploration, never evidence)"
+      - "never claim more than what was verified: state bounds honestly"
+      - "known literature results are source-backed claims, not campaign-verified"
+    exclusions:
+      - "no unbounded claims from computation"
+    assumptions:
+      - "standard mathematical definitions"
+    riskClass: low
+  models:
+    defaultPool:
+      - id: zai-glm-5.3
+        provider: zai
+        model: glm-5.3
+        runtime: pi
+        thinkingLevel: max
+        tags: [default]
+  search:
+    policy: round-robin
+    blindGenerators: 3
+    maxBranches: 8
+  budgets:
+    maxAgentRuns: 20
+    maxTasks: 40
+    maxRounds: 3
+    maxExperiments: 12
+    wallClockMinutes: 60
+    maxTokensEstimate: 50000000
+  autonomy: { level: L3, humanApprovalRequiredFor: [] }
+  workers: { autoSpawn: 2, leaseSeconds: 3600, maxRunMinutes: 60 }
+  stop: { onSuccess: true, onBudgetExhausted: true, noProgressRounds: 3, successSemantics: "all", minRounds: 2, requireCycle: true }
+  verification: { requireIndependentAudit: true }

@@ -1,0 +1,16 @@
+{
+  "name": "exact-counterexample",
+  "kind": "exec",
+  "label": "Exact counterexample witness",
+  "description": "Use against a UNIVERSAL claim: provide one exact assignment where the claim's predicate fails. The verifier recomputes everything itself (exact integer arithmetic). Exit 0 = witness confirmed → target claim FALSIFIED. Exit 1 = predicate actually holds at the assignment (witness refuted, inconclusive).",
+  "command": ["python3", "{script}", "{input_file}"],
+  "script": "verifiers/check.py",
+  "timeoutSeconds": 60,
+  "onPass": "falsified",
+  "onFail": "inconclusive",
+  "inputs": [
+    { "name": "expression", "description": "integer arithmetic over the assignment variables (functions: abs,min,max,gcd,isqrt,collatz_steps,collatz_max)", "required": true },
+    { "name": "assignment", "description": "exact witness values, e.g. {\"n\": 40}", "required": true },
+    { "name": "predicate", "description": "what FAILS at the witness, e.g. not_prime | not_divisible_by:K | collatz_steps_greater_than:K", "required": true }
+  ]
+}

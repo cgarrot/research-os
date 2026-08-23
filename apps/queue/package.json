@@ -1,0 +1,20 @@
+{
+  "name": "@research-os/queue",
+  "version": "0.1.0",
+  "description": "ResearchOS queue supervisor: runs open-problem campaigns one at a time forever; watches researchd (respawn on crash, state replays); exports reports; tracks workspaces/queue.json.",
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/main.js",
+  "scripts": {
+    "build": "tsc -p .",
+    "typecheck": "tsc -p . --noEmit",
+    "start": "node dist/main.js"
+  },
+  "dependencies": {
+    "@research-os/contracts": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3",
+    "@types/node": "^22.0.0"
+  }
+}

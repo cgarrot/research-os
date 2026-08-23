@@ -1,0 +1,25 @@
+{
+  "id": "mathematics-lite",
+  "name": "Mathematics (lite)",
+  "version": "0.1.0",
+  "coreApi": ">=0.1 <0.2",
+  "capabilities": ["exact-arithmetic", "primality", "counterexample-verification"],
+  "roles": [
+    { "name": "scout", "description": "Ground the problem: known facts, definitions, open sub-questions." },
+    { "name": "explorer", "description": "Open independent branches and propose falsifiable hypotheses." },
+    { "name": "adversary", "description": "Attack claims: hidden assumptions, counterexamples, cheap falsification." },
+    { "name": "experimentalist", "description": "Run exact computational experiments and request deterministic verification." },
+    { "name": "synthesizer", "description": "Consolidate rounds, extract skills, record decisions." }
+  ],
+  "diversityDescriptors": [
+    "computational",
+    "algebraic",
+    "extremal",
+    "structural",
+    "probabilistic",
+    "representation-change"
+  ],
+  "skills": [],
+  "verifiers": ["counterexample-check.json", "holds-check.json"],
+  "safety": { "class": "low", "notes": "Pure integer arithmetic, no network, no external state." }
+}

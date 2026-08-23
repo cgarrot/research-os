@@ -1,0 +1,55 @@
+campaign:
+  title: "Euler polynomial — falsify the primality conjecture (rediscovery demo)"
+  modules: [mathematics-lite]
+  objective:
+    statement: "Investigate the conjecture: for every integer n >= 0, f(n) = n^2 + n + 41 is prime. Determine its truth: either falsify it with an exact, deterministically verified counterexample (a specific n where f(n) is composite, checked by the counterexample-check verifier), or gather exact support for as many n as possible."
+    questions:
+      - "For which n (if any) does f(n) fail to be prime?"
+      - "Is there structure to the first failure (e.g. f(40) = 41^2)?"
+      - "Which n in [0, 39] can be exactly checked to be prime?"
+    deliverables:
+      - kind: report
+        description: "Evidence-backed report with verified status of the conjecture"
+    successCriteria:
+      - type: claim_status
+        value: falsified
+        description: "A claim is falsified via the exact counterexample verifier"
+    constraints:
+      - "exact integer arithmetic only"
+      - "deterministic verification required for any status change"
+    exclusions:
+      - "no external compute services"
+    assumptions:
+      - "standard integer arithmetic"
+    riskClass: low
+  models:
+    defaultPool:
+      - id: zai-glm-5.3
+        provider: zai
+        model: glm-5.3
+        runtime: pi
+        thinkingLevel: max
+        tags: [default]
+  search:
+    policy: round-robin
+    blindGenerators: 3
+    maxBranches: 8
+  budgets:
+    maxAgentRuns: 24
+    maxTasks: 40
+    maxRounds: 3
+    maxExperiments: 8
+    wallClockMinutes: 45
+    maxTokensEstimate: 30000000
+  autonomy:
+    level: L3
+    humanApprovalRequiredFor: []
+  workers:
+    autoSpawn: 2
+    leaseSeconds: 1500
+  stop:
+    onSuccess: true
+    onBudgetExhausted: true
+    noProgressRounds: 2
+  verification:
+    requireIndependentAudit: true

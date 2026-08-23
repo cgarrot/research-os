@@ -1,0 +1,50 @@
+campaign:
+  title: "Polignac — every even gap 2k occurs infinitely often — open problem #7"
+  modules: [mathematics]
+  objective:
+    statement: "Open problem (Wikipedia FR, théorie des nombres): Conjecture de Polignac : pour tout k >= 1, il existe une infinité de paires de premiers consécutifs distantes de 2k. Goal: OPERATIONAL progress under our epistemic rules — Verifier armory: next_prime_gap(n) is exact. (1) bounded/verified: for each even 2k in a chosen set, the FIRST occurrence of gap 2k below a bound K via worker search + exact-point verification of the witness pair (is_prime on both endpoints); (2) auxiliaries to kill or support: 'every even gap <= 100 occurs below N' (search), density claims, 'record gaps keep growing' statements; (3) source-backed: known record gaps."
+    questions:
+      - "First occurrence of each even gap 2k <= 100: verified witnesses?"
+      - "Which plausible bounds on first-occurrence positions die to exact counterexamples?"
+    deliverables:
+      - kind: report
+        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled"
+    successCriteria:
+      - type: claim_status
+        value: verified
+        description: at least one exactly-verified bounded/witness claim (verifier-run)
+      - type: claim_status
+        value: falsified
+        description: at least one auxiliary conjecture falsified by an exact counterexample
+    constraints:
+      - "exact integer arithmetic only (floats are exploration, never evidence)"
+      - "never claim more than what was verified: state bounds honestly"
+      - "known literature results are source-backed claims, not campaign-verified"
+    exclusions:
+      - "no unbounded claims from computation"
+    assumptions:
+      - "standard mathematical definitions"
+    riskClass: low
+  models:
+    defaultPool:
+      - id: zai-glm-5.3
+        provider: zai
+        model: glm-5.3
+        runtime: pi
+        thinkingLevel: max
+        tags: [default]
+  search:
+    policy: round-robin
+    blindGenerators: 3
+    maxBranches: 8
+  budgets:
+    maxAgentRuns: 60
+    maxTasks: 120
+    maxRounds: 8
+    maxExperiments: 60
+    wallClockMinutes: 600
+    maxTokensEstimate: 50000000
+  autonomy: { level: L3, humanApprovalRequiredFor: [] }
+  workers: { autoSpawn: 2, leaseSeconds: 3600, maxRunMinutes: 360 }
+  stop: { onSuccess: true, onBudgetExhausted: true, noProgressRounds: 3, successSemantics: "all", minRounds: 2, requireCycle: true }
+  verification: { requireIndependentAudit: true }

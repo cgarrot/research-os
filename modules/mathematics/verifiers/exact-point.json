@@ -1,0 +1,16 @@
+{
+  "name": "exact-point",
+  "kind": "exec",
+  "label": "Exact single-point check",
+  "description": "Verify an exact claim about one concrete assignment (a witness value, a computed constant, a specific trajectory property). The verifier recomputes the expression and applies the predicate. Exit 0 = verified (finite, complete for this point).",
+  "command": ["python3", "{script}", "{input_file}"],
+  "script": "verifiers/check.py",
+  "timeoutSeconds": 60,
+  "onPass": "verified",
+  "onFail": "inconclusive",
+  "inputs": [
+    { "name": "expression", "description": "integer arithmetic over the assignment variables", "required": true },
+    { "name": "assignment", "description": "exact values, e.g. {\"n\": 27}", "required": true },
+    { "name": "predicate", "description": "e.g. equals:111 | prime | collatz_steps_equals… (use collatz_steps_less_than:K etc.)", "required": true }
+  ]
+}

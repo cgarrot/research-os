@@ -1,0 +1,678 @@
+{
+  "source": "https://fr.wikipedia.org/wiki/Probl%C3%A8mes_non_r%C3%A9solus_en_math%C3%A9matiques",
+  "harvestedAt": "2026-08-23",
+  "note": "01-06 are pre-existing hand-written campaigns; this catalog covers 07+ in page order. modes: bounded = exactly-verified bound reachable with today's verifier library; aux = falsification/observation-centric (auxiliaries killable, witnesses verifiable pointwise); search = hunt for a witness/construction, runs full budget (stopOnSuccess false); exploration = grounding/formulations, short runs.",
+  "profiles": {
+    "standard": {
+      "maxAgentRuns": 36,
+      "maxTasks": 80,
+      "maxRounds": 5,
+      "maxExperiments": 30,
+      "wallClockMinutes": 240
+    },
+    "deep": {
+      "maxAgentRuns": 60,
+      "maxTasks": 120,
+      "maxRounds": 8,
+      "maxExperiments": 60,
+      "wallClockMinutes": 600
+    },
+    "quick": {
+      "maxAgentRuns": 20,
+      "maxTasks": 40,
+      "maxRounds": 3,
+      "maxExperiments": 12,
+      "wallClockMinutes": 60
+    }
+  },
+  "problems": [
+    {
+      "num": 7,
+      "slug": "07-polignac",
+      "title": "Polignac — every even gap 2k occurs infinitely often",
+      "domain": "théorie des nombres",
+      "mode": "aux",
+      "profile": "deep",
+      "statement": "Conjecture de Polignac : pour tout k >= 1, il existe une infinité de paires de premiers consécutifs distantes de 2k.",
+      "focus": "Verifier armory: next_prime_gap(n) is exact. (1) bounded/verified: for each even 2k in a chosen set, the FIRST occurrence of gap 2k below a bound K via worker search + exact-point verification of the witness pair (is_prime on both endpoints); (2) auxiliaries to kill or support: 'every even gap <= 100 occurs below N' (search), density claims, 'record gaps keep growing' statements; (3) source-backed: known record gaps.",
+      "questions": [
+        "First occurrence of each even gap 2k <= 100: verified witnesses?",
+        "Which plausible bounds on first-occurrence positions die to exact counterexamples?"
+      ]
+    },
+    {
+      "num": 8,
+      "slug": "08-twin-primes",
+      "title": "Nombres premiers jumeaux",
+      "domain": "théorie des nombres",
+      "mode": "aux",
+      "profile": "deep",
+      "statement": "Conjecture des nombres premiers jumeaux : il existe une infinité de premiers p tels que p+2 soit premier.",
+      "focus": "Twin = Polignac k=1. (1) verify the largest twin-free interval structure via next_prime_gap (pointwise verified witnesses); (2) empirical support: twin counts up to 10^7 in worker scripts (numerical-evidence framing); (3) falsify auxiliaries about twin density/monotonicity; (4) source-backed: Zhang/Maynard bounded-gap results.",
+      "questions": [
+        "Verified twin witnesses at interesting scales (10^k)?",
+        "Which density monotonicity claims die exactly?"
+      ]
+    },
+    {
+      "num": 9,
+      "slug": "09-abc",
+      "title": "Conjecture abc",
+      "domain": "théorie des nombres",
+      "mode": "aux",
+      "profile": "deep",
+      "statement": "Conjecture abc : pour tout eps > 0 il existe K_eps tel que pour tous a,b,c premiers entre eux avec a+b=c, c < K_eps * rad(abc)^(1+eps).",
+      "focus": "No verifier predicate for rad — workers script exact abc-hits (rad via sympy factorization) and register artifacts; individual hit computations can be exact-point verified when expressible; falsify auxiliaries ('abc quality above X exists below Y' searches); source-backed: known abc-hit records.",
+      "questions": [
+        "Largest-quality abc hits computable in budget?",
+        "Which qualitative claims about quality distribution die?"
+      ]
+    },
+    {
+      "num": 10,
+      "slug": "10-szpiro",
+      "title": "Conjecture de Szpiro",
+      "domain": "théorie des nombres",
+      "mode": "exploration",
+      "profile": "quick",
+      "statement": "Conjecture de Szpiro (relation entre le discriminant et le conducteur d'une courbe elliptique).",
+      "focus": "Grounding + formulations (abc comparison), no exact armory. Aux kills allowed.",
+      "questions": [
+        "Formulations équivalentes et cas particuliers testables?"
+      ]
+    },
+    {
+      "num": 11,
+      "slug": "11-waring",
+      "title": "Problème de Waring — valeurs de g(k) et G(k)",
+      "domain": "théorie des nombres",
+      "mode": "aux",
+      "profile": "deep",
+      "statement": "Déterminer g(k) (tout entier est somme d'au plus g(k) puissances k-ièmes) et G(k) (tout entier ASSEZ grand).",
+      "focus": "Workers compute g(k) candidates by exhaustive check (scripts, sympy) for k <= 5 within budget; representability of individual numbers = script-verifiable (artifacts + empirically_supported for ranges); falsify auxiliaries on G(k) lower bounds; source-backed: known g(k) values.",
+      "questions": [
+        "Exact checks: every n <= N is a sum of s k-th powers for which s?",
+        "Which naive G(k) claims die?"
+      ]
+    },
+    {
+      "num": 12,
+      "slug": "12-quasi-parfait",
+      "title": "Nombres quasi parfaits (sigma(n) = n+1)",
+      "domain": "théorie des nombres",
+      "mode": "bounded",
+      "profile": "deep",
+      "statement": "Existe-t-il un nombre quasi parfait (divisor_sum(n) = n + 1) ?",
+      "focus": "VERIFIED BOUNDED ABSENCE: exhaustive-finite with expression 'divisor_sum(n)-n-1' predicate not_equals:0 over [1, K] — push K as far as the cap allows; auxiliaries (odd/even only? parity constraints as source-backed claims; sigma structure claims falsifiable).",
+      "questions": [
+        "Largest exactly-verified K with no quasi-perfect number?",
+        "Which structural claims about sigma die?"
+      ]
+    },
+    {
+      "num": 13,
+      "slug": "13-etrange-impair",
+      "title": "Nombres étranges impairs",
+      "domain": "théorie des nombres",
+      "mode": "search",
+      "profile": "deep",
+      "statement": "Existe-t-il un nombre étrange (abondant, non semi-parfait : aucune partie propre de ses diviseurs ne somme à n) IMPAIR ?",
+      "focus": "Known: weird numbers exist (even, e.g. 70); odd unknown. Workers script abundant+subset checks for odd n up to a reachable bound; any witness computation is exact (artifact); aux kills on density/structure; source-backed: known bounds.",
+      "questions": [
+        "No odd weird number below K (worker exhaustive, empirical)?",
+        "Which structural shortcuts die?"
+      ]
+    },
+    {
+      "num": 14,
+      "slug": "14-dix-solitaire",
+      "title": "Dix est-il un nombre solitaire ?",
+      "domain": "théorie des nombres",
+      "mode": "aux",
+      "profile": "standard",
+      "statement": "Un nombre est solitaire s'il a un seul 'ami' (m != n avec sigma(m)/m = sigma(n)/n). 10 est-il solitaire ?",
+      "focus": "Workers search friends of 10 (solve sigma(m)/m = 7/5) via scripted search with pruning; empirical support artifacts; falsify auxiliaries about abundancy classes; source-backed known results.",
+      "questions": [
+        "Search bounds for friends of 10?",
+        "Which claims about abundancy ratios die?"
+      ]
+    },
+    {
+      "num": 15,
+      "slug": "15-taxicab-5",
+      "title": "Taxicab(5, 2, n) pour n > 1",
+      "domain": "théorie des nombres",
+      "mode": "search",
+      "profile": "deep",
+      "statement": "Existe-t-il des entiers somme de deux puissances cinquièmes positives d'au moins deux manières différentes (taxicab(5,2,n), n > 1) ?",
+      "focus": "ANY collision a^5+b^5=c^5+d^5 with {a,b}≠{c,d} becomes a VERIFIED certificate: mathematics:certificate-check with witness {a,b,c,d}, your verify() script, exact cross-check expression 'a**5+b**5-(c**5+d**5)' predicate 'equals:0' and allDistinct. Absence scans below K stay empirical (numerical-evidence). Hunt for a^5 + b^5 = c^5 + d^5 with {a,b} != {c,d}: workers script exhaustive/search up to a reachable bound (hash tables over a^5+b^5); ANY found witness is exactly verifiable (exact-point, equals on",
+      "questions": [
+        "Searched bound reached? Any collision found (verify it!)?",
+        "Modular obstructions worth recording?"
+      ]
+    },
+    {
+      "num": 16,
+      "slug": "16-idoines-euler",
+      "title": "La liste des 65 nombres idoines d'Euler est-elle complète ?",
+      "domain": "théorie des nombres",
+      "mode": "aux",
+      "profile": "standard",
+      "statement": "Les nombres idoines (convenables) d'Euler : la liste de 65 nombres est-elle complète ?",
+      "focus": "Ground the definition precisely; workers test idoneality-like conditions within reach (scripts); aux kills; source-backed: Weinberger's conditional result (one more at most, under GRH).",
+      "questions": [
+        "Definition operationalized; which candidate lists are testable?"
+      ]
+    },
+    {
+      "num": 17,
+      "slug": "17-fortune",
+      "title": "Conjecture de Fortune",
+      "domain": "théorie des nombres",
+      "mode": "bounded",
+      "profile": "deep",
+      "statement": "Pour tout n >= 1, le nombre de Fortune F_n (plus petit entier > 1 tel que primorial(n) + F_n soit premier) est premier.",
+      "focus": "primorial(n) helper added to the verifier library: bounded VERIFIED check 'F_n is prime for all n in [1, K]' via exhaustive-finite with expression computing the Fortune number (needs next-prime-after search... prefer: workers compute F_n per n in scripts, then VERIFIED pointwise via exact-point on each primorial(n)+F_n with predicate prime — a batch of verified witnesses; plus falsify auxiliaries on F_n growth).",
+      "questions": [
+        "Verified Fortune primes for n <= K?",
+        "Growth claims that die?"
+      ]
+    },
+    {
+      "num": 18,
+      "slug": "18-mersenne",
+      "title": "Infinité des nombres premiers de Mersenne",
+      "domain": "théorie des nombres",
+      "mode": "aux",
+      "profile": "deep",
+      "statement": "Existe-t-il une infinité de nombres premiers de Mersenne M_p = 2^p - 1 ?",
+      "focus": "Lucas-Lehmer is exact in the verifier (is_mersenne_prime / predicate mersenne_prime): re-verify ALL known Mersenne exponents up to 607+ pointwise (VERIFIED), search for new prime exponents in ranges your budget allows (search runs full budget), empirically map exponent density; aux kills.",
+      "questions": [
+        "All known small exponents re-verified exactly?",
+        "Which ranges were searched clean?"
+      ]
+    },
+    {
+      "num": 19,
+      "slug": "19-double-mersenne",
+      "title": "Double de Mersenne premier pour p > 31 ?",
+      "domain": "théorie des nombres",
+      "mode": "exploration",
+      "profile": "quick",
+      "statement": "Existe-t-il un nombre double de Mersenne MM_p = 2^(2^p - 1) - 1 premier pour p > 31 ?",
+      "focus": "Size makes exact checks impossible beyond tiny p; grounding + structural claims; aux kills on heuristics.",
+      "questions": [
+        "Why the search stalls (bit sizes); what partial statements are testable?"
+      ]
+    },
+    {
+      "num": 20,
+      "slug": "20-fermat-compose",
+      "title": "Tous les nombres de Fermat F_n (n >= 5) sont-ils composés ?",
+      "domain": "théorie des nombres",
+      "mode": "aux",
+      "profile": "standard",
+      "statement": "Les nombres de Fermat F_n = 2^(2^n) + 1 sont-ils tous composés pour n >= 5 ?",
+      "focus": "F_5, F_6 verifiable composite by deterministic Miller-Rabin (exact-point, not_prime) — do it; F_7+ via sympy factoring in worker scripts (empirical); record known factorizations as source-backed; aux kills.",
+      "questions": [
+        "F_5, F_6 exactly verified composite?",
+        "Which ranges/claims documented?"
+      ]
+    },
+    {
+      "num": 21,
+      "slug": "21-premiers-reguliers",
+      "title": "Infinité des nombres premiers réguliers",
+      "domain": "théorie des nombres",
+      "mode": "aux",
+      "profile": "standard",
+      "statement": "Existe-t-il une infinité de nombres premiers réguliers (ne divisant pas le cardinal du groupe des classes d'idéaux du bon corps) ?",
+      "focus": "Regular = p does not divide numerators of Bernoulli numbers B_2..B_{p-3}: workers compute regularity exactly for p < 300 via Bernoulli numerators (sympy bernoulli) — pointwise verifiable where expressible is hard (no bernoulli in verifier) → script + artifacts + empirical tables; falsify auxiliaries on regular/irregular density.",
+      "questions": [
+        "Verified-by-script regularity table range?",
+        "Density claims that die?"
+      ]
+    },
+    {
+      "num": 22,
+      "slug": "22-cullen",
+      "title": "Infinité de nombres de Cullen premiers",
+      "domain": "théorie des nombres",
+      "mode": "aux",
+      "profile": "deep",
+      "statement": "Existe-t-il une infinité de nombres de Cullen premiers C_n = n * 2^n + 1 ?",
+      "focus": "C_n exact via Miller-Rabin while C_n < 3.3e24 (n <= ~66): exhaustive-finite scan n in [1, 66] finding known Cullen primes (n=1, 141? beyond) → VERIFIED bounded statement; larger n via scripts (empirical); aux kills.",
+      "questions": [
+        "Exactly verified Cullen prime set for n <= 66?",
+        "Which primality-heuristic claims die?"
+      ]
+    },
+    {
+      "num": 23,
+      "slug": "23-fibonacci-premiers",
+      "title": "Infinité de nombres de Fibonacci premiers",
+      "domain": "théorie des nombres",
+      "mode": "aux",
+      "profile": "standard",
+      "statement": "Existe-t-il une infinité de nombres de Fibonacci premiers ?",
+      "focus": "F_n prime requires n prime (source-backed); F_n < 3.3e24 for n <= ~115: scan exactly (scripts + pointwise VERIFIED witnesses for each Fibonacci prime found); density auxiliaries to kill.",
+      "questions": [
+        "Verified Fibonacci primes in range?",
+        "Heuristic claims that die?"
+      ]
+    },
+    {
+      "num": 24,
+      "slug": "24-quadruplets",
+      "title": "Infinité de quadruplets de nombres premiers",
+      "domain": "théorie des nombres",
+      "mode": "aux",
+      "profile": "deep",
+      "statement": "Existe-t-il une infinité de quadruplets de nombres premiers (p, p+2, p+6, p+8) ?",
+      "focus": "Pointwise VERIFIED quadruplet witnesses via certificate-check: witness {p,q,r,s}, tupleAllPrime [p,q,r,s], exact expression 'p*p+p*2' style checks per component (or verify() asserting p+2==q, q+4==r, r+2==s and primality) — certificates, not just script artifacts. Pointwise VERIFIED quadruplet witnesses (is_prime on 4 values via exact-point or script artifacts + verifier points); prime constellation pattern constraints (mod 210 etc.) as source-backed; empirical",
+      "questions": [
+        "Verified quadruplet witnesses at scale?",
+        "Which structural claims die?"
+      ]
+    },
+    {
+      "num": 25,
+      "slug": "25-hadamard",
+      "title": "Conjecture de Hadamard",
+      "domain": "algèbre",
+      "mode": "aux",
+      "profile": "standard",
+      "statement": "Pour tout n = 4k, il existe une matrice de Hadamard d'ordre n.",
+      "focus": "Workers construct Hadamard matrices for reachable orders (Sylvester, Paley, direct products) with script-verified orthogonality (artifacts); gap orders recorded; falsify auxiliaries on which orders resist known constructions.",
+      "questions": [
+        "Which orders <= 100 can be constructed and script-verified?",
+        "Gap list?"
+      ]
+    },
+    {
+      "num": 26,
+      "slug": "26-hilbert-16",
+      "title": "Seizième problème de Hilbert (cycles limites)",
+      "domain": "analyse / algèbre",
+      "mode": "exploration",
+      "profile": "quick",
+      "statement": "Bornes uniformes et configuration des cycles limites des équations différentielles polynomiales planes (partie 2 du 16e problème de Hilbert).",
+      "focus": "Grounding, formulations, small-degree computational evidence via worker scripts (numerical); aux kills on naive uniform bounds.",
+      "questions": [
+        "What is exactly known for degree 2? Where does computation stop being exact?"
+      ]
+    },
+    {
+      "num": 27,
+      "slug": "27-cuboide-parfait",
+      "title": "Cuboïde parfait",
+      "domain": "algèbre / arithmétique",
+      "mode": "search",
+      "profile": "deep",
+      "statement": "Existe-t-il un cuboïde parfait (arêtes, diagonales de faces et diagonale de l'espace toutes entières) ?",
+      "focus": "Any Euler brick / perfect cuboid candidate becomes a certificate-check witness: {a,b,c} with verify() checking the six face diagonals (and space diagonal for perfect) are perfect squares — exact integer math only; absence ranges stay empirical. Search a <= b <= c <= K: workers script (Euler bricks known — perfect one unknown); any witness = exact artifact (all quantities integers, checkable exactly; expressible claims pointwise verifiable); ",
+      "questions": [
+        "Searched bound; strongest recorded Euler brick?",
+        "Which parameter reductions die?"
+      ]
+    },
+    {
+      "num": 28,
+      "slug": "28-burnside",
+      "title": "Groupes de Burnside B(m, n) — finitude",
+      "domain": "algèbre",
+      "mode": "exploration",
+      "profile": "quick",
+      "statement": "Pour quels entiers m, n > 0 le groupe de Burnside B(m, n) (m générateurs, exposant n) est-il fini ?",
+      "focus": "Grounding + known finiteness results table (source-backed); aux kills on small-case claims.",
+      "questions": [
+        "Known (m,n) finiteness map; which small questions are computable?"
+      ]
+    },
+    {
+      "num": 29,
+      "slug": "29-schanuel",
+      "title": "Conjecture de Schanuel",
+      "domain": "analyse",
+      "mode": "exploration",
+      "profile": "quick",
+      "statement": "Conjecture de Schanuel sur la dimension transcendante de nombres exponentiellement algébriquement indépendants.",
+      "focus": "Grounding + consequences chain (Lindemann, Gelfond-Schneider as source-backed); aux kills on plausible strengthenings.",
+      "questions": [
+        "Which consequences are independently testable?"
+      ]
+    },
+    {
+      "num": 30,
+      "slug": "30-lehmer",
+      "title": "Conjecture de Lehmer",
+      "domain": "analyse / théorie des nombres",
+      "mode": "exploration",
+      "profile": "quick",
+      "statement": "Conjecture de Lehmer (plus petite mesure de Mahler > 1 est celle du polynôme de Lehmer).",
+      "focus": "Grounding + known record polynomials (source-backed); aux kills on candidate lower bounds.",
+      "questions": [
+        "Known record list; what would a counterexample require?"
+      ]
+    },
+    {
+      "num": 31,
+      "slug": "31-pompeiu",
+      "title": "Problème de Pompeiu",
+      "domain": "analyse",
+      "mode": "exploration",
+      "profile": "quick",
+      "statement": "Le problème de Pompeiu (sur les fonctions dont l'intégrale sur certaines transformations s'annule).",
+      "focus": "Grounding + formulations; aux kills.",
+      "questions": [
+        "Formulations équivalentes; which special cases are settled?"
+      ]
+    },
+    {
+      "num": 32,
+      "slug": "32-gamma-irrationnel",
+      "title": "La constante d'Euler-Mascheroni est-elle rationnelle ?",
+      "domain": "analyse",
+      "mode": "exploration",
+      "profile": "quick",
+      "statement": "γ (constante d'Euler-Mascheroni) est-elle rationnelle ?",
+      "focus": "Honest framing: rationality is out of computational reach; grounding (irrationality measures, known bounds as source-backed); high-precision computation of γ in scripts is EXPLORATION ONLY (floats) — never evidence; aux kills on naive claims.",
+      "questions": [
+        "What IS known unconditionally; where do heuristic arguments stand?"
+      ]
+    },
+    {
+      "num": 33,
+      "slug": "33-coureur-solitaire",
+      "title": "Conjecture du coureur solitaire",
+      "domain": "combinatoire",
+      "mode": "aux",
+      "profile": "deep",
+      "statement": "Pour k coureurs de vitesses distinctes, il existe un moment où chacun est à distance >= 1/(k+1) de l'origine (sur un circuit unité).",
+      "focus": "Small k exhaustive checks in worker scripts (k <= 5 within budget) = empirical support + artifacts; pointwise verification of lonely assignments is expressible (min over fractions — workers can craft exact expression or use scripts + numerical-evidence framing); falsify auxiliaries (tightness claims, which speed sets fail).",
+      "questions": [
+        "Which k verified (script-exhaustive) within budget?",
+        "Tightness witnesses (distance exactly 1/(k+1))?"
+      ]
+    },
+    {
+      "num": 34,
+      "slug": "34-carres-magiques",
+      "title": "Nombre de carrés magiques",
+      "domain": "combinatoire",
+      "mode": "exploration",
+      "profile": "quick",
+      "statement": "Déterminer le nombre de carrés magiques (notamment 5x5).",
+      "focus": "Grounding + known counts (source-backed); workers verify small counts (3x3 = 8 modulo symmetries, 4x4 with Frenicle normalization) via scripts; aux kills.",
+      "questions": [
+        "Which counts are script-verifiable within budget?"
+      ]
+    },
+    {
+      "num": 35,
+      "slug": "35-van-der-waerden",
+      "title": "Valeurs des nombres de van der Waerden",
+      "domain": "théorie de Ramsey",
+      "mode": "aux",
+      "profile": "deep",
+      "statement": "Déterminer les valeurs des nombres de van der Waerden W(k, r).",
+      "focus": "Lower-bound colorings ARE finite certificates: certificate-check with witness {coloring array}, verify() re-checking every arithmetic progression of length k in both colors (brute force inside verify) — exit 0 = coloring certified, W(k,r) > n VERIFIED for that n. Known values are hard-won (source-backed); workers script-verify small bounds (SAT/brute force for W(2,3)=9 etc. — exact artifacts: a coloring avoiding APs of length k is a FINITE checkable certificat",
+      "questions": [
+        "Which W(k,r) bounds are script-certifiable in budget?",
+        "Which structural shortcuts die?"
+      ]
+    },
+    {
+      "num": 36,
+      "slug": "36-ramsey-r55",
+      "title": "Nombre de Ramsey R(5,5)",
+      "domain": "théorie de Ramsey",
+      "mode": "search",
+      "profile": "deep",
+      "statement": "Déterminer R(5,5) (sait seulement 43 <= R(5,5) <= 48).",
+      "focus": "A 2-coloring of K_42 avoiding monochromatic K_5 is a certificate: certificate-check witness {edge coloring}, verify() enumerating all C(42,5) 5-sets (feasible in budget) — certificate verified ⇒ R(5,5) >= 43 verified. Reproduce the known 42-construction first, then hunt. Certificate-centric: lower bound = a 2-coloring of K_42 with no monochromatic K_5 (finite exact check in scripts — VERIFIED-grade artifact via exhaustive clique check); workers search colorings (symme",
+      "questions": [
+        "Known 42-coloring reproduced and script-verified?",
+        "Which pruned searches were exhausted clean?"
+      ]
+    },
+    {
+      "num": 37,
+      "slug": "37-familles-stables-union",
+      "title": "Conjecture des familles stables par unions",
+      "domain": "théorie de Ramsey / combinatoire",
+      "mode": "aux",
+      "profile": "deep",
+      "statement": "Conjecture de Frankl (union-closed) : toute famille non triviale stable par union contient un élément présent dans au moins la moitié des ensembles.",
+      "focus": "Frankl counterexample-style witnesses (if any) and minimal-family certificates go through certificate-check with verify() checking union-closure + the <= half frequency violation; exhaustive small ground-sets stay script+empirical. Finite: exhaustive for small ground sets (n <= 12?) via workers' scripts (empirical/absence); pointwise witnesses (a family + element counts) exactly checkable; falsify auxiliaries (strengthenings wit",
+      "questions": [
+        "Exhaustive ground-set range covered?",
+        "Which strengthenings die?"
+      ]
+    },
+    {
+      "num": 38,
+      "slug": "38-erdos-gyarfas",
+      "title": "Conjecture d'Erdős–Gyárfás",
+      "domain": "théorie des graphes",
+      "mode": "aux",
+      "profile": "standard",
+      "statement": "Tout graphe à arêtes bien couvertes par des cycles… (conjecture d'Erdős–Gyárfás sur les cycles de longueurs puissances de 2).",
+      "focus": "Grounding + small-case script checks (graph enumeration for tiny n); falsify auxiliaries; source-backed known results.",
+      "questions": [
+        "Which reformulation is testable on small graphs?"
+      ]
+    },
+    {
+      "num": 39,
+      "slug": "39-erdos-hajnal",
+      "title": "Conjecture d'Erdős–Hajnal",
+      "domain": "théorie des graphes",
+      "mode": "exploration",
+      "profile": "quick",
+      "statement": "Pour toute famille H de graphes interdits, il existe delta > 0 tel que tout graphe H-libre contient une clique ou un stable de taille n^delta.",
+      "focus": "Grounding + small-case computational support (workers, empirical); aux kills.",
+      "questions": [
+        "Known delta values; which small cases are checkable?"
+      ]
+    },
+    {
+      "num": 40,
+      "slug": "40-erdos-faber-lovasz",
+      "title": "Conjecture d'Erdős–Faber–Lovász",
+      "domain": "théorie des graphes",
+      "mode": "aux",
+      "profile": "standard",
+      "statement": "Coloration de graphes linéaires par n couleurs (résolue en 2021 pour n assez grand — statut exact des petits cas).",
+      "focus": "Verify the 2021 asymptotic status (source-backed); workers script-check small n exhaustively (exact artifacts); falsify auxiliaries on tightness.",
+      "questions": [
+        "Which small n are exhaustively checked clean?"
+      ]
+    },
+    {
+      "num": 41,
+      "slug": "41-hadwiger",
+      "title": "Conjecture de Hadwiger",
+      "domain": "théorie des graphes",
+      "mode": "exploration",
+      "profile": "quick",
+      "statement": "Tout graphe sans contraction de K_t est t-1-colorable (Hadwiger, généralise le théorème des quatre couleurs).",
+      "focus": "Grounding + status table (proved t <= 6); workers script-verify tiny cases; aux kills.",
+      "questions": [
+        "What exactly is known per t; which small checks are feasible?"
+      ]
+    },
+    {
+      "num": 42,
+      "slug": "42-ringel-kotzig",
+      "title": "Conjecture de Ringel–Kotzig",
+      "domain": "théorie des graphes",
+      "mode": "aux",
+      "profile": "standard",
+      "statement": "Décomposition des arbres de taille 2k+1 en k+1 graphes isomorphes (graceful labeling of trees / Ringel–Kotzig).",
+      "focus": "Tree graceful-labeling searches for small orders in scripts (exact artifacts); exhaustive for tiny trees; falsify auxiliaries; source-backed: graceful tree conjecture status.",
+      "questions": [
+        "Which tree classes exhaustively graceful-checked?"
+      ]
+    },
+    {
+      "num": 43,
+      "slug": "43-1-factorisation",
+      "title": "Conjecture de 1-factorisation",
+      "domain": "théorie des graphes",
+      "mode": "aux",
+      "profile": "standard",
+      "statement": "Tout graphe régulier de degré impair (et quelques variantes pairs) admet une 1-factorisation (conjecture de 1-factorisation des graphes réguliers de degré impair).",
+      "focus": "Constructive checks for small regular graphs in scripts (exact artifacts); falsify auxiliaries on odd-degree exceptions; source-backed status.",
+      "questions": [
+        "Which small orders constructed/verified?"
+      ]
+    },
+    {
+      "num": 44,
+      "slug": "44-graphe-trop-plein",
+      "title": "Conjecture du graphe trop plein",
+      "domain": "théorie des graphes",
+      "mode": "exploration",
+      "profile": "quick",
+      "statement": "La conjecture du graphe trop plein (overfull graph) sur la coloration par arêtes et l'indice chromatique.",
+      "focus": "Grounding + formulations (chromatic index classes); aux kills.",
+      "questions": [
+        "Class 1 vs Class 2 structure; which small cases are checkable?"
+      ]
+    },
+    {
+      "num": 45,
+      "slug": "45-coloration-totale",
+      "title": "Conjecture de coloration totale",
+      "domain": "théorie des graphes",
+      "mode": "aux",
+      "profile": "standard",
+      "statement": "L'indice de coloration totale d'un graphe est au plus Delta + 2 (conjecture de Behzad).",
+      "focus": "Small-graph exhaustive checks in scripts (exact artifacts); falsify tightenings (Delta+1 claims); source-backed status.",
+      "questions": [
+        "Which small graph classes verified?"
+      ]
+    },
+    {
+      "num": 46,
+      "slug": "46-reconstruction",
+      "title": "Conjecture de reconstruction",
+      "domain": "théorie des graphes",
+      "mode": "aux",
+      "profile": "standard",
+      "statement": "Les graphes (>= 3 sommets) sont déterminés par leur collection de sous-graphes privés d'un sommet (Kelly–Ulam).",
+      "focus": "Exhaustive verification for small n via scripts (all graphs n <= 6 reconstructed uniquely?); exact artifacts; falsify variants (digraph version is FALSE — verify that counterexample exactly!); source-backed.",
+      "questions": [
+        "Small-n exhaustive coverage?",
+        "Digraph counterexample verified exactly?"
+      ]
+    },
+    {
+      "num": 47,
+      "slug": "47-hadwiger-nelson",
+      "title": "Problème de Hadwiger–Nelson",
+      "domain": "théorie des graphes / géométrie",
+      "mode": "aux",
+      "profile": "standard",
+      "statement": "Nombre chromatique du plan (entre 5 et 7 après de Grey).",
+      "focus": "Unit-distance graph coloring certificates: a finite graph + coloring is exactly checkable in scripts (artifact); workers reproduce the 5-chromatic construction era results on small graphs, verify 4-colorability of classical unit-distance graphs (Moser spindle etc.); falsify claims of smaller chromatic unit graphs.",
+      "questions": [
+        "Classical spindles script-verified?",
+        "Which candidate bounds die?"
+      ]
+    },
+    {
+      "num": 48,
+      "slug": "48-percolation",
+      "title": "Seuil de percolation — formule générale",
+      "domain": "théorie des graphes / probabilités",
+      "mode": "exploration",
+      "profile": "quick",
+      "statement": "Trouver une formule générale pour le seuil de percolation d'un graphe.",
+      "focus": "Grounding + known thresholds table (source-backed); simulations = exploration only (random — never exact evidence); aux kills on naive formulas (workers test candidate formulas against known exact thresholds — falsification IS exact).",
+      "questions": [
+        "Which candidate formulas die against known thresholds?"
+      ]
+    },
+    {
+      "num": 49,
+      "slug": "49-p-vs-np",
+      "title": "P = NP",
+      "domain": "informatique théorique",
+      "mode": "exploration",
+      "profile": "quick",
+      "statement": "Le problème P = NP (prix du millénaire).",
+      "focus": "Fully honest framing: not computationally attackable here. Grounding: formal statements, barrier theorems (relativization, natural proofs, algebrization — source-backed); aux kills on folklore claims; NO grandiose claims. Value = clean formulations + question tree.",
+      "questions": [
+        "Barrier map; which folk claims die?"
+      ]
+    },
+    {
+      "num": 50,
+      "slug": "50-riemann",
+      "title": "Hypothèse de Riemann",
+      "domain": "théorie des nombres / analyse",
+      "mode": "exploration",
+      "profile": "quick",
+      "statement": "L'hypothèse de Riemann (prix du millénaire) : tous les zéros non triviaux de zeta ont partie réelle 1/2.",
+      "focus": "Honest framing: literature verifications reach astronomic heights; our numeric zeta checks (mpmath, worker scripts) are EXPLORATION only — reframe value as: equivalent formulations map, explicit-formula consequences (source-backed), falsifiable auxiliaries (e.g. claims about Skewes-type bounds, small-zero-free strips scriptable numerically = support only).",
+      "questions": [
+        "Formulation map; which auxiliaries die?"
+      ]
+    },
+    {
+      "num": 51,
+      "slug": "51-hodge",
+      "title": "Conjecture de Hodge",
+      "domain": "géométrie algébrique",
+      "mode": "exploration",
+      "profile": "quick",
+      "statement": "La conjecture de Hodge (prix du millénaire).",
+      "focus": "Grounding + formulation ladder (Hodge classes = rational (p,p)); small-dimensional cases as source-backed claims; aux kills on over-strong variants. No computation.",
+      "questions": [
+        "Case map; which statements are even testable in principle?"
+      ]
+    },
+    {
+      "num": 52,
+      "slug": "52-yang-mills",
+      "title": "Existence de Yang–Mills avec gap de masse",
+      "domain": "physique mathématique",
+      "mode": "exploration",
+      "profile": "quick",
+      "statement": "Existence et gap de masse d'une théorie de Yang–Mills en 4D (prix du millénaire).",
+      "focus": "Grounding: rigorous results ladder (2D/3D solved — source-backed), lattice heuristics = exploration only; aux kills. No numerics-as-evidence.",
+      "questions": [
+        "Result ladder; which discretization claims are falsifiable?"
+      ]
+    },
+    {
+      "num": 53,
+      "slug": "53-navier-stokes",
+      "title": "Régularité des solutions de Navier–Stokes",
+      "domain": "EDP / analyse",
+      "mode": "exploration",
+      "profile": "quick",
+      "statement": "Existence et régularité globale des solutions des équations de Navier–Stokes 3D (prix du millénaire).",
+      "focus": "Grounding: what regularity results exist, energy estimates as source-backed; numerical simulations = exploration only (never evidence); aux kills on naive blowup claims.",
+      "questions": [
+        "Known partial regularity ladder (Caffarelli–Kohn–Nirenberg); which toy claims die?"
+      ]
+    },
+    {
+      "num": 54,
+      "slug": "54-birch-swinnerton-dyer",
+      "title": "Conjecture de Birch et Swinnerton-Dyer",
+      "domain": "géométrie arithmétique",
+      "mode": "aux",
+      "profile": "deep",
+      "statement": "La conjecture de Birch et Swinnerton-Dyer (prix du millénaire) : lien entre le rang d'une courbe elliptique et l'ordre d'annulation de sa fonction L.",
+      "focus": "COMPUTATIONALLY MEANINGFUL on specific curves: workers use sympy/sage-free elliptic point counting (or mwrank-free scripts) to compute ranks and L-series coefficients for SMALL curves (conductor < 10^5): empirical BSD checks (support only); pointwise verifiable arithmetic (e.g. 'point P has infinite order' via scripts, artifacts); falsify auxiliaries (rank heuristics, parity claims on curve families); source-backed: known rank records.",
+      "questions": [
+        "Which small curves checked empirically against BSD?",
+        "Heuristics that die?"
+      ]
+    }
+  ]
+}

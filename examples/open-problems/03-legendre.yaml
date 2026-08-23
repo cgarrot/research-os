@@ -1,0 +1,46 @@
+campaign:
+  title: "Legendre (prime between squares) — open problem #3: verified bounded progress"
+  modules: [mathematics]
+  objective:
+    statement: "Open problem (Landau's problems): Legendre's conjecture — for every integer n >= 1 there is a prime strictly between n^2 and (n+1)^2. Goal: VERIFIED PROGRESS: (1) largest K with 'for all n in [1,K], prime_pi((n+1)^2) - prime_pi(n^2) >= 1' exactly verified (exhaustive-finite); (2) study the minimal prime count gap function and generate/falsify auxiliary conjectures (e.g. lower bounds on pi((n+1)^2)-pi(n^2)); (3) record relations to RH-conditional bounds as source-backed claims."
+    questions:
+      - "Largest exactly-verified K?"
+      - "What is the minimum of the gap count over the verified range, and where?"
+      - "Which auxiliary bounds die exactly?"
+    deliverables:
+      - kind: report
+        description: "Verified bounded Legendre evidence + falsified auxiliaries"
+    successCriteria:
+      - type: claim_status
+        value: verified
+        description: "Bounded Legendre claim exactly verified"
+      - type: claim_status
+        value: falsified
+        description: "At least one auxiliary conjecture falsified exactly"
+    constraints: ["exact arithmetic only"]
+    exclusions: ["no unbounded claims from computation"]
+    assumptions: ["standard primality"]
+    riskClass: low
+  models:
+    defaultPool:
+      - id: zai-glm-5.3
+        provider: zai
+        model: glm-5.3
+        runtime: pi
+        thinkingLevel: max
+        tags: [default]
+  search:
+    policy: round-robin
+    blindGenerators: 3
+    maxBranches: 8
+  budgets:
+    maxAgentRuns: 24
+    maxTasks: 40
+    maxRounds: 3
+    maxExperiments: 10
+    wallClockMinutes: 50
+    maxTokensEstimate: 30000000
+  autonomy: { level: L3, humanApprovalRequiredFor: [] }
+  workers: { autoSpawn: 2, leaseSeconds: 1800 }
+  stop: { onSuccess: true, onBudgetExhausted: true, noProgressRounds: 2 }
+  verification: { requireIndependentAudit: true }

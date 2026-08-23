@@ -1,0 +1,50 @@
+campaign:
+  title: "Conjecture abc — open problem #9"
+  modules: [mathematics]
+  objective:
+    statement: "Open problem (Wikipedia FR, théorie des nombres): Conjecture abc : pour tout eps > 0 il existe K_eps tel que pour tous a,b,c premiers entre eux avec a+b=c, c < K_eps * rad(abc)^(1+eps). Goal: OPERATIONAL progress under our epistemic rules — No verifier predicate for rad — workers script exact abc-hits (rad via sympy factorization) and register artifacts; individual hit computations can be exact-point verified when expressible; falsify auxiliaries ('abc quality above X exists below Y' searches); source-backed: known abc-hit records."
+    questions:
+      - "Largest-quality abc hits computable in budget?"
+      - "Which qualitative claims about quality distribution die?"
+    deliverables:
+      - kind: report
+        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled"
+    successCriteria:
+      - type: claim_status
+        value: verified
+        description: at least one exactly-verified bounded/witness claim (verifier-run)
+      - type: claim_status
+        value: falsified
+        description: at least one auxiliary conjecture falsified by an exact counterexample
+    constraints:
+      - "exact integer arithmetic only (floats are exploration, never evidence)"
+      - "never claim more than what was verified: state bounds honestly"
+      - "known literature results are source-backed claims, not campaign-verified"
+    exclusions:
+      - "no unbounded claims from computation"
+    assumptions:
+      - "standard mathematical definitions"
+    riskClass: low
+  models:
+    defaultPool:
+      - id: zai-glm-5.3
+        provider: zai
+        model: glm-5.3
+        runtime: pi
+        thinkingLevel: max
+        tags: [default]
+  search:
+    policy: round-robin
+    blindGenerators: 3
+    maxBranches: 8
+  budgets:
+    maxAgentRuns: 60
+    maxTasks: 120
+    maxRounds: 8
+    maxExperiments: 60
+    wallClockMinutes: 600
+    maxTokensEstimate: 50000000
+  autonomy: { level: L3, humanApprovalRequiredFor: [] }
+  workers: { autoSpawn: 2, leaseSeconds: 3600, maxRunMinutes: 360 }
+  stop: { onSuccess: true, onBudgetExhausted: true, noProgressRounds: 3, successSemantics: "all", minRounds: 2, requireCycle: true }
+  verification: { requireIndependentAudit: true }

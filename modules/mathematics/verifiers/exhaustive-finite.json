@@ -1,0 +1,17 @@
+{
+  "name": "exhaustive-finite",
+  "kind": "exec",
+  "label": "Exhaustive finite-domain verification",
+  "description": "PROOF of the bounded statement: checks the predicate over the COMPLETE cartesian product of declared integer ranges (≤ 5M cases, memoized). Exit 0 = holds everywhere → claim about that finite domain VERIFIED. Exit 1 = exact counterexample found → claim FALSIFIED. State the claim's bound honestly: '∀ n in [1, K]' is what gets verified, never '∀ n'.",
+  "command": ["python3", "{script}", "{input_file}"],
+  "script": "verifiers/check.py",
+  "timeoutSeconds": 600,
+  "onPass": "verified",
+  "onFail": "falsified",
+  "inputs": [
+    { "name": "expression", "description": "integer arithmetic over the variables (usually just \"n\")", "required": true },
+    { "name": "variables", "description": "complete domain, e.g. [{\"name\":\"n\",\"min\":1,\"max\":1000000}]", "required": true },
+    { "name": "predicate", "description": "e.g. collatz_terminates | prime | collatz_steps_less_than:400", "required": true },
+    { "name": "maxCases", "description": "optional guard, default 3000000 (cap 5000000)", "required": false }
+  ]
+}

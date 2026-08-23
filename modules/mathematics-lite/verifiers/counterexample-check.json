@@ -1,0 +1,16 @@
+{
+  "name": "counterexample-check",
+  "kind": "exec",
+  "label": "Exact counterexample check",
+  "description": "Recomputes an integer expression at n with exact arithmetic and checks a predicate. Exit 0 = predicate HOLDS = the exact counterexample is confirmed, target claim is falsified. Use for claims of the form 'for all n, P(f(n))' when you found a specific n breaking P.",
+  "command": ["python3", "{script}", "{input_file}"],
+  "script": "verifiers/check.py",
+  "timeoutSeconds": 20,
+  "onPass": "falsified",
+  "onFail": "inconclusive",
+  "inputs": [
+    { "name": "expression", "description": "integer arithmetic over n, e.g. n*n+n+41", "required": true },
+    { "name": "n", "description": "integer value of n to test", "required": true },
+    { "name": "predicate", "description": "prime|not_prime|even|odd|equals:K|divisible_by:K|greater_than:K|less_than:K", "required": true }
+  ]
+}

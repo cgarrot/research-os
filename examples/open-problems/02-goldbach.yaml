@@ -1,0 +1,46 @@
+campaign:
+  title: "Goldbach (forte) — open problem #2: verified bounded evidence on even decompositions"
+  modules: [mathematics]
+  objective:
+    statement: "Open problem (Wikipedia FR): strong Goldbach conjecture — every even integer n > 2 is the sum of two primes. Goal: VERIFIED PROGRESS: (1) establish the largest K such that 'every even n in [4, K] has at least one prime decomposition' is exactly verified (exhaustive-finite over evens, goldbach_count(n) >= 1); (2) study goldbach_count statistics and generate/falsify auxiliary conjectures (minimum representations in ranges, growth trends); (3) record the weak-Goldbach relation and known literature bounds as source-backed claims."
+    questions:
+      - "Largest exactly-verified K within budget?"
+      - "Where does min goldbach_count over [4,K] occur and how small does it get?"
+      - "Which plausible auxiliary bounds die to exact counterexamples?"
+    deliverables:
+      - kind: report
+        description: "Verified bounded Goldbach evidence + falsified auxiliaries"
+    successCriteria:
+      - type: claim_status
+        value: verified
+        description: "Bounded Goldbach claim exactly verified on a complete even range"
+      - type: claim_status
+        value: falsified
+        description: "At least one auxiliary conjecture falsified exactly"
+    constraints: ["exact arithmetic only", "bounded claims stated with their true range"]
+    exclusions: ["no unbounded claims from computation"]
+    assumptions: ["standard primality"]
+    riskClass: low
+  models:
+    defaultPool:
+      - id: zai-glm-5.3
+        provider: zai
+        model: glm-5.3
+        runtime: pi
+        thinkingLevel: max
+        tags: [default]
+  search:
+    policy: round-robin
+    blindGenerators: 3
+    maxBranches: 8
+  budgets:
+    maxAgentRuns: 24
+    maxTasks: 40
+    maxRounds: 3
+    maxExperiments: 10
+    wallClockMinutes: 50
+    maxTokensEstimate: 30000000
+  autonomy: { level: L3, humanApprovalRequiredFor: [] }
+  workers: { autoSpawn: 2, leaseSeconds: 1800 }
+  stop: { onSuccess: true, onBudgetExhausted: true, noProgressRounds: 2 }
+  verification: { requireIndependentAudit: true }

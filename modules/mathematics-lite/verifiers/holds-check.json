@@ -1,0 +1,16 @@
+{
+  "name": "holds-check",
+  "kind": "exec",
+  "label": "Exact holds check",
+  "description": "Recomputes an integer expression at n and checks that the predicate HOLDS at that n. Exit 0 = holds at this n. Target claim becomes empirically_supported (not verified — one n is not a proof).",
+  "command": ["python3", "{script}", "{input_file}"],
+  "script": "verifiers/check.py",
+  "timeoutSeconds": 20,
+  "onPass": "empirically_supported",
+  "onFail": "inconclusive",
+  "inputs": [
+    { "name": "expression", "description": "integer arithmetic over n, e.g. n*n+n+41", "required": true },
+    { "name": "n", "description": "integer value of n to test", "required": true },
+    { "name": "predicate", "description": "prime|not_prime|even|odd|equals:K|divisible_by:K|greater_than:K|less_than:K", "required": true }
+  ]
+}

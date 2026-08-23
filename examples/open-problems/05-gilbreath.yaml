@@ -1,0 +1,46 @@
+campaign:
+  title: "Gilbreath — open problem #5: verified bounded rows"
+  modules: [mathematics]
+  objective:
+    statement: "Open problem (Wikipedia FR): Gilbreath's conjecture — writing the primes in order and repeatedly taking absolute differences of consecutive terms, every resulting row starts with 1. Goal: VERIFIED PROGRESS: (1) largest K with 'the first K difference rows all start with 1' exactly verified (exhaustive/point check via gilbreath_rows_ok(K) == 1); (2) study the structure of later rows, generate falsifiable auxiliaries about row starts (e.g. second elements, row sums) and test them exactly; (3) record known computational bounds as source-backed claims."
+    questions:
+      - "Largest exactly-verified K (cap 5000)?"
+      - "What patterns hold/die in the second element of each row?"
+      - "Which auxiliary regularities die exactly?"
+    deliverables:
+      - kind: report
+        description: "Verified Gilbreath rows + auxiliary structure analysis"
+    successCriteria:
+      - type: claim_status
+        value: verified
+        description: "Verified bounded Gilbreath claim"
+      - type: claim_status
+        value: falsified
+        description: "At least one auxiliary conjecture falsified exactly"
+    constraints: ["exact arithmetic only"]
+    exclusions: ["no unbounded claims"]
+    assumptions: ["primes in increasing order"]
+    riskClass: low
+  models:
+    defaultPool:
+      - id: zai-glm-5.3
+        provider: zai
+        model: glm-5.3
+        runtime: pi
+        thinkingLevel: max
+        tags: [default]
+  search:
+    policy: round-robin
+    blindGenerators: 3
+    maxBranches: 8
+  budgets:
+    maxAgentRuns: 24
+    maxTasks: 40
+    maxRounds: 3
+    maxExperiments: 10
+    wallClockMinutes: 50
+    maxTokensEstimate: 30000000
+  autonomy: { level: L3, humanApprovalRequiredFor: [] }
+  workers: { autoSpawn: 2, leaseSeconds: 1800 }
+  stop: { onSuccess: true, onBudgetExhausted: true, noProgressRounds: 2 }
+  verification: { requireIndependentAudit: true }

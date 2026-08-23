@@ -1,0 +1,50 @@
+campaign:
+  title: "Conjecture de Fortune — open problem #17"
+  modules: [mathematics]
+  objective:
+    statement: "Open problem (Wikipedia FR, théorie des nombres): Pour tout n >= 1, le nombre de Fortune F_n (plus petit entier > 1 tel que primorial(n) + F_n soit premier) est premier. Goal: OPERATIONAL progress under our epistemic rules — primorial(n) helper added to the verifier library: bounded VERIFIED check 'F_n is prime for all n in [1, K]' via exhaustive-finite with expression computing the Fortune number (needs next-prime-after search... prefer: workers compute F_n per n in scripts, then VERIFIED pointwise via exact-point on each primorial(n)+F_n with predicate prime — a batch of verified witnesses; plus falsify auxiliaries on F_n growth)."
+    questions:
+      - "Verified Fortune primes for n <= K?"
+      - "Growth claims that die?"
+    deliverables:
+      - kind: report
+        description: "Evidence-backed report: verified/witness results, falsified auxiliaries, empirical support clearly labeled"
+    successCriteria:
+      - type: claim_status
+        value: verified
+        description: at least one exactly-verified bounded/witness claim (verifier-run)
+      - type: claim_status
+        value: falsified
+        description: at least one auxiliary conjecture falsified by an exact counterexample
+    constraints:
+      - "exact integer arithmetic only (floats are exploration, never evidence)"
+      - "never claim more than what was verified: state bounds honestly"
+      - "known literature results are source-backed claims, not campaign-verified"
+    exclusions:
+      - "no unbounded claims from computation"
+    assumptions:
+      - "standard mathematical definitions"
+    riskClass: low
+  models:
+    defaultPool:
+      - id: zai-glm-5.3
+        provider: zai
+        model: glm-5.3
+        runtime: pi
+        thinkingLevel: max
+        tags: [default]
+  search:
+    policy: round-robin
+    blindGenerators: 3
+    maxBranches: 8
+  budgets:
+    maxAgentRuns: 60
+    maxTasks: 120
+    maxRounds: 8
+    maxExperiments: 60
+    wallClockMinutes: 600
+    maxTokensEstimate: 50000000
+  autonomy: { level: L3, humanApprovalRequiredFor: [] }
+  workers: { autoSpawn: 2, leaseSeconds: 3600, maxRunMinutes: 360 }
+  stop: { onSuccess: true, onBudgetExhausted: true, noProgressRounds: 3, successSemantics: "all", minRounds: 2, requireCycle: true }
+  verification: { requireIndependentAudit: true }

@@ -1,0 +1,16 @@
+{
+  "name": "symbolic-identity",
+  "kind": "exec",
+  "label": "Symbolic identity (sympy)",
+  "description": "Verify that two expressions are identically equal via exact symbolic simplification (proof-grade for polynomial/rational identities; assumption domain recorded in output). Exit 0 = identity VERIFIED. Exit 1 = not proven equal (inconclusive, NOT a disproof).",
+  "command": ["python3", "{script}", "{input_file}"],
+  "script": "verifiers/identity.py",
+  "timeoutSeconds": 120,
+  "onPass": "verified",
+  "onFail": "inconclusive",
+  "inputs": [
+    { "name": "left", "description": "left-hand expression", "required": true },
+    { "name": "right", "description": "right-hand expression", "required": true },
+    { "name": "variables", "description": "free symbols, e.g. [\"x\",\"y\"]", "required": false }
+  ]
+}

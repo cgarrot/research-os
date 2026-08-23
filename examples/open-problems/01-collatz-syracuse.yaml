@@ -1,0 +1,61 @@
+campaign:
+  title: "Syracuse (Collatz 3x+1) — open problem #1: verified bounded progress + auxiliary conjecture attacks"
+  modules: [mathematics]
+  objective:
+    statement: "Open problem (Wikipedia FR, théorie des nombres): the Syracuse/Collatz conjecture — for every integer n >= 1, iterating f(n) = n/2 (n even) / 3n+1 (n odd) eventually reaches 1. A full proof is out of scope; the goal is VERIFIED PROGRESS: (1) establish the largest bound K such that 'Collatz holds for all n in [1, K]' is EXACTLY verified (exhaustive-finite, complete domain); (2) generate auxiliary conjectures (stopping times, maximum excursion, residue-class behavior mod m, total stopping structure) and FALSIFY or support them exactly; (3) record equivalent formulations (e.g. no nontrivial cycle, no divergent trajectory; 2-adic formulation) with honest epistemic status."
+    questions:
+      - "What is the largest K we can exhaustively verify within budget (verifier cap 5M cases)?"
+      - "What bounds hold on collatz_steps(n) and collatz_max(n) for n in the verified range?"
+      - "Are there plausible-looking auxiliary conjectures (e.g. 'steps(n) < 200 for all n', 'max(n) < 100*n') that die to small counterexamples?"
+      - "Which equivalent formulations (cycle-freeness, divergence-freeness) make bounded verification meaningful?"
+    deliverables:
+      - kind: report
+        description: "Evidence-backed report: verified bounds, falsified auxiliaries, surviving observations"
+    successCriteria:
+      - type: claim_status
+        value: verified
+        description: "A bounded Collatz claim verified by exhaustive-finite over its complete finite domain"
+      - type: claim_status
+        value: falsified
+        description: "At least one auxiliary conjecture falsified by an exact counterexample"
+    constraints:
+      - "exact integer arithmetic only"
+      - "never claim the unbounded conjecture from computation"
+      - "distinguish verified-bounded / empirically-supported / falsified"
+    exclusions:
+      - "no floats as evidence"
+      - "no claims about 'almost all n' without exact support"
+    assumptions:
+      - "standard integers; termination means reaching 1"
+    riskClass: low
+  models:
+    defaultPool:
+      - id: zai-glm-5.3
+        provider: zai
+        model: glm-5.3
+        runtime: pi
+        thinkingLevel: max
+        tags: [default]
+  search:
+    policy: round-robin
+    blindGenerators: 4
+    maxBranches: 10
+  budgets:
+    maxAgentRuns: 30
+    maxTasks: 50
+    maxRounds: 3
+    maxExperiments: 15
+    wallClockMinutes: 60
+    maxTokensEstimate: 40000000
+  autonomy:
+    level: L3
+    humanApprovalRequiredFor: []
+  workers:
+    autoSpawn: 2
+    leaseSeconds: 1800
+  stop:
+    onSuccess: true
+    onBudgetExhausted: true
+    noProgressRounds: 2
+  verification:
+    requireIndependentAudit: true

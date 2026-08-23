@@ -1,0 +1,46 @@
+campaign:
+  title: "Brocard (n! + 1 = m^2) — open problem #4: verified no-solution range"
+  modules: [mathematics]
+  objective:
+    statement: "Open problem (Wikipedia FR): Brocard's problem — do integers n > 7 exist with n! + 1 a perfect square? Known solutions: n = 4, 5, 7. Goal: VERIFIED PROGRESS: (1) largest K with 'no n in [8, K] satisfies factorial(n)+1 square' exactly verified (exhaustive-finite, predicate not_square; big-int exact); (2) auxiliary analysis: modular obstructions (for which moduli p does n!+1 avoid squares residue classes), growth/spacing arguments — generate falsifiable auxiliaries and test them; (3) record known literature bounds as source-backed claims."
+    questions:
+      - "Largest exactly-verified K (factorial cap 20000)?"
+      - "Which small moduli give partial obstructions, and how far do they reach?"
+      - "Do plausible auxiliary claims (e.g. about gaps between squares near n!) die exactly?"
+    deliverables:
+      - kind: report
+        description: "Verified no-solution range + modular analysis"
+    successCriteria:
+      - type: claim_status
+        value: verified
+        description: "Verified no-solution range claim [8,K]"
+      - type: claim_status
+        value: falsified
+        description: "At least one auxiliary conjecture falsified exactly"
+    constraints: ["exact big-integer arithmetic only"]
+    exclusions: ["no unbounded claims"]
+    assumptions: ["standard factorial/squares"]
+    riskClass: low
+  models:
+    defaultPool:
+      - id: zai-glm-5.3
+        provider: zai
+        model: glm-5.3
+        runtime: pi
+        thinkingLevel: max
+        tags: [default]
+  search:
+    policy: round-robin
+    blindGenerators: 3
+    maxBranches: 8
+  budgets:
+    maxAgentRuns: 24
+    maxTasks: 40
+    maxRounds: 3
+    maxExperiments: 10
+    wallClockMinutes: 50
+    maxTokensEstimate: 30000000
+  autonomy: { level: L3, humanApprovalRequiredFor: [] }
+  workers: { autoSpawn: 2, leaseSeconds: 1800 }
+  stop: { onSuccess: true, onBudgetExhausted: true, noProgressRounds: 2 }
+  verification: { requireIndependentAudit: true }

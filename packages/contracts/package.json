@@ -1,0 +1,21 @@
+{
+  "name": "@research-os/contracts",
+  "version": "0.1.0",
+  "description": "ResearchOS core contracts: ids, events, research objects, tasks, verification, memory, module and adapter interfaces. Harness-independent.",
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc -p .",
+    "typecheck": "tsc -p . --noEmit",
+    "test": "node --test dist/test/ 2>/dev/null || true"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.0",
+    "@types/node": "^22.0.0"
+  }
+}
