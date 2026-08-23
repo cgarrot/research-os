@@ -1,0 +1,38 @@
+campaign:
+  title: "Taxicab(5) gap question — does 0 ≤ |a^5+b^5-c^5-d^5| ≤ 10 have solutions? (reformulated from human review of dis_1)"
+  modules: [mathematics]
+  objective:
+    statement: "RESEARCH QUESTION (reformulated after human review of dis_1): does there exist positive integers a,b,c,d with (a,b)≠(c,d) and 0 ≤ |a^5+b^5-c^5-d^5| ≤ 10? The gap-0 case is taxicab(5,2,2), an open problem. Gaps 5 and 6 are mod-11 impossible (x^5≡0,±1 mod 11). Gaps 1,2,3,4,7,8,9,10 are open — no modular obstruction found up to modulus 500. PRIOR WORK: D'(K)=11 for K=2..4000 (verified exactly, unique champion 13^5+16^5 vs 1^5+17^5, from Elkies 2000 near-miss). Goal: (1) push the census K=4000 → 10000+ (does 11 survive?); (2) search for modular obstructions for gaps 1,2,3,4,7,8,9,10 beyond modulus 500; (3) if any gap g∈{1..10} is found achievable → exact certificate → discovery candidate; (4) if gaps are excluded for growing K → strengthening evidence for D'(K)=11 conjecture."
+    questions:
+      - "Can the census push beyond K=4000 without finding gap < 11?"
+      - "Are there modular obstructions for gaps 1,2,3,4,7,8,9,10 at higher moduli?"
+      - "Can the band-search techniques from the prior campaign (O(1) memory per band σ=30u) scale the search?"
+    deliverables:
+      - kind: report
+        description: "Updated census bounds + modular obstruction analysis + gap-achievable-or-excluded evidence"
+    successCriteria:
+      - type: claim_status
+        value: verified
+        description: "either a new verified bound (census extension) or a verified modular obstruction"
+    constraints:
+      - "exact arithmetic only"
+      - "band-search O(1)-memory technique from prior campaign available in knowledge"
+    exclusions: []
+    assumptions: ["prior work visible via ContextPack.priorRuns (15-taxicab-5)"]
+    riskClass: low
+  models:
+    defaultPool:
+      - id: zai-glm-5.3
+        provider: zai
+        model: glm-5.3
+        runtime: pi
+        thinkingLevel: max
+        tags: [default]
+  search: { policy: round-robin, blindGenerators: 2, maxBranches: 6 }
+  budgets: { maxAgentRuns: 30, maxTasks: 60, maxRounds: 4, maxExperiments: 25, wallClockMinutes: 360, maxTokensEstimate: 40000000 }
+  autonomy: { level: L3, humanApprovalRequiredFor: [] }
+  workers: { autoSpawn: 2, leaseSeconds: 3600, maxRunMinutes: 360 }
+  stop: { onSuccess: true, onBudgetExhausted: true, noProgressRounds: 2, successSemantics: "any", minRounds: 1, requireCycle: false }
+  modulePrompts:
+    worker: "GAP-QUESTION MODE: your ContextPack.priorRuns shows the D'(K)=11 result and the prior campaign's band-search skills. The target: gaps 0-10 (case 0 = open problem, cases 5/6 = mod-11 dead, cases 1-4,7-10 = live). Push the census (C or python, band-search, parallel shards) and search for new modular obstructions. A gap-achievable witness OR a proved modular exclusion = verified contribution."
+  verification: { requireIndependentAudit: true }

@@ -14,7 +14,7 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { Watchdog, DEFAULT_WATCHDOG, eventsLiveness, type CampaignLiveness } from "./watchdog.js";
-import { openKnowledge, consolidate, bestBound } from "@research-os/core";
+import { openKnowledge, consolidate, bestBound, lookup } from "@research-os/core";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "../../..");
@@ -226,6 +226,23 @@ async function tick(state: QueueState): Promise<boolean> {
               writeFileSync(distillFile, renderDistill(problem, cur.id), "utf8");
               log(`DISTILL ENQUEUED zz-${problem}-distill.yaml (agent consolidation of ${cur.id})`);
             }
+            // v0.6: RED-TEAM — when a campaign completes with verified claims, spawn an adversarial campaign
+            // whose sole objective is to DESTROY the result. If it survives, it earns the survived-red-team badge.
+            if (cur.status === "completed") {
+              try {
+                const kn = openKnowledge(HOME);
+                const lk = lookup(kn, problem);
+                if (lk.covered && lk.verifiedClaims.length > 0) {
+                  const rtFile = path.join(QUEUE_DIR, `zz-${problem}-redteam.yaml`);
+                  if (!existsSync(rtFile)) {
+                    writeFileSync(rtFile, renderRedTeam(problem, cur.id, lk.verifiedClaims.length), "utf8");
+                    log(`RED-TEAM ENQUEUED zz-${problem}-redteam.yaml (${lk.verifiedClaims.length} verified claims to attack)`);
+                  }
+                }
+              } catch (err) {
+                log(`red-team check failed: ${String(err)}`);
+              }
+            }
           }
         }
       } catch (err) {
@@ -277,6 +294,51 @@ async function findWorkspaceDir(campaignId: string): Promise<string | null> {
 
 function slugFromTitle(title: string): string {
   return title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 48);
+}
+
+
+function renderRedTeam(problem: string, sourceCampaignId: string, nClaims: number): string {
+  return `campaign:
+  title: "RED-TEAM — ${problem} (destroy the result of ${sourceCampaignId})"
+  modules: [mathematics]
+  objective:
+    statement: "You are a RED TEAM. The campaign ${sourceCampaignId} claims ${nClaims} verified results. Your SOLE objective is to DESTROY them. Attack every verified claim: (1) RE-COMPUTE independently from scratch — different algorithm, different implementation, no access to the original scripts; (2) hunt for counterexamples the original missed — edge cases, boundary values, larger domains; (3) check for CIRCULAR REASONING — does the verification depend on the thing being verified?; (4) attack the certificates — are the witnesses actually valid? did the verifier check what the claim says?; (5) test the claims under adversarial perturbation — if the claim says 'for all n ≤ K', test n = K+1, K+10, K+100; (6) look for off-by-one, sign errors, indexing errors, overflow; (7) check the bound-integrity — does the claim's stated bound match what was actually verified? If EVERY attack fails and the results hold, submit a synthesis noting they SURVIVED red-team. If ANY attack succeeds, the result is DESTROYED — document exactly how and why."
+    questions:
+      - "Can each verified claim be independently reproduced from scratch?"
+      - "Are there counterexamples just beyond the verified bounds?"
+      - "Is there any circularity in the verification chain?"
+      - "Do the certificates actually prove what the claims state?"
+    deliverables:
+      - kind: report
+        description: "Red-team verdict: SURVIVED or DESTROYED with precise failure modes"
+    successCriteria:
+      - type: claim_status
+        value: verified
+        description: "at least one independent re-verification performed (proving the red-team did real work, not rubber-stamping)"
+    constraints:
+      - "re-implement from scratch — NEVER reuse the original campaign's scripts or artifacts as starting points"
+      - "exact arithmetic only; every re-computation must be independent"
+      - "if you destroy a result, document the exact failure mode for the human"
+    exclusions: []
+    assumptions: ["source campaign claims visible via ContextPack.priorRuns"]
+    riskClass: low
+  models:
+    defaultPool:
+      - id: zai-glm-5.3
+        provider: zai
+        model: glm-5.3
+        runtime: pi
+        thinkingLevel: max
+        tags: [default]
+  search: { policy: round-robin, blindGenerators: 1, maxBranches: 4 }
+  budgets: { maxAgentRuns: 12, maxTasks: 20, maxRounds: 2, maxExperiments: 10, wallClockMinutes: 120, maxTokensEstimate: 15000000 }
+  autonomy: { level: L3, humanApprovalRequiredFor: [] }
+  workers: { autoSpawn: 2, leaseSeconds: 1800, maxRunMinutes: 120 }
+  stop: { onSuccess: true, onBudgetExhausted: true, noProgressRounds: 2, successSemantics: "any", minRounds: 1, requireCycle: false }
+  modulePrompts:
+    worker: "RED-TEAM MODE: your ContextPack.priorRuns shows what ${sourceCampaignId} verified. Your job is DESTRUCTION, not confirmation. Re-implement every computation from scratch (different approach if possible). Hunt for counterexamples beyond the verified bounds. Check circularity. Attack the certificates. If results hold → they earned the survived-red-team badge. If any fails → document the precise failure. This is constructive destruction: the goal is that whatever survives is TRUSTWORTHY."
+  verification: { requireIndependentAudit: true }
+`;
 }
 
 function renderDistill(problem: string, sourceCampaignId: string): string {

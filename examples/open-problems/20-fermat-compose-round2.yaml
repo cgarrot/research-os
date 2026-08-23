@@ -1,0 +1,37 @@
+campaign:
+  title: "REITERATION — 20-fermat-compose round 2 (prior verified bound 10000000000)"
+  modules: [mathematics]
+  objective:
+    statement: "Round 2 on 20-fermat-compose: the system has PRIOR WORK (verified bound n=10000000000, dead-ends, skills — see your ContextPack priorRuns). Goal: EXTEND, don't repeat — (1) push the strongest verified bound beyond 10000000000 (or to its verifier ceiling), (2) attack the surviving auxiliaries/conjectures from round 1 with the learned dead-ends in mind, (3) apply active skills; supersede (never duplicate) existing verified claims."
+    questions:
+      - "What is the strongest round-1 result, and what exactly blocks pushing it further?"
+      - "Which round-1 dead-ends have a DIFFERENT attack enabled by current capabilities?"
+    deliverables:
+      - kind: report
+        description: "Round-2 report: new bounds vs round-1, superseded claims, new dead-ends"
+    successCriteria:
+      - type: claim_status
+        value: verified
+        description: "a claim that EXTENDS beyond the round-1 verified bound (not a duplicate)"
+    constraints:
+      - "never re-verify an established bound — start beyond it"
+      - "exact arithmetic only; bounds stated honestly"
+    exclusions: []
+    assumptions: ["prior work available in ContextPack.priorRuns"]
+    riskClass: low
+  models:
+    defaultPool:
+      - id: zai-glm-5.3
+        provider: zai
+        model: glm-5.3
+        runtime: pi
+        thinkingLevel: max
+        tags: [default]
+  search: { policy: round-robin, blindGenerators: 3, maxBranches: 8 }
+  budgets: { maxAgentRuns: 30, maxTasks: 60, maxRounds: 4, maxExperiments: 20, wallClockMinutes: 240, maxTokensEstimate: 40000000 }
+  autonomy: { level: L3, humanApprovalRequiredFor: [] }
+  workers: { autoSpawn: 2, leaseSeconds: 3600, maxRunMinutes: 240 }
+  stop: { onSuccess: true, onBudgetExhausted: true, noProgressRounds: 2, successSemantics: "any", minRounds: 1, requireCycle: false }
+  modulePrompts:
+    worker: "REITERATION MODE: your ContextPack contains priorRuns (verified bounds, dead-ends, skills from round 1). EXTEND, don't repeat. A claim that merely restates round-1 work is a failure. Push bounds beyond 10000000000 or attack open auxiliaries with new representations."
+  verification: { requireIndependentAudit: true }
