@@ -53,6 +53,41 @@ const jobRunner = new JobRunner(core, (job) => {
 // replay-honesty: jobs still running with no live child were interrupted by a crash
 JobRunner.replayInterruptions(core);
 
+// v0.3.2: ORPHAN RUNS — headless workers spawned by a PREVIOUS daemon have no onExit
+// handler here; their death would go unnoticed forever. On boot, check their pids:
+// alive → adopt silently (they will finish and their lease/submit still works);
+// dead → mark exited (failed) and requeue their task immediately.
+for (const proj of core.listCampaigns()) {
+  const toFail: { run: { workerAlias?: string }; task: string }[] = [];
+  for (const r of proj.agentRuns.values()) {
+    if (r.mode !== "headless" || r.status !== "running" || !r.pid) continue;
+    let alive = false;
+    try {
+      process.kill(r.pid, 0);
+      alive = true;
+    } catch {
+      alive = false;
+    }
+    if (!alive) {
+      core.apply(proj, "worker.exited", { kind: "system", id: "researchd" }, {
+        runId: r.id, status: "failed", summary: "orphan run detected at daemon boot (worker spawned by previous daemon, process dead)",
+      }, { correlationId: r.id });
+      if (r.taskId) toFail.push({ run: r as never, task: r.taskId });
+    }
+  }
+  for (const { run, task } of toFail) {
+    try {
+      const t = proj.tasks.get(task);
+      if (t && (t.status === "leased" || t.status === "running") && t.lease?.holder === run.workerAlias) {
+        releaseTask(core, proj, task, String(run.workerAlias), "orphan run (previous daemon) died without submitting");
+        process.stderr.write(`[researchd] orphan run requeued task ${task}\n`);
+      }
+    } catch (err) {
+      process.stderr.write(`[researchd] orphan requeue failed for ${task}: ${String(err)}\n`);
+    }
+  }
+}
+
 // ---- mesh transport (same broker as all Pi workers; transport only — invariant B)
 const mesh = new PiMeshTransportAdapter((frame) => {
   process.stderr.write(`[mesh] ${frame.type} from ${frame.from}: ${String(frame.body ?? "").slice(0, 200)}\n`);
