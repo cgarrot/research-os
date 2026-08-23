@@ -2,7 +2,8 @@
 import http from "node:http";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { appendFileSync } from "node:fs";
+import { appendFileSync, readFileSync as _rf } from "node:fs";
+import { openKnowledge as _openK, consolidate as _consolidate, lookup as _klookup, type KnowledgeObject as _KO } from "@research-os/core";
 import {
   ResearchCore,
   Scheduler,
@@ -18,6 +19,8 @@ import {
   loadSkillStore,
   memoryHash,
   setGlobalContextSources,
+  setPriorRunsLookup,
+  setProblemSlugMap,
   type GlobalMemoryEntry,
   type GlobalSkillEntry,
 } from "@research-os/core";
@@ -115,6 +118,46 @@ runtime.onExit = (adapterRunId, state) => {
   }
 };
 
+// ---- v0.3: knowledge base (prior runs) — slug resolution via queue ledger, lookup, anti-dup
+const KN = _openK(HOME);
+const problemSlugs = new Map<string, string>(); // workspaceDir -> problem slug
+try {
+  const qLedger = JSON.parse(_rf(path.join(HOME, "queue.json"), "utf8")) as { done?: { file: string; campaignId: string }[]; current?: { file: string; campaignId: string } };
+  const registry = JSON.parse(_rf(path.join(HOME, "registry.json"), "utf8")) as { campaigns: { id: string; dir: string }[] };
+  const idToSlug = new Map<string, string>();
+  for (const d of qLedger.done ?? []) idToSlug.set(d.campaignId, d.file.replace(/\.yaml$/, ""));
+  if (qLedger.current) idToSlug.set(qLedger.current.campaignId, qLedger.current.file.replace(/\.yaml$/, ""));
+  for (const c of registry.campaigns) {
+    const slug = idToSlug.get(c.id);
+    if (slug) problemSlugs.set(path.resolve(c.dir), slug);
+  }
+} catch {
+  /* knowledge optional at boot */
+}
+const knowledgeObjects = (() => {
+  try {
+    return _rf(KN.objectsFile, "utf8").split("\n").filter(Boolean).map((l) => JSON.parse(l) as _KO);
+  } catch {
+    return [] as _KO[];
+  }
+})();
+const knowledgeLookup = (title: string): { statement: string; provenance: string } | null => {
+  // exact-ish containment match against verified claims (cheap, conservative)
+  const t = title.toLowerCase().slice(0, 80);
+  for (const o of knowledgeObjects) {
+    if (o.kind === "claim" && o.status === "verified" && o.statement.toLowerCase().slice(0, 80) === t) {
+      return { statement: o.statement, provenance: `${o.provenance.campaignId} (${o.provenance.extractedAt.slice(0, 10)})` };
+    }
+  }
+  return null;
+};
+setProblemSlugMap(problemSlugs);
+setPriorRunsLookup((slug, question) => {
+  if (!slug) return null;
+  const r = _klookup(KN, slug, question);
+  return r.covered ? r : null;
+});
+
 // ---- scheduler
 const scheduler = new Scheduler({
   core,
@@ -182,7 +225,7 @@ const server = http.createServer((req, res) => {
     sseStream(core, url.searchParams.get("campaign"), res);
     return;
   }
-  void handleRequest({ core, modulesDir: MODULES_DIR, piPackageDir: PI_PACKAGE_DIR, mesh, jobs: jobRunner, schedulerHealth: heartbeat }, req, res).catch((err) => {
+  void handleRequest({ core, modulesDir: MODULES_DIR, piPackageDir: PI_PACKAGE_DIR, mesh, jobs: jobRunner, schedulerHealth: heartbeat, knowledgeLookup }, req, res).catch((err) => {
     process.stderr.write(`[researchd] request error: ${String(err)}\n`);
     if (!res.headersSent) {
       res.writeHead(500, { "content-type": "application/json" });
@@ -239,6 +282,16 @@ refreshGlobalSources();
 core.subscribe((campaignId, event) => {
   void campaignId;
   try {
+    if (event.type === "claim.status_changed") {
+      const to = String((event.payload as Record<string, unknown>).to ?? "");
+      if (to === "verified" || to === "falsified") {
+        const entry = `${to.toUpperCase()}|${event.campaignId}|${String((event.payload as Record<string, unknown>).objectId ?? "")}|${event.timestamp}`;
+        if (!globalMemorySeen.has(entry)) {
+          globalMemorySeen.add(entry);
+          appendFileSync(globalPaths.memory, JSON.stringify({ hash: entry, campaignId: event.campaignId, kind: "negative", title: `claim ${to} in ${event.campaignId}: ${String((event.payload as Record<string, unknown>).objectId ?? "")}`, content: { status: to }, createdAt: event.timestamp }) + "\n", "utf8");
+        }
+      }
+    }
     if (event.type === "memory.episode_created") {
       const m = event.payload.memory as { kind?: string; title?: string; content?: Record<string, unknown> };
       if (m?.kind === "negative" && m.title) {
@@ -249,7 +302,7 @@ core.subscribe((campaignId, event) => {
           appendFileSync(globalPaths.memory, JSON.stringify(entry) + "\n", "utf8");
           // cap: keep the 500 most recent entries (simple LRU-by-time)
           const all = loadMemoryStore(globalPaths.memory);
-          if (all.length > 500) {
+          if (all.length > 5000) {
             const { writeFileSync } = require("node:fs") as typeof import("node:fs");
             writeFileSync(globalPaths.memory, all.slice(-500).map((e) => JSON.stringify(e)).join("\n") + "\n", "utf8");
           }

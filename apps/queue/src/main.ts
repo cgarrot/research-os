@@ -14,6 +14,7 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { Watchdog, DEFAULT_WATCHDOG, eventsLiveness, type CampaignLiveness } from "./watchdog.js";
+import { openKnowledge, consolidate, bestBound } from "@research-os/core";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "../../..");
@@ -30,7 +31,7 @@ const ONCE = process.argv.includes("--once");
 interface QueueState {
   startedAt: string;
   current: { file: string; campaignId: string; startedAt: string; adopted?: boolean } | null;
-  done: { file: string; campaignId: string; status: string; finishedAt: string; report?: string; summary?: string; boundsOk?: boolean; boundsFindings?: string }[];
+  done: { file: string; campaignId: string; status: string; finishedAt: string; report?: string; summary?: string; boundsOk?: boolean; boundsFindings?: string; firstPass?: boolean }[];
   failed: { file: string; reason: string; at: string }[];
   watchdog?: { incidents: Record<string, { stage: string; note?: string; restarts: number[] }> };
 }
@@ -185,8 +186,37 @@ async function tick(state: QueueState): Promise<boolean> {
       const report = await exportReport(cur.id, state.current.file);
       // V0.4.4: attach the bounds integrity check to the done entry
       const bounds = await runCheckBounds(cur.id);
-      state.done.push({ file: state.current.file, campaignId: cur.id, status: cur.status, finishedAt: new Date().toISOString(), report, summary: cur.title, boundsOk: bounds.ok, boundsFindings: bounds.findings });
+      state.done.push({ file: state.current.file, campaignId: cur.id, status: cur.status, finishedAt: new Date().toISOString(), report, summary: cur.title, boundsOk: bounds.ok, boundsFindings: bounds.findings, firstPass: true });
       log(`DONE ${cur.id} (${cur.status}) — report: ${report}${bounds.ok ? " — bounds OK" : ` — ⚠ BOUNDS: ${bounds.findings.slice(0, 200)}`}`);
+      // v0.3: consolidate the finished campaign into the knowledge base
+      try {
+        const k = openKnowledge(HOME);
+        const wsDir = await findWorkspaceDir(cur.id);
+        if (wsDir) {
+          const evFile = path.join(wsDir, "state", "events.jsonl");
+          if (existsSync(evFile)) {
+            const events = readFileSync(evFile, "utf8").split("\n").filter(Boolean).map((l) => JSON.parse(l) as never);
+            const problem = state.current.file.replace(/\.yaml$/, "");
+            const r = consolidate(k, events, problem);
+            log(`CONSOLIDATED ${problem}: +${r.added} knowledge objects (${r.skipped} idempotent-skips)`);
+            // T1 trigger: bound < verifier ceiling ⇒ enqueue a deeper reiteration AFTER the pending novelty queue
+            const bb = bestBound(k, problem);
+            const CEILINGS: Record<string, number> = { "01-collatz-syracuse": 5_000_000, "05-gilbreath": 5000 };
+            const ceiling = CEILINGS[problem];
+            if (bb && ceiling && bb.max >= ceiling * 0.999) {
+              log(`T1 SKIP ${problem}: bound ${bb.max} already at verifier ceiling ${ceiling} — no reiteration (avoid loop)`);
+            } else if (bb) {
+              const reiterateFile = path.join(QUEUE_DIR, `${problem}-round2.yaml`);
+              if (!existsSync(reiterateFile)) {
+                writeFileSync(reiterateFile, renderReiterate(problem, bb.max), "utf8");
+                log(`T1 ENQUEUED ${problem}-round2.yaml (prior bound ${bb.max.toLocaleString("en-US")} < ceiling — the file sorts after pending novelty runs)`);
+              }
+            }
+          }
+        }
+      } catch (err) {
+        log(`consolidation failed for ${cur.id}: ${err instanceof Error ? err.message : String(err)}`);
+      }
     } catch (err) {
       state.failed.push({ file: state.current.file, reason: `report export failed: ${String(err)}`, at: new Date().toISOString() });
       log(`report export failed for ${cur.id}: ${String(err)}`);
@@ -224,6 +254,54 @@ function slugFromTitle(title: string): string {
   return title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 48);
 }
 
+
+
+async function findWorkspaceDir(campaignId: string): Promise<string | null> {
+  const campaigns = await api<{ id: string; workspace?: string }[]>("GET", "/v1/campaigns", undefined, 10_000);
+  const c = campaigns.find((x) => x.id === campaignId);
+  return c?.workspace ?? null;
+}
+
+function renderReiterate(problem: string, priorBound: number): string {
+  return `campaign:
+  title: "REITERATION — ${problem} round 2 (prior verified bound ${priorBound})"
+  modules: [mathematics]
+  objective:
+    statement: "Round 2 on ${problem}: the system has PRIOR WORK (verified bound n=${priorBound}, dead-ends, skills — see your ContextPack priorRuns). Goal: EXTEND, don't repeat — (1) push the strongest verified bound beyond ${priorBound} (or to its verifier ceiling), (2) attack the surviving auxiliaries/conjectures from round 1 with the learned dead-ends in mind, (3) apply active skills; supersede (never duplicate) existing verified claims."
+    questions:
+      - "What is the strongest round-1 result, and what exactly blocks pushing it further?"
+      - "Which round-1 dead-ends have a DIFFERENT attack enabled by current capabilities?"
+    deliverables:
+      - kind: report
+        description: "Round-2 report: new bounds vs round-1, superseded claims, new dead-ends"
+    successCriteria:
+      - type: claim_status
+        value: verified
+        description: "a claim that EXTENDS beyond the round-1 verified bound (not a duplicate)"
+    constraints:
+      - "never re-verify an established bound — start beyond it"
+      - "exact arithmetic only; bounds stated honestly"
+    exclusions: []
+    assumptions: ["prior work available in ContextPack.priorRuns"]
+    riskClass: low
+  models:
+    defaultPool:
+      - id: zai-glm-5.3
+        provider: zai
+        model: glm-5.3
+        runtime: pi
+        thinkingLevel: max
+        tags: [default]
+  search: { policy: round-robin, blindGenerators: 3, maxBranches: 8 }
+  budgets: { maxAgentRuns: 30, maxTasks: 60, maxRounds: 4, maxExperiments: 20, wallClockMinutes: 240, maxTokensEstimate: 40000000 }
+  autonomy: { level: L3, humanApprovalRequiredFor: [] }
+  workers: { autoSpawn: 2, leaseSeconds: 3600, maxRunMinutes: 240 }
+  stop: { onSuccess: true, onBudgetExhausted: true, noProgressRounds: 2, successSemantics: "any", minRounds: 1, requireCycle: false }
+  modulePrompts:
+    worker: "REITERATION MODE: your ContextPack contains priorRuns (verified bounds, dead-ends, skills from round 1). EXTEND, don't repeat. A claim that merely restates round-1 work is a failure. Push bounds beyond ${priorBound} or attack open auxiliaries with new representations."
+  verification: { requireIndependentAudit: true }
+`;
+}
 
 async function watchdogTick(watchdog: Watchdog, state: QueueState): Promise<string[]> {
   const acted: string[] = [];

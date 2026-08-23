@@ -1,0 +1,38 @@
+campaign:
+  title: "REITERATION — 01-collatz-syracuse round 2 (auxiliaries: sharpened max-excursion)"
+  modules: [mathematics]
+  objective:
+    statement: "Round 2 on Collatz: prior work exists (verified bound [1, 5,000,000]; t(n) < n² universal FALSIFIED with exact witness; sharpened t(n) < n² for n ≥ 96 only empirically supported). Goal — EXTEND, don't repeat: (1) determine the EXACT falsification threshold of the sharpened conjecture 't(n) < n² for all n ≥ 96' (search witnesses beyond the prior range; if it dies, the new threshold becomes a verified falsification; if it survives far, push the empirical support bound), (2) study the excursion function M(n)/n² statistics and generate+kill new auxiliaries (monotonicity fails where? record-setters of M(n)?), (3) apply the falsify-before-proving skill with the round-1 dead-ends in mind."
+    questions:
+      - "Does 't(n) < n² for n ≥ 96' survive to 10^7? What is the exact minimal surviving threshold?"
+      - "Which n set records of M(n)/n² beyond the known champions?"
+      - "Which new auxiliaries die exactly?"
+    deliverables:
+      - kind: report
+        description: "Round-2 report: sharpened threshold resolved or supported further, excursion statistics, new dead-ends"
+    successCriteria:
+      - type: claim_status
+        value: verified
+        description: "a claim EXTENDING round-1 (new threshold/bound/statistic), not a duplicate"
+    constraints:
+      - "never re-verify [1, 5,000,000] — start beyond"
+      - "exact arithmetic only; collatz_max/collatz_steps available in-module"
+    exclusions: []
+    assumptions: ["prior work visible via ContextPack.priorRuns (knowledge base)"]
+    riskClass: low
+  models:
+    defaultPool:
+      - id: zai-glm-5.3
+        provider: zai
+        model: glm-5.3
+        runtime: pi
+        thinkingLevel: max
+        tags: [default]
+  search: { policy: round-robin, blindGenerators: 3, maxBranches: 8 }
+  budgets: { maxAgentRuns: 30, maxTasks: 60, maxRounds: 4, maxExperiments: 20, wallClockMinutes: 240, maxTokensEstimate: 40000000 }
+  autonomy: { level: L3, humanApprovalRequiredFor: [] }
+  workers: { autoSpawn: 2, leaseSeconds: 3600, maxRunMinutes: 240 }
+  stop: { onSuccess: true, onBudgetExhausted: true, noProgressRounds: 2, successSemantics: "any", minRounds: 1, requireCycle: false }
+  modulePrompts:
+    worker: "REITERATION MODE: ContextPack.priorRuns carries round-1 verified bounds ([1, 5·10⁶]), the falsified t(n)<n² universal, dead-ends and skills. EXTEND: the sharpened conjecture (n ≥ 96) is the open target; find its exact threshold or push support. A claim restating round-1 work is a failure."
+  verification: { requireIndependentAudit: true }

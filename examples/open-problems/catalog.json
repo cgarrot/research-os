@@ -109,11 +109,12 @@
       "domain": "théorie des nombres",
       "mode": "bounded",
       "profile": "deep",
-      "statement": "Existe-t-il un nombre quasi parfait (divisor_sum(n) = n + 1) ?",
-      "focus": "VERIFIED BOUNDED ABSENCE: exhaustive-finite with expression 'divisor_sum(n)-n-1' predicate not_equals:0 over [1, K] — push K as far as the cap allows; auxiliaries (odd/even only? parity constraints as source-backed claims; sigma structure claims falsifiable).",
+      "statement": "Existe-t-il un nombre quasi parfait (σ(n) = 2n+1, c.-à-d. abondance Δ(n) = σ(n)−2n égale à 1) ?",
+      "focus": "ATTENTION définition exacte : quasi-parfait ⟺ σ(n) = 2n+1 (Δ(n)=1), PAS σ(n)=n+1 (qui caractériserait les premiers — erreur du run 1 falsifiée à n=2). (1) VERIFIED BOUNDED ABSENCE: exhaustive-finite expression 'divisor_sum(n)-2*n-1' predicate not_equals:0 sur n impair [1,K] (les quasi-parfaits ≥ 2 sont abondants impairs non parfaits — impair seulement d'après la théorie; un quasi-parfait pair serait presque-parfait, cas séparé) ; (2) lien : Δ=1 impair ⟺ l'échec simultané des recherches d'étranges impairs d'abondance minimale (voir knowledge 13-etrange-impair) ; (3) auxiliaires falsifiables sur la structure de Δ.",
       "questions": [
-        "Largest exactly-verified K with no quasi-perfect number?",
-        "Which structural claims about sigma die?"
+        "Largest exactly-verified K with no odd quasi-perfect (Δ=1)?",
+        "Quelles bornes la théorie impose-t-elle déjà (source-backed) ?",
+        "Quelles auxiliaires sur la structure Δ meurent exactement ?"
       ]
     },
     {

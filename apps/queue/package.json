@@ -12,7 +12,8 @@
     "test": "tsc -p . && node --test dist/test/*.test.js"
   },
   "dependencies": {
-    "@research-os/contracts": "workspace:*"
+    "@research-os/contracts": "workspace:*",
+    "@research-os/core": "workspace:*"
   },
   "devDependencies": {
     "typescript": "5.9.3",

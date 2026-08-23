@@ -5,6 +5,7 @@ import type { CampaignProjection } from "./core.js";
 import { retrieve, skillsForRole } from "./memoryService.js";
 import { relevantGlobalLessons, relevantGlobalSkills } from "./globalMemory.js";
 import { sha256, truncate } from "./util.js";
+import path from "node:path";
 
 /** Optional cross-campaign stores injected by the daemon (V0.4). */
 export interface GlobalContextSources {
@@ -14,6 +15,23 @@ export interface GlobalContextSources {
 let globalSources: GlobalContextSources | null = null;
 export function setGlobalContextSources(src: GlobalContextSources | null): void {
   globalSources = src;
+}
+
+/** v0.3: prior-runs lookup on the same problem (injected by the daemon from workspaces/knowledge) */
+export type PriorRunsLookup = (problemSlug: string, question: string) => import("./knowledge.js").LookupResult | null;
+let priorRunsLookup: PriorRunsLookup | null = null;
+export function setPriorRunsLookup(fn: PriorRunsLookup | null): void {
+  priorRunsLookup = fn;
+}
+
+/** v0.3: workspace dir -> problem slug map (set by the daemon from the queue ledger) */
+const problemSlugMap = new Map<string, string>();
+export function setProblemSlugMap(map: Map<string, string>): void {
+  problemSlugMap.clear();
+  for (const [k, v] of map) problemSlugMap.set(k, v);
+}
+function problemSlugOf(proj: CampaignProjection): string {
+  return problemSlugMap.get(path.resolve(proj.workspaceDir)) ?? "";
 }
 
 /** The invariant worker contract (spec §41). */
@@ -52,6 +70,16 @@ export function buildContextPack(proj: CampaignProjection, task: TaskSpec): Cont
   const relevantFailures = task.phase === "generate" ? [] : retrieve(proj, "retrieve_failures", task.goal, 3);
   const relevantSkills = skillsForRole(proj, task.role, task.goal, 3);
   const analogousCases = task.phase === "generate" || task.phase === "ground" ? retrieve(proj, "retrieve_analogies", task.goal, 3) : [];
+  const prior = priorRunsLookup ? priorRunsLookup(problemSlugOf(proj), objective.statement) : null;
+  const priorRuns = prior && prior.covered ? {
+    problem: priorRunsLookup ? problemSlugOf(proj) : "",
+    runs: prior.runs,
+    bounds: prior.bounds.map((b) => `${b.variable} verified up to ${b.max.toLocaleString("en-US")}`),
+    verifiedClaims: prior.verifiedClaims.slice(0, 5).map((c) => c.statement.slice(0, 120)),
+    deadEnds: prior.deadEnds,
+    skills: prior.skills,
+    instruction: "PRIOR WORK EXISTS ON THIS PROBLEM — EXTEND, DON'T REPEAT: never re-verify an established bound (start beyond it), never retry a dead-end as-is, apply the listed skills, and supersede (don't duplicate) existing verified claims.",
+  } : undefined;
   const globalLessons = globalSources ? relevantGlobalLessons(globalSources.lessons.map((l) => ({ hash: l.title, campaignId: l.campaignId ?? "other", kind: "negative" as const, title: l.title, content: l.content, createdAt: "" })), `${task.goal} ${objective.statement}`, 3) : undefined;
   const globalSkills = globalSources ? relevantGlobalSkills(globalSources.skills.map((s) => ({ id: s.name, hash: s.name, campaignId: "other", name: s.name, activation: s.activation, procedure: s.procedure, state: s.state === "active" ? "active" : "candidate", citations: s.citations, createdAt: "" })), `${task.role} ${task.goal}`, 2) : undefined;
   if (globalSkills && globalSkills.length > 0) relevantSkills.push(...globalSkills.filter((g) => !relevantSkills.some((r) => r.ref === g.ref)));
@@ -85,6 +113,7 @@ export function buildContextPack(proj: CampaignProjection, task: TaskSpec): Cont
     relevantFailures: paradigm && heavyFailures ? heavyFailures : relevantFailures,
     analogousCases,
     globalLessons,
+    priorRuns,
     peerWorkNotice: blind
       ? "BLIND MODE: rival workers are exploring other approaches in parallel. Do NOT contact peers or assume their results. Commit your own independent work."
       : "Coordinate sparingly over mesh for targeted questions only; persist durable results in ResearchOS first.",

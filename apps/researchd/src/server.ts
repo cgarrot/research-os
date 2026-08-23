@@ -34,6 +34,8 @@ export interface DaemonContext {
   piPackageDir: string;
   mesh: { status(): Promise<unknown>; broadcast(room: string, message: string, refs?: string[]): Promise<unknown> };
   jobs?: { create(proj: import("@research-os/core").CampaignProjection, input: { name: string; command: string[]; cwd?: string; wallSeconds?: number; createdBy: string }): unknown };
+  /** knowledge duplicate lookup (v0.3) — returns the established claim when a title duplicates it */
+  knowledgeLookup?: (title: string) => { statement: string; provenance: string } | null;
   /** scheduler heartbeat for the watchdog (null when absent, e.g. tests) */
   schedulerHealth?: () => { lastTickMs: number; tickCount: number; tickErrors: number } | null;
 }
@@ -195,6 +197,13 @@ async function route(
         if (!EPISTEMIC_STATUSES.includes(status as never)) throw new Error(`unknown epistemic status: ${status}`);
         if (VERIFIER_ONLY_STATUSES.includes(status as never)) {
           throw new Error(`workers cannot set status "${status}" — verification path only (invariant C)`);
+        }
+      }
+      // v0.3 anti-duplication: soft-reject claims duplicating established knowledge
+      if (type === "claim" && ctx.knowledgeLookup) {
+        const dup = ctx.knowledgeLookup(String(body.title ?? ""));
+        if (dup) {
+          return { duplicate: true, establishedBy: dup.provenance, statement: dup.statement, hint: "already established — EXTEND or SUPERSEDE (bound beyond it, or different statement), don't duplicate" };
         }
       }
       const id = core.nextId(proj, type.split(".")[0]);

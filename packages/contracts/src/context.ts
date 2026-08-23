@@ -38,6 +38,16 @@ export interface ContextPack {
   analogousCases: ContextItem[];
   /** lessons harvested from OTHER campaigns (workspace-global negative memory) — V0.4 */
   globalLessons?: ContextItem[];
+  /** PRIOR RUNS on this same problem: verified bounds, dead-ends, skills — extend, don't repeat (v0.3) */
+  priorRuns?: {
+    problem: string;
+    runs: number;
+    bounds: string[];
+    verifiedClaims: string[];
+    deadEnds: string[];
+    skills: string[];
+    instruction: string;
+  };
   peerWorkNotice: string; // e.g. blind mode notice (do not consult peers)
   moduleGuidance?: string; // domain-module phase/worker guidance
   toolGuide: ToolCapabilitySummary[];
