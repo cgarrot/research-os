@@ -424,9 +424,82 @@ function renderReiterate(problem: string, priorBound: number): string {
 `;
 }
 
+
+/**
+ * Kill orphan Python processes from stopped/completed/archived campaigns.
+ * Workers Pi die with their campaign, but `nohup python3 ...` scripts they
+ * launched keep running forever as zombies consuming CPU.
+ */
+async function zombiePythonCleanup(acted: string[]): Promise<void> {
+  try {
+    const { execSync } = await import("node:child_process");
+    // List Python processes running scripts in campaign workspaces
+    const out = execSync(
+      `ps aux | grep -E "Python.*experiments/|python3.*experiments/" | grep -v grep | awk '{print $2}'`,
+      { timeout: 5000, encoding: "utf8" },
+    );
+    const pids = out.trim().split("\n").filter(Boolean).map(Number);
+    if (pids.length === 0) return;
+
+    // Get running campaign workspace dirs
+    const campaigns = await api<{ id: string; status: string; workspace?: string }[]>("GET", "/v1/campaigns", undefined, 10_000);
+    const activeWorkspaces = new Set(
+      campaigns.filter((c) => c.status === "running").map((c) => c.workspace ?? "").filter(Boolean),
+    );
+
+    for (const pid of pids) {
+      try {
+        const cwdOut = execSync(`lsof -p ${pid} 2>/dev/null | grep cwd | awk '{print $NF}'`, {
+          timeout: 3000,
+          encoding: "utf8",
+        });
+        const cwd = cwdOut.trim();
+        if (!cwd) continue;
+
+        // Check if this cwd belongs to an active campaign
+        let isActive = false;
+        for (const ws of activeWorkspaces) {
+          if (cwd.startsWith(ws)) {
+            isActive = true;
+            break;
+          }
+        }
+
+        if (!isActive) {
+          // Check if it's in the archive too
+          if (cwd.includes("/archive/")) {
+            process.kill(pid, "SIGKILL");
+            log(`ZOMBIE 🔫 killed pid=${pid} (archived campaign: ${cwd.slice(-30)})`);
+            acted.push(`zombie:${pid}`);
+          } else {
+            // Not in any active workspace and not in archive — could be a stopped campaign
+            // Check against the registry
+            const match = cwd.match(/c_\d+/);
+            if (match) {
+              const wsId = match[0];
+              const camp = campaigns.find((c) => (c.workspace ?? "").includes(wsId));
+              if (!camp || camp.status !== "running") {
+                process.kill(pid, "SIGKILL");
+                log(`ZOMBIE 🔫 killed pid=${pid} (stopped campaign: ${wsId})`);
+                acted.push(`zombie:${pid}`);
+              }
+            }
+          }
+        }
+      } catch {
+        // process already dead or lsof failed — skip
+      }
+    }
+  } catch {
+    // ps/lsof not available or no matches — no-op
+  }
+}
+
 async function watchdogTick(watchdog: Watchdog, state: QueueState): Promise<string[]> {
   const acted: string[] = [];
   try {
+    // v0.7: zombie Python cleanup — kill orphan experiments from stopped/completed campaigns
+    await zombiePythonCleanup(acted);
     const campaigns = await api<{ id: string; status: string; workspace?: string; counts?: { queued?: number; tasksByStatus?: Record<string, number> } }[]>("GET", "/v1/campaigns", undefined, 10_000);
     const now = Date.now();
     for (const c of campaigns) {

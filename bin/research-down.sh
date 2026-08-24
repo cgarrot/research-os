@@ -20,3 +20,29 @@ tmux has-session -t "${RESEARCH_SESSION:-research}" 2>/dev/null && {
 } || true
 
 echo "down. campaign state is durable under $RESEARCH_HOME — restart any time (researchd replays events)."
+
+# Kill orphan Python experiments from archived/stopped campaigns
+echo "cleaning orphan Python experiments..."
+for pid in $(pgrep -f "Python.*experiments/" 2>/dev/null); do
+  cwd=$(lsof -p $pid 2>/dev/null | grep cwd | awk '{print $NF}')
+  if [ -n "$cwd" ]; then
+    ws_id=$(echo "$cwd" | grep -o 'c_[0-9]*' | head -1)
+    # check if the campaign is still running
+    status=$(curl -s http://127.0.0.1:8787/v1/campaigns 2>/dev/null | python3 -c "
+import json, sys
+try:
+    for c in json.load(sys.stdin):
+        if ws_id and ws_id in c.get('workspace',''):
+            print(c['status'])
+            break
+    else:
+        print('not-found')
+except:
+    print('unknown')
+" 2>/dev/null)
+    if [ "$status" = "stopped" ] || [ "$status" = "completed" ] || [ "$status" = "not-found" ]; then
+      kill $pid 2>/dev/null
+      echo "  killed zombie pid=$pid ($ws_id, status=$status)"
+    fi
+  fi
+done
