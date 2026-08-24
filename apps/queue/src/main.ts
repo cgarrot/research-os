@@ -238,9 +238,15 @@ async function tick(state: QueueState): Promise<boolean> {
                     writeFileSync(rtFile, renderRedTeam(problem, cur.id, lk.verifiedClaims.length), "utf8");
                     log(`RED-TEAM ENQUEUED zz-${problem}-redteam.yaml (${lk.verifiedClaims.length} verified claims to attack)`);
                   }
+                  // v0.8: NOVELTY AUDIT — spawn a campaign to check if verified claims are already known
+                  const naFile = path.join(QUEUE_DIR, `zz-${problem}-novelty-audit.yaml`);
+                  if (!existsSync(naFile)) {
+                    writeFileSync(naFile, renderNoveltyAudit(problem, cur.id, lk.verifiedClaims.length), "utf8");
+                    log(`NOVELTY-AUDIT ENQUEUED zz-${problem}-novelty-audit.yaml (${lk.verifiedClaims.length} verified claims to audit)`);
+                  }
                 }
               } catch (err) {
-                log(`red-team check failed: ${String(err)}`);
+                log(`red-team/novelty check failed: ${String(err)}`);
               }
             }
           }
@@ -296,6 +302,50 @@ function slugFromTitle(title: string): string {
   return title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 48);
 }
 
+
+
+function renderNoveltyAudit(problem: string, sourceCampaignId: string, nClaims: number): string {
+  return `campaign:
+  title: "NOVELTY-AUDIT — ${problem} (are these ${nClaims} verified claims already known?)"
+  modules: [mathematics]
+  objective:
+    statement: "You are a NOVELTY AUDITOR. The campaign ${sourceCampaignId} has ${nClaims} verified claims in the knowledge base. Your job is to determine whether ANY of them are NOVEL (not already in OEIS, not already published). For each significant verified claim: (1) search OEIS by VALUES (several prefixes, offset variants) and by DEFINITION keywords; (2) search literature (OpenAlex, arXiv) for the exact statement; (3) classify: known / likely-known / ambiguous / not-found; (4) for any 'not-found': create a research_discovery_candidate with full provenance and run research_novelty_search to build the audit trail. The goal is that every claim ends up classified, and any genuinely new observation gets quarantined as a discovery candidate with its evidence chain."
+    questions:
+      - "Which verified claims are simply reproductions of known results?"
+      - "Which claims, if any, formulate something that OEIS/literature does not contain?"
+      - "Are there observations (patterns, statistics, sequences) that emerged during the campaign but weren't formalized as claims?"
+    deliverables:
+      - kind: report
+        description: "Novelty classification of every significant verified claim + discovery candidates for any new observations"
+    successCriteria:
+      - type: claim_status
+        value: verified
+        description: "at least one novelty classification claim (known/novel for a specific result)"
+    constraints:
+      - "OEIS value search on several prefixes (not just one)"
+      - "definition-level search, not just value search"
+      - "for 'not-found': create discovery_candidate with provenance, never just say 'novel'"
+    exclusions: []
+    assumptions: []
+    riskClass: low
+  models:
+    defaultPool:
+      - id: zai-glm-5.3
+        provider: zai
+        model: glm-5.3
+        runtime: pi
+        thinkingLevel: max
+        tags: [default]
+  search: { policy: round-robin, blindGenerators: 1, maxBranches: 4 }
+  budgets: { maxAgentRuns: 8, maxTasks: 12, maxRounds: 2, maxExperiments: 5, wallClockMinutes: 90, maxTokensEstimate: 12000000 }
+  autonomy: { level: L3, humanApprovalRequiredFor: [] }
+  workers: { autoSpawn: 1, leaseSeconds: 1800, maxRunMinutes: 90 }
+  stop: { onSuccess: true, onBudgetExhausted: true, noProgressRounds: 2, successSemantics: "any", minRounds: 1, requireCycle: false }
+  modulePrompts:
+    worker: "NOVELTY-AUDITOR MODE: your ContextPack.priorRuns shows what ${sourceCampaignId} verified. Use research_get_journal to read the source campaign's claims and observations. For each SIGNIFICANT claim (not trivial reproductions): (1) research_novelty_search with the claim's key values AND definition keywords; (2) classify known/likely-known/ambiguous/not-found; (3) for not-found: research_discovery_candidate (quarantined) + research_novelty_search evidence chain. Create a claim object per classification result. You are adversarial: try to prove it IS known, don't celebrate novelty."
+  verification: { requireIndependentAudit: true }
+`;
+}
 
 function renderRedTeam(problem: string, sourceCampaignId: string, nClaims: number): string {
   return `campaign:
